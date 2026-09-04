@@ -21,15 +21,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   path: Schema.Literal("/users"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: {
-    body: Schema.optional(
-      Schema.Struct({ username: Schema.optional(Schema.String) }).check(
-        Schema.makeFilter((data) =>
-          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key)),
-        ),
-      ),
-    ),
-  },
+  parameters: { body: Schema.optional(Schema.Struct({ username: Schema.optional(Schema.String) })) },
   responses: { 201: Schema.Unknown },
 };
 

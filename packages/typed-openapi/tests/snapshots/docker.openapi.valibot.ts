@@ -51,7 +51,7 @@ export type PortMap = v.InferOutput<typeof PortMap>;
 export const PortMap = v.record(v.string(), v.nullable(v.array(PortBinding)));
 
 export type HostConfig = v.InferOutput<typeof HostConfig>;
-export const HostConfig = v.intersect([Resources, v.partial(v.strictObject({ Binds: v.array(v.string()), ContainerIDFile: v.string(), LogConfig: v.partial(v.strictObject({ Type: v.picklist(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: v.record(v.string(), v.string()) })), NetworkMode: v.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: v.boolean(), VolumeDriver: v.string(), VolumesFrom: v.array(v.string()), Mounts: v.array(Mount), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))), Annotations: v.record(v.string(), v.string()), CapAdd: v.array(v.string()), CapDrop: v.array(v.string()), CgroupnsMode: v.picklist(["private", "host"]), Dns: v.array(v.string()), DnsOptions: v.array(v.string()), DnsSearch: v.array(v.string()), ExtraHosts: v.array(v.string()), GroupAdd: v.array(v.string()), IpcMode: v.string(), Cgroup: v.string(), Links: v.array(v.string()), OomScoreAdj: v.pipe(v.number(), v.integer()), PidMode: v.string(), Privileged: v.boolean(), PublishAllPorts: v.boolean(), ReadonlyRootfs: v.boolean(), SecurityOpt: v.array(v.string()), StorageOpt: v.record(v.string(), v.string()), Tmpfs: v.record(v.string(), v.string()), UTSMode: v.string(), UsernsMode: v.string(), ShmSize: v.pipe(v.number(), v.integer(), v.minValue(0)), Sysctls: v.record(v.string(), v.string()), Runtime: v.string(), Isolation: v.picklist(["default", "process", "hyperv"]), MaskedPaths: v.array(v.string()), ReadonlyPaths: v.array(v.string()) }))]);
+export const HostConfig = v.pipe(v.intersect([v.looseObject((Resources).entries), v.looseObject((v.partial(v.strictObject({ Binds: v.array(v.string()), ContainerIDFile: v.string(), LogConfig: v.partial(v.strictObject({ Type: v.picklist(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: v.record(v.string(), v.string()) })), NetworkMode: v.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: v.boolean(), VolumeDriver: v.string(), VolumesFrom: v.array(v.string()), Mounts: v.array(Mount), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))), Annotations: v.record(v.string(), v.string()), CapAdd: v.array(v.string()), CapDrop: v.array(v.string()), CgroupnsMode: v.picklist(["private", "host"]), Dns: v.array(v.string()), DnsOptions: v.array(v.string()), DnsSearch: v.array(v.string()), ExtraHosts: v.array(v.string()), GroupAdd: v.array(v.string()), IpcMode: v.string(), Cgroup: v.string(), Links: v.array(v.string()), OomScoreAdj: v.pipe(v.number(), v.integer()), PidMode: v.string(), Privileged: v.boolean(), PublishAllPorts: v.boolean(), ReadonlyRootfs: v.boolean(), SecurityOpt: v.array(v.string()), StorageOpt: v.record(v.string(), v.string()), Tmpfs: v.record(v.string(), v.string()), UTSMode: v.string(), UsernsMode: v.string(), ShmSize: v.pipe(v.number(), v.integer(), v.minValue(0)), Sysctls: v.record(v.string(), v.string()), Runtime: v.string(), Isolation: v.picklist(["default", "process", "hyperv"]), MaskedPaths: v.array(v.string()), ReadonlyPaths: v.array(v.string()) }))).entries)]), v.check((data) => data == null || Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CpuShares": 1, "Memory": 1, "CgroupParent": 1, "BlkioWeight": 1, "BlkioWeightDevice": 1, "BlkioDeviceReadBps": 1, "BlkioDeviceWriteBps": 1, "BlkioDeviceReadIOps": 1, "BlkioDeviceWriteIOps": 1, "CpuPeriod": 1, "CpuQuota": 1, "CpuRealtimePeriod": 1, "CpuRealtimeRuntime": 1, "CpusetCpus": 1, "CpusetMems": 1, "Devices": 1, "DeviceCgroupRules": 1, "DeviceRequests": 1, "KernelMemoryTCP": 1, "MemoryReservation": 1, "MemorySwap": 1, "MemorySwappiness": 1, "NanoCpus": 1, "OomKillDisable": 1, "Init": 1, "PidsLimit": 1, "Ulimits": 1, "CpuCount": 1, "CpuPercent": 1, "IOMaximumIOps": 1, "IOMaximumBandwidth": 1, "Binds": 1, "ContainerIDFile": 1, "LogConfig": 1, "NetworkMode": 1, "PortBindings": 1, "RestartPolicy": 1, "AutoRemove": 1, "VolumeDriver": 1, "VolumesFrom": 1, "Mounts": 1, "ConsoleSize": 1, "Annotations": 1, "CapAdd": 1, "CapDrop": 1, "CgroupnsMode": 1, "Dns": 1, "DnsOptions": 1, "DnsSearch": 1, "ExtraHosts": 1, "GroupAdd": 1, "IpcMode": 1, "Cgroup": 1, "Links": 1, "OomScoreAdj": 1, "PidMode": 1, "Privileged": 1, "PublishAllPorts": 1, "ReadonlyRootfs": 1, "SecurityOpt": 1, "StorageOpt": 1, "Tmpfs": 1, "UTSMode": 1, "UsernsMode": 1, "ShmSize": 1, "Sysctls": 1, "Runtime": 1, "Isolation": 1, "MaskedPaths": 1, "ReadonlyPaths": 1 }, key))));
 
 export type ContainerConfig = v.InferOutput<typeof ContainerConfig>;
 export const ContainerConfig = v.partial(v.strictObject({ Hostname: v.string(), Domainname: v.string(), User: v.string(), AttachStdin: v.optional(v.boolean(), false), AttachStdout: v.optional(v.boolean(), true), AttachStderr: v.optional(v.boolean(), true), ExposedPorts: v.nullable(v.record(v.string(), v.partial(v.strictObject({  })))), Tty: v.optional(v.boolean(), false), OpenStdin: v.optional(v.boolean(), false), StdinOnce: v.optional(v.boolean(), false), Env: v.array(v.string()), Cmd: v.array(v.string()), Healthcheck: HealthConfig, ArgsEscaped: v.optional(v.nullable(v.boolean()), false), Image: v.string(), Volumes: v.record(v.string(), v.partial(v.strictObject({  }))), WorkingDir: v.string(), Entrypoint: v.array(v.string()), NetworkDisabled: v.nullable(v.boolean()), MacAddress: v.nullable(v.string()), OnBuild: v.nullable(v.array(v.string())), Labels: v.record(v.string(), v.string()), StopSignal: v.nullable(v.string()), StopTimeout: v.nullable(v.pipe(v.number(), v.integer())), Shell: v.nullable(v.array(v.string())) }));
@@ -210,7 +210,7 @@ export type JoinTokens = v.InferOutput<typeof JoinTokens>;
 export const JoinTokens = v.partial(v.strictObject({ Worker: v.string(), Manager: v.string() }));
 
 export type Swarm = v.InferOutput<typeof Swarm>;
-export const Swarm = v.intersect([ClusterInfo, v.partial(v.strictObject({ JoinTokens: JoinTokens }))]);
+export const Swarm = v.pipe(v.intersect([v.nullable(v.looseObject((ClusterInfo).wrapped.entries)), v.looseObject((v.partial(v.strictObject({ JoinTokens: JoinTokens }))).entries)]), v.check((data) => data == null || Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "TLSInfo": 1, "RootRotationInProgress": 1, "DataPathPort": 1, "DefaultAddrPool": 1, "SubnetSize": 1, "JoinTokens": 1 }, key))));
 
 export type NetworkAttachmentConfig = v.InferOutput<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = v.partial(v.strictObject({ Target: v.string(), Aliases: v.array(v.string()), DriverOpts: v.record(v.string(), v.string()) }));
@@ -336,7 +336,7 @@ export const post_ContainerCreate = {
   path: v.literal("/containers/create"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.strictObject({ name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))), platform: v.string() }))), body: v.intersect([ContainerConfig, v.partial(v.strictObject({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }))]) },
+  parameters: { query: v.optional(v.partial(v.strictObject({ name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))), platform: v.string() }))), body: v.pipe(v.intersect([v.looseObject((ContainerConfig).entries), v.looseObject((v.partial(v.strictObject({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }))).entries)]), v.check((data) => data == null || Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Hostname": 1, "Domainname": 1, "User": 1, "AttachStdin": 1, "AttachStdout": 1, "AttachStderr": 1, "ExposedPorts": 1, "Tty": 1, "OpenStdin": 1, "StdinOnce": 1, "Env": 1, "Cmd": 1, "Healthcheck": 1, "ArgsEscaped": 1, "Image": 1, "Volumes": 1, "WorkingDir": 1, "Entrypoint": 1, "NetworkDisabled": 1, "MacAddress": 1, "OnBuild": 1, "Labels": 1, "StopSignal": 1, "StopTimeout": 1, "Shell": 1, "HostConfig": 1, "NetworkingConfig": 1 }, key)))) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -456,7 +456,7 @@ export const post_ContainerUpdate = {
   path: v.literal("/containers/{id}/update"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.strictObject({ id: v.string() }), body: v.intersect([Resources, v.partial(v.strictObject({ RestartPolicy: RestartPolicy }))]) },
+  parameters: { path: v.strictObject({ id: v.string() }), body: v.pipe(v.intersect([v.looseObject((Resources).entries), v.looseObject((v.partial(v.strictObject({ RestartPolicy: RestartPolicy }))).entries)]), v.check((data) => data == null || Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CpuShares": 1, "Memory": 1, "CgroupParent": 1, "BlkioWeight": 1, "BlkioWeightDevice": 1, "BlkioDeviceReadBps": 1, "BlkioDeviceWriteBps": 1, "BlkioDeviceReadIOps": 1, "BlkioDeviceWriteIOps": 1, "CpuPeriod": 1, "CpuQuota": 1, "CpuRealtimePeriod": 1, "CpuRealtimeRuntime": 1, "CpusetCpus": 1, "CpusetMems": 1, "Devices": 1, "DeviceCgroupRules": 1, "DeviceRequests": 1, "KernelMemoryTCP": 1, "MemoryReservation": 1, "MemorySwap": 1, "MemorySwappiness": 1, "NanoCpus": 1, "OomKillDisable": 1, "Init": 1, "PidsLimit": 1, "Ulimits": 1, "CpuCount": 1, "CpuPercent": 1, "IOMaximumIOps": 1, "IOMaximumBandwidth": 1, "RestartPolicy": 1 }, key)))) },
   responses: { 200: v.partial(v.strictObject({ Warnings: v.array(v.string()) })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1199,7 +1199,7 @@ export const post_ServiceCreate = {
   path: v.literal("/services/create"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { header: v.optional(v.partial(v.strictObject({ "X-Registry-Auth": v.string() }))), body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]) },
+  parameters: { header: v.optional(v.partial(v.strictObject({ "X-Registry-Auth": v.string() }))), body: v.intersect([v.looseObject((ServiceSpec).entries), v.record(v.string(), v.unknown())]) },
   responses: { 201: v.partial(v.strictObject({ ID: v.string(), Warning: v.string() })), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1229,7 +1229,7 @@ export const post_ServiceUpdate = {
   path: v.literal("/services/{id}/update"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.strictObject({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), registryAuthFrom: v.optional(v.picklist(["spec", "previous-spec"]), "spec"), rollback: v.optional(v.string()) }), path: v.strictObject({ id: v.string() }), header: v.optional(v.partial(v.strictObject({ "X-Registry-Auth": v.string() }))), body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]) },
+  parameters: { query: v.strictObject({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), registryAuthFrom: v.optional(v.picklist(["spec", "previous-spec"]), "spec"), rollback: v.optional(v.string()) }), path: v.strictObject({ id: v.string() }), header: v.optional(v.partial(v.strictObject({ "X-Registry-Auth": v.string() }))), body: v.intersect([v.looseObject((ServiceSpec).entries), v.record(v.string(), v.unknown())]) },
   responses: { 200: ServiceUpdateResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1289,7 +1289,7 @@ export const post_SecretCreate = {
   path: v.literal("/secrets/create"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]) },
+  parameters: { body: v.intersect([v.looseObject((SecretSpec).entries), v.record(v.string(), v.unknown())]) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1339,7 +1339,7 @@ export const post_ConfigCreate = {
   path: v.literal("/configs/create"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]) },
+  parameters: { body: v.intersect([v.looseObject((ConfigSpec).entries), v.record(v.string(), v.unknown())]) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

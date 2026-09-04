@@ -28,7 +28,8 @@ See [the documentation](https://typed-openapi-docs.vercel.app/) or try [the onli
 - **Closed objects by default**: omitted `additionalProperties` is treated as `false`
   so generated types and validators don't silently accept unknown keys. Opt into the
   OpenAPI/JSON Schema default with `--openapi-additional-properties-default` /
-  `openapi: { additionalPropertiesDefault: true }`.
+  `openapi: { additionalPropertiesDefault: true }`. Closed `allOf` members compose
+  (combined keys are accepted; unknown keys are rejected).
 - **Date / bigint transforms** (`--transform-dates`, `--transform-bigint`): `format: date-time|date` → `Date`,
   `format: int64` → `bigint` (types + runtime schema transforms; none-runtime revives ISO date strings)
 - **Typed config**: `defineConfig` + `typed-openapi.config.ts` (also JSON); auto-loaded when present

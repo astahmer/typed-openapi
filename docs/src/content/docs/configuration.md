@@ -34,6 +34,8 @@ export default defineConfig({
 });
 ```
 
+The CLI flag `--openapi-additional-properties-default` is the same switch. `allOf` of closed objects composes the union of keys (sibling fields are valid; unknown keys are still rejected).
+
 Now one short command regenerates every configured output:
 
 ```sh

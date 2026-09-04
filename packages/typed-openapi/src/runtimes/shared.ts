@@ -291,6 +291,145 @@ export const isNullOr = (node: SchemaNode): SchemaNode | undefined => {
   return undefined;
 };
 
+type ObjectSchemaNode = Extract<SchemaNode, { kind: "object" }>;
+
+/** Follow component refs using the emit-time schema map. */
+export const resolveSchemaNode = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "schemaNodes">,
+  seen = new Set<string>(),
+): SchemaNode => {
+  if (node.kind === "ref" && ctx.schemaNodes && !seen.has(node.name)) {
+    const target = ctx.schemaNodes.get(node.name);
+    if (target) return resolveSchemaNode(target, ctx, new Set(seen).add(node.name));
+  }
+  return node;
+};
+
+/** True when omitted/explicit additionalProperties:false should close an allOf result. */
+export const isClosedObjectLike = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "schemaNodes">,
+  seen = new Set<string>(),
+): boolean => {
+  const resolved = resolveSchemaNode(node, ctx, seen);
+  if (resolved.kind === "object") {
+    return resolved.additionalProperties === false && Object.keys(resolved.patternProperties ?? {}).length === 0;
+  }
+  if (resolved.kind === "intersection") {
+    return resolved.members.every((member) => isClosedObjectLike(member, ctx, seen));
+  }
+  const inner = isNullOr(resolved);
+  return inner ? isClosedObjectLike(inner, ctx, seen) : false;
+};
+
+/** How to reopen a closed allOf member so sibling keys are not rejected. */
+export const closedObjectReopen = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "schemaNodes">,
+): "object" | "nullable-object" | undefined => {
+  const resolved = resolveSchemaNode(node, ctx);
+  if (resolved.kind === "object") {
+    return resolved.additionalProperties === false && Object.keys(resolved.patternProperties ?? {}).length === 0
+      ? "object"
+      : undefined;
+  }
+  if (resolved.kind === "intersection") {
+    return resolved.members.every((member) => closedObjectReopen(member, ctx) === "object") ? "object" : undefined;
+  }
+  const inner = isNullOr(resolved);
+  return inner && closedObjectReopen(inner, ctx) === "object" ? "nullable-object" : undefined;
+};
+
+export const isObjectLike = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "schemaNodes">,
+  seen = new Set<string>(),
+): boolean => {
+  const resolved = resolveSchemaNode(node, ctx, seen);
+  const inner = isNullOr(resolved) ?? resolved;
+  if (inner.kind === "object") return true;
+  if (inner.kind === "intersection") return inner.members.every((member) => isObjectLike(member, ctx, seen));
+  return false;
+};
+
+export const collectClosedObjectKeys = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "schemaNodes">,
+  seen = new Set<string>(),
+): string[] | undefined => {
+  const resolved = resolveSchemaNode(node, ctx, seen);
+  if (resolved.kind === "object") {
+    if (resolved.additionalProperties !== false || Object.keys(resolved.patternProperties ?? {}).length > 0) {
+      return undefined;
+    }
+    return Object.keys(resolved.properties);
+  }
+  if (resolved.kind === "intersection") {
+    const parts = resolved.members.map((member) => collectClosedObjectKeys(member, ctx, seen));
+    if (parts.some((part) => part === undefined)) return undefined;
+    return [...new Set(parts.flatMap((part) => part ?? []))];
+  }
+  const inner = isNullOr(resolved);
+  return inner ? collectClosedObjectKeys(inner, ctx, seen) : undefined;
+};
+
+/** Pattern / additionalProperties-schema objects cannot `.and()` ArkType morphs; merge their shapes instead. */
+export const objectHasRestMorph = (node: SchemaNode, ctx: Pick<EmitCtx, "schemaNodes">): boolean => {
+  const resolved = resolveSchemaNode(node, ctx);
+  const inner = isNullOr(resolved) ?? resolved;
+  if (inner.kind !== "object") return false;
+  return Object.keys(inner.patternProperties ?? {}).length > 0 || typeof inner.additionalProperties === "object";
+};
+
+const asObjectNode = (node: SchemaNode, ctx: Pick<EmitCtx, "schemaNodes">): ObjectSchemaNode | undefined => {
+  const resolved = resolveSchemaNode(node, ctx);
+  const inner = isNullOr(resolved) ?? resolved;
+  if (inner.kind === "object") return inner;
+  if (inner.kind === "intersection") return flattenObjectIntersection(inner, ctx);
+  return undefined;
+};
+
+export const flattenObjectIntersection = (
+  node: Extract<SchemaNode, { kind: "intersection" }>,
+  ctx: Pick<EmitCtx, "schemaNodes">,
+): ObjectSchemaNode | undefined => {
+  const objects: ObjectSchemaNode[] = [];
+  for (const member of node.members) {
+    const obj = asObjectNode(member, ctx);
+    if (!obj || Object.keys(obj.constraints).length > 0) return undefined;
+    objects.push(obj);
+  }
+  if (objects.length === 0) return undefined;
+  const properties: Record<string, SchemaNode> = {};
+  const patternProperties: Record<string, SchemaNode> = {};
+  for (const obj of objects) {
+    for (const [key, prop] of Object.entries(obj.properties)) {
+      const existing = properties[key];
+      properties[key] = existing ? { kind: "intersection", members: [existing, prop], meta: prop.meta } : prop;
+    }
+    for (const [pattern, prop] of Object.entries(obj.patternProperties ?? {})) {
+      const existing = patternProperties[pattern];
+      patternProperties[pattern] = existing
+        ? { kind: "intersection", members: [existing, prop], meta: prop.meta }
+        : prop;
+    }
+  }
+  const additionalProperties = objects.some((obj) => obj.additionalProperties === true)
+    ? true
+    : (objects.map((obj) => obj.additionalProperties).find((value) => typeof value === "object") ?? false);
+  return {
+    kind: "object",
+    properties,
+    required: [...new Set(objects.flatMap((obj) => obj.required))],
+    partial: objects.every((obj) => obj.partial),
+    additionalProperties,
+    ...(Object.keys(patternProperties).length > 0 ? { patternProperties } : {}),
+    constraints: {},
+    meta: node.meta,
+  };
+};
+
 export type AppliedStringConstraints = {
   minLength?: number;
   maxLength?: number;

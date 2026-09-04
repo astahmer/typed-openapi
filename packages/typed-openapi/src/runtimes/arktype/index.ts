@@ -12,6 +12,10 @@ import {
   objectProps,
   quote,
   emitKeyAllowed,
+  flattenObjectIntersection,
+  isClosedObjectLike,
+  objectHasRestMorph,
+  resolveSchemaNode,
 } from "../shared.ts";
 import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
@@ -129,23 +133,6 @@ const asTypeExpr = (expr: string): string => {
   return expr;
 };
 
-const resolveNode = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): SchemaNode => {
-  if (node.kind === "ref" && ctx.schemaNodes && !seen.has(node.name)) {
-    const target = ctx.schemaNodes.get(node.name);
-    if (target) return resolveNode(target, ctx, new Set(seen).add(node.name));
-  }
-  return node;
-};
-
-/** True when omitted/explicit additionalProperties:false should close the allOf result. */
-const isClosedObjectLike = (node: SchemaNode, ctx: EmitCtx): boolean => {
-  const resolved = resolveNode(node, ctx);
-  if (resolved.kind === "object") return resolved.additionalProperties === false;
-  if (resolved.kind === "intersection") return resolved.members.every((member) => isClosedObjectLike(member, ctx));
-  const inner = isNullOr(resolved);
-  return inner ? isClosedObjectLike(inner, ctx) : false;
-};
-
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) {
@@ -253,13 +240,18 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `${members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`)}${exclusiveCheck}`;
     }
     case "intersection": {
+      // Pattern / additionalProperties-schema members use `.narrow()` morphs that cannot `.and()`.
+      if (node.members.filter((member) => objectHasRestMorph(member, ctx)).length >= 2) {
+        const flattened = flattenObjectIntersection(node, ctx);
+        if (flattened) return emitNode(flattened, ctx);
+      }
       // Closed members reject sibling allOf keys (and `.narrow()` morphs cannot `.and()`).
       // Reopen each object member, then close the merged key set.
       const inner = node.members
         .map((member) => {
           const raw = emitNode(member, ctx);
           const expr = isModuleStringDef(raw) ? `type(${raw})` : asTypeExpr(raw);
-          const resolved = resolveNode(member, ctx);
+          const resolved = resolveSchemaNode(member, ctx);
           if (member.kind === "ref" || resolved.kind === "object" || resolved.kind === "intersection") {
             return `${expr}.onUndeclaredKey("ignore")`;
           }
@@ -315,14 +307,17 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
           return `${keyLit}: ${expr}`;
         })
         .join(", ");
+      const patterns = Object.entries(node.patternProperties ?? {});
       // Inside type.module, always use raw object literals so sibling string refs resolve
       // at any nesting depth (wrapping with type({...}) leaves the module scope).
       if (ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs) {
+        if (node.additionalProperties === false && patterns.length === 0) {
+          return `{ ${body}${body ? ", " : ""}"+": "reject" }`;
+        }
         return `{ ${body} }`;
       }
       let expr = `type({ ${body} })`;
       if (node.partial) expr = `${expr}.partial()`;
-      const patterns = Object.entries(node.patternProperties ?? {});
       if (patterns.length > 0) {
         const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
         const patternChecks = patterns

@@ -177,7 +177,13 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
         const propertiesType = node.partial ? `Partial<${objectBody}>` : objectBody;
         return `(${propertiesType} & Record<string, ${[...declaredTypes, ...patternTypes].join(" | ")}>)`;
       }
-      if (node.partial) return `Partial<${objectBody}>`;
+      if (node.partial) {
+        const propertiesType = `Partial<${objectBody}>`;
+        if (node.additionalProperties === true) {
+          return `(${propertiesType} & Record<string, unknown>)`;
+        }
+        return propertiesType;
+      }
       if (node.additionalProperties === true) {
         return `(${objectBody} & Record<string, unknown>)`;
       }

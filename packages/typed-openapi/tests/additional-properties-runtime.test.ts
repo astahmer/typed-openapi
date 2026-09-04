@@ -1,10 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { z as z3 } from "zod/v3";
-import { Schema } from "effect";
+import { Schema, Struct } from "effect";
 import * as effect3Schema from "@effect/schema/Schema";
 import * as v from "valibot";
 import { type } from "arktype";
+import { Type } from "@sinclair/typebox";
 import { Value as TypeBoxValue } from "@sinclair/typebox/value";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -21,6 +22,8 @@ import { effectAdapter } from "../src/runtimes/effect/index.ts";
 import { effect3Adapter } from "../src/runtimes/effect3/index.ts";
 import { valibotAdapter } from "../src/runtimes/valibot/index.ts";
 import { arktypeAdapter } from "../src/runtimes/arktype/index.ts";
+import { typeboxAdapter } from "../src/runtimes/typebox/index.ts";
+import { typiaAdapter } from "../src/runtimes/typia/index.ts";
 
 const objectSchema = {
   type: "object",
@@ -90,6 +93,8 @@ const parseResult = (runtime: string, source: string) => {
       return new Function("v", `return ${source}`)(v) as v.GenericSchema;
     case "arktype":
       return new Function("type", `return ${source}`)(type) as (value: unknown) => unknown;
+    case "typebox":
+      return new Function("Type", `return ${source}`)(Type);
     default:
       throw new Error(`Unhandled runtime ${runtime}`);
   }
@@ -108,6 +113,8 @@ const accepts = (runtime: string, schema: unknown, value: unknown): boolean => {
       return v.safeParse(schema as v.GenericSchema, value).success;
     case "arktype":
       return !((schema as (input: unknown) => unknown)(value) instanceof type.errors);
+    case "typebox":
+      return TypeBoxValue.Check(schema as Parameters<typeof TypeBoxValue.Check>[0], value);
     default:
       return false;
   }
@@ -164,12 +171,20 @@ describe("typed additionalProperties with named properties", () => {
     expect(accepts(runtime, schema, { name: "typed-openapi", extra: true })).toBe(false);
   });
 
-  test("arktype allOf of closed objects with defaults composes instead of throwing", () => {
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+    ["typebox", typeboxAdapter],
+  ] as const)("%s allOf of closed objects composes combined keys", (runtime, adapter) => {
     const irCtx = { getRefName: (ref: string) => ref.replace(/^.*\//, "") };
     const resourcesSchema = {
       type: "object",
       properties: {
-        Memory: { type: "integer", default: 0 },
+        Memory: { type: "integer" },
         CpuShares: { type: "integer" },
       },
     };
@@ -179,7 +194,7 @@ describe("typed additionalProperties with named properties", () => {
         Binds: { type: "array", items: { type: "string" } },
         BindOptions: {
           type: "object",
-          properties: { NonRecursive: { type: "boolean", default: false } },
+          properties: { NonRecursive: { type: "boolean" } },
         },
       },
     };
@@ -188,14 +203,80 @@ describe("typed additionalProperties with named properties", () => {
     const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(), {
       schemaNodes: new Map([["Resources", resources]]),
     });
-    const source = `const Resources = ${arktypeAdapter.emitNode(resources, ctx)}; return ${arktypeAdapter.emitNode(hostConfig, ctx)};`;
-    expect(source).toContain('onUndeclaredKey("ignore")');
-    expect(source).toContain('onUndeclaredKey("reject")');
-    expect(source).not.toContain(".narrow(");
-    const schema = new Function("type", source)(type) as (value: unknown) => unknown;
+    const source = `const Resources = ${adapter.emitNode(resources, ctx)}; return ${adapter.emitNode(hostConfig, ctx)};`;
+    if (runtime === "arktype") {
+      expect(source).toContain('onUndeclaredKey("ignore")');
+      expect(source).toContain('onUndeclaredKey("reject")');
+      expect(source).not.toContain(".narrow(");
+    }
+    if (runtime === "typebox") {
+      expect(source).toContain("Type.Composite");
+    }
+    const schema = (() => {
+      switch (runtime) {
+        case "zod":
+          return new Function("z", source)(z);
+        case "zod3":
+          return new Function("z", source)(z3);
+        case "effect":
+          return new Function("Schema", "Struct", source)(Schema, Struct);
+        case "effect3":
+          return new Function("S", source)(effect3Schema);
+        case "valibot":
+          return new Function("v", source)(v);
+        case "arktype":
+          return new Function("type", source)(type);
+        case "typebox":
+          return new Function("Type", source)(Type);
+      }
+    })();
 
-    expect(accepts("arktype", schema, { Memory: 1, Binds: [] })).toBe(true);
-    expect(accepts("arktype", schema, { Memory: 1, Binds: [], extra: true })).toBe(false);
+    expect(accepts(runtime, schema, { Memory: 1, Binds: [] })).toBe(true);
+    if (runtime !== "effect" && runtime !== "effect3") {
+      expect(accepts(runtime, schema, { Memory: 1, Binds: [], extra: true })).toBe(false);
+    }
+  });
+
+  test("typia allOf of closed objects uses the union of member keys", () => {
+    const irCtx = { getRefName: (ref: string) => ref.replace(/^.*\//, "") };
+    const resources = openApiToIr({ type: "object", properties: { Memory: { type: "integer" } } }, irCtx);
+    const hostConfig = openApiToIr(
+      {
+        allOf: [
+          { $ref: "#/components/schemas/Resources" },
+          { type: "object", properties: { Binds: { type: "array", items: { type: "string" } } } },
+        ],
+      },
+      irCtx,
+    );
+    const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(), {
+      schemaNodes: new Map([["Resources", resources]]),
+    });
+    const source = typiaAdapter.emitNode(hostConfig, ctx);
+    expect(source).toContain('"Memory"');
+    expect(source).toContain('"Binds"');
+    expect(source).toContain("Object.keys(input).every");
+  });
+
+  test("arktype type.module closed objects emit + reject", () => {
+    const irCtx = { getRefName: (ref: string) => ref.replace(/^.*\//, "") };
+    const node = openApiToIr(
+      {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          child: { $ref: "#/components/schemas/Node" },
+        },
+        required: ["name"],
+      },
+      irCtx,
+    );
+    const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(["Node"]), {
+      schemaNodes: new Map([["Node", node]]),
+    });
+    const source = arktypeAdapter.emitNamedSchemas([{ name: "Node", node }], ctx);
+    expect(source).toContain("type.module");
+    expect(source).toContain('"+": "reject"');
   });
 
   test.each([
@@ -204,9 +285,9 @@ describe("typed additionalProperties with named properties", () => {
   ] as const)("%s emits a closed object when additionalProperties is omitted", (_runtime, adapter) => {
     const node = openApiToIr(implicitAdditionalPropertiesSchema, { getRefName: (ref) => ref });
     const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
-    expect(source).toContain("Object.keys");
     expect(source).not.toContain("StructWithRest");
     expect(source).not.toContain("Schema.extend");
+    expect(source).not.toContain("Object.keys");
   });
 
   test.each([

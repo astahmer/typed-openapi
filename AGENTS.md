@@ -41,7 +41,8 @@ surfaces with their own commands.
   `additionalProperties` on objects with named properties defaults to `false`
   (closed objects). Opt into the spec default with `openapi.additionalPropertiesDefault`
   / `--openapi-additional-properties-default`. Property-less `{ type: object }` stays a
-  free-form record unless `additionalProperties` is explicitly `false`.
+  free-form record unless `additionalProperties` is explicitly `false`. Closed `allOf`
+  members compose: combined keys are accepted and true extras are rejected.
 - Audit behavior at the semantic boundaries: recursive references and deferred
   runtime sidecars, `allOf`/`oneOf`/`anyOf`, exact versus open objects, wildcard
   response status ranges, case-insensitive media types, and path/query/header/

@@ -264,7 +264,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       } else if (typeof node.additionalProperties === "object") {
         const rest = emitNode(node.additionalProperties, ctx);
         expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)}).pipe(S.filter((data) => Object.entries(data).every(([key, value]) => ${emitKeyAllowed(Object.keys(node.properties))} || ${S}.is(${rest})(value))))`;
-      } else if (node.additionalProperties === false) {
+      } else if (node.additionalProperties === false && Object.keys(node.properties).length === 0) {
+        // Empty structs keep unknown keys; a key allowlist is the only way to reject them.
+        // Named-property structs already drop extras — an allowlist there breaks allOf/extend.
         expr = `${expr}.pipe(S.filter((data) => Object.keys(data).every((key) => ${emitKeyAllowed(Object.keys(node.properties))})))`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);

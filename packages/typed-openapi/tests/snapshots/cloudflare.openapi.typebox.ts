@@ -26,7 +26,7 @@ const __schemas = Type.Module({
   aaa_alert_type: Type.Union([Type.Literal("abuse_report_alert"), Type.Literal("access_custom_certificate_expiration_type"), Type.Literal("advanced_ddos_attack_l4_alert"), Type.Literal("advanced_ddos_attack_l7_alert"), Type.Literal("advanced_http_alert_error"), Type.Literal("bgp_hijack_notification"), Type.Literal("billing_usage_alert"), Type.Literal("block_notification_block_removed"), Type.Literal("block_notification_new_block"), Type.Literal("block_notification_review_rejected"), Type.Literal("bot_traffic_basic_alert"), Type.Literal("brand_protection_alert"), Type.Literal("brand_protection_digest"), Type.Literal("clickhouse_alert_fw_anomaly"), Type.Literal("clickhouse_alert_fw_ent_anomaly"), Type.Literal("cloudforce_one_request_notification"), Type.Literal("cni_maintenance_notification"), Type.Literal("custom_analytics"), Type.Literal("custom_bot_detection_alert"), Type.Literal("custom_ssl_certificate_event_type"), Type.Literal("dedicated_ssl_certificate_event_type"), Type.Literal("device_connectivity_anomaly_alert"), Type.Literal("dos_attack_l4"), Type.Literal("dos_attack_l7"), Type.Literal("expiring_service_token_alert"), Type.Literal("failing_logpush_job_disabled_alert"), Type.Literal("fbm_auto_advertisement"), Type.Literal("fbm_dosd_attack"), Type.Literal("fbm_volumetric_attack"), Type.Literal("health_check_status_notification"), Type.Literal("hostname_aop_custom_certificate_expiration_type"), Type.Literal("http_alert_edge_error"), Type.Literal("http_alert_origin_error"), Type.Literal("image_notification"), Type.Literal("image_resizing_notification"), Type.Literal("incident_alert"), Type.Literal("load_balancing_health_alert"), Type.Literal("load_balancing_pool_enablement_alert"), Type.Literal("logo_match_alert"), Type.Literal("magic_tunnel_health_check_event"), Type.Literal("magic_wan_tunnel_health"), Type.Literal("maintenance_event_notification"), Type.Literal("mtls_certificate_store_certificate_expiration_type"), Type.Literal("pages_event_alert"), Type.Literal("radar_notification"), Type.Literal("real_origin_monitoring"), Type.Literal("scriptmonitor_alert_new_code_change_detections"), Type.Literal("scriptmonitor_alert_new_hosts"), Type.Literal("scriptmonitor_alert_new_malicious_hosts"), Type.Literal("scriptmonitor_alert_new_malicious_scripts"), Type.Literal("scriptmonitor_alert_new_malicious_url"), Type.Literal("scriptmonitor_alert_new_max_length_resource_url"), Type.Literal("scriptmonitor_alert_new_resources"), Type.Literal("secondary_dns_all_primaries_failing"), Type.Literal("secondary_dns_primaries_failing"), Type.Literal("secondary_dns_warning"), Type.Literal("secondary_dns_zone_successfully_updated"), Type.Literal("secondary_dns_zone_validation_warning"), Type.Literal("security_insights_alert"), Type.Literal("sentinel_alert"), Type.Literal("stream_live_notifications"), Type.Literal("synthetic_test_latency_alert"), Type.Literal("synthetic_test_low_availability_alert"), Type.Literal("traffic_anomalies_alert"), Type.Literal("tunnel_health_event"), Type.Literal("tunnel_update_event"), Type.Literal("universal_ssl_event_type"), Type.Literal("web_analytics_metrics_update"), Type.Literal("zone_aop_custom_certificate_expiration_type")]),
   aaa_messages_3: Type.Array(Type.Object({ code: Type.Optional(Type.Integer({ minimum: 1000 })), message: Type.String() }, { additionalProperties: false })),
   aaa_api_response_common_2: Type.Object({ errors: Type.Ref("aaa_messages_3"), messages: Type.Ref("aaa_messages_3"), success: Type.Literal(true) }, { additionalProperties: false }),
-  aaa_alerts_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Array(Type.Ref("aaa_alert_types"))) }, { additionalProperties: false }))]),
+  aaa_alerts_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Array(Type.Ref("aaa_alert_types"))) }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_result_info_2: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() }, { additionalProperties: false })),
   aaa_api_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result_info: Type.Ref("aaa_result_info_2") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   aaa_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
@@ -44,18 +44,18 @@ const __schemas = Type.Module({
   aaa_result_info: Type.Partial(Type.Object({ count: Type.String(), cursor: Type.String() }, { additionalProperties: false })),
   aaa_audit_logs_response_collection: Type.Partial(Type.Object({ errors: Type.Ref("aaa_messages_2"), result_info: Type.Ref("aaa_result_info"), success: Type.Literal(true) }, { additionalProperties: false })),
   aaa_identifier_2: Type.String({ maxLength: 32 }),
-  aaa_audit_logs_v2: Type.Partial(Type.Object({ account: Type.Partial(Type.Object({ id: Type.String(), name: Type.String() }, { additionalProperties: false })), action: Type.Ref("aaa_audit_log_action"), actor: Type.Intersect([Type.Ref("aaa_audit_log_actor_base"), Type.Partial(Type.Object({ type: Type.Union([Type.Literal("account"), Type.Literal("cloudflare_admin"), Type.Literal("system"), Type.Literal("user")]) }, { additionalProperties: false }))]), id: Type.Ref("aaa_identifier_2"), raw: Type.Ref("aaa_audit_log_raw"), resource: Type.Partial(Type.Object({ id: Type.String(), product: Type.String(), request: Type.Record(Type.String(), Type.Unknown()), response: Type.Record(Type.String(), Type.Unknown()), scope: Type.Record(Type.String(), Type.Unknown()), type: Type.String() }, { additionalProperties: false })), zone: Type.Partial(Type.Object({ id: Type.String(), name: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })),
+  aaa_audit_logs_v2: Type.Partial(Type.Object({ account: Type.Partial(Type.Object({ id: Type.String(), name: Type.String() }, { additionalProperties: false })), action: Type.Ref("aaa_audit_log_action"), actor: Type.Composite([Type.Ref("aaa_audit_log_actor_base"), Type.Partial(Type.Object({ type: Type.Union([Type.Literal("account"), Type.Literal("cloudflare_admin"), Type.Literal("system"), Type.Literal("user")]) }, { additionalProperties: false }))], { additionalProperties: false }), id: Type.Ref("aaa_identifier_2"), raw: Type.Ref("aaa_audit_log_raw"), resource: Type.Partial(Type.Object({ id: Type.String(), product: Type.String(), request: Type.Record(Type.String(), Type.Unknown()), response: Type.Record(Type.String(), Type.Unknown()), scope: Type.Record(Type.String(), Type.Unknown()), type: Type.String() }, { additionalProperties: false })), zone: Type.Partial(Type.Object({ id: Type.String(), name: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })),
   aaa_history_status: Type.Union([Type.Literal("exact"), Type.Literal("approximate"), Type.Literal("unavailable")]),
   aaa_audit_logs_v2_history_result_info: Type.Object({ count: Type.Integer(), cursor: Type.Optional(Type.String()), history_status: Type.Ref("aaa_history_status") }, { additionalProperties: false }),
   aaa_audit_logs_v2_history_not_found: Type.Object({ errors: Type.Ref("aaa_messages_2"), result: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), result_info: Type.Ref("aaa_audit_logs_v2_history_result_info"), success: Type.Literal(false) }, { additionalProperties: false }),
   aaa_audit_logs_v2_history_response_collection: Type.Object({ errors: Type.Ref("aaa_messages_2"), result: Type.Array(Type.Ref("aaa_audit_logs_v2")), result_info: Type.Ref("aaa_audit_logs_v2_history_result_info"), success: Type.Literal(true) }, { additionalProperties: false }),
-  aaa_audit_logs_v2_org: Type.Partial(Type.Object({ action: Type.Ref("aaa_audit_log_action"), actor: Type.Intersect([Type.Ref("aaa_audit_log_actor_base"), Type.Partial(Type.Object({ type: Type.Union([Type.Literal("cloudflare_admin"), Type.Literal("system"), Type.Literal("user")]) }, { additionalProperties: false }))]), id: Type.Ref("aaa_identifier_2"), organization: Type.Partial(Type.Object({ id: Type.String() }, { additionalProperties: false })), raw: Type.Ref("aaa_audit_log_raw"), resource: Type.Partial(Type.Object({ id: Type.String(), product: Type.String(), request: Type.Record(Type.String(), Type.Unknown()), response: Type.Record(Type.String(), Type.Unknown()), scope: Type.Record(Type.String(), Type.Unknown()), type: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })),
+  aaa_audit_logs_v2_org: Type.Partial(Type.Object({ action: Type.Ref("aaa_audit_log_action"), actor: Type.Composite([Type.Ref("aaa_audit_log_actor_base"), Type.Partial(Type.Object({ type: Type.Union([Type.Literal("cloudflare_admin"), Type.Literal("system"), Type.Literal("user")]) }, { additionalProperties: false }))], { additionalProperties: false }), id: Type.Ref("aaa_identifier_2"), organization: Type.Partial(Type.Object({ id: Type.String() }, { additionalProperties: false })), raw: Type.Ref("aaa_audit_log_raw"), resource: Type.Partial(Type.Object({ id: Type.String(), product: Type.String(), request: Type.Record(Type.String(), Type.Unknown()), response: Type.Record(Type.String(), Type.Unknown()), scope: Type.Record(Type.String(), Type.Unknown()), type: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })),
   aaa_audit_logs_v2_org_history_response_collection: Type.Object({ errors: Type.Ref("aaa_messages_2"), result: Type.Array(Type.Ref("aaa_audit_logs_v2_org")), result_info: Type.Ref("aaa_audit_logs_v2_history_result_info"), success: Type.Literal(true) }, { additionalProperties: false }),
-  aaa_audit_logs_v2_org_response_collection: Type.Intersect([Type.Ref("aaa_audit_logs_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_audit_logs_v2_org")) }, { additionalProperties: false }))]),
+  aaa_audit_logs_v2_org_response_collection: Type.Composite([Type.Ref("aaa_audit_logs_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_audit_logs_v2_org")) }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_audit_logs_v2_product_category_item: Type.Partial(Type.Object({ label: Type.String(), value: Type.String() }, { additionalProperties: false })),
   aaa_audit_logs_v2_product_category: Type.Partial(Type.Object({ label: Type.String(), products: Type.Array(Type.Ref("aaa_audit_logs_v2_product_category_item")), value: Type.String() }, { additionalProperties: false })),
   aaa_audit_logs_v2_product_categories_response_collection: Type.Partial(Type.Object({ errors: Type.Ref("aaa_messages_2"), result: Type.Array(Type.Ref("aaa_audit_logs_v2_product_category")), success: Type.Literal(true) }, { additionalProperties: false })),
-  aaa_audit_logs_v2_response_collection: Type.Intersect([Type.Ref("aaa_audit_logs_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_audit_logs_v2")) }, { additionalProperties: false }))]),
+  aaa_audit_logs_v2_response_collection: Type.Composite([Type.Ref("aaa_audit_logs_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_audit_logs_v2")) }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_audit_logs_response_collection_schemas: __typedOpenapiOneOf([Type.Partial(Type.Object({ errors: Type.Ref("aaa_messages"), messages: Type.Ref("aaa_messages"), result: Type.Array(Type.Ref("aaa_audit_logs")), success: Type.Boolean() }, { additionalProperties: false })), Type.Ref("aaa_api_response_common")]),
   aaa_before: Type.String({ format: "date-time" }),
   aaa_components_schemas_description: Type.String(),
@@ -63,7 +63,7 @@ const __schemas = Type.Module({
   aaa_uuid: Type.String({ maxLength: 32 }),
   aaa_name: Type.String(),
   aaa_pagerduty: Type.Partial(Type.Object({ id: Type.Ref("aaa_uuid"), name: Type.Ref("aaa_name") }, { additionalProperties: false })),
-  aaa_components_schemas_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_pagerduty")) }, { additionalProperties: false }))]),
+  aaa_components_schemas_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_pagerduty")) }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_components_schemas_type: Type.Union([Type.Literal("datadog"), Type.Literal("discord"), Type.Literal("feishu"), Type.Literal("gchat"), Type.Literal("generic"), Type.Literal("opsgenie"), Type.Literal("slack"), Type.Literal("splunk")]),
   aaa_created_at: Type.String({ format: "date-time" }),
   aaa_eligible: Type.Boolean(),
@@ -89,8 +89,8 @@ const __schemas = Type.Module({
   aaa_timestamp: Type.String({ format: "date-time" }),
   aaa_schemas_description: Type.String(),
   aaa_policies: Type.Partial(Type.Object({ alert_interval: Type.Ref("aaa_alert_interval"), alert_type: Type.Ref("aaa_alert_type"), created: Type.Ref("aaa_timestamp"), description: Type.Ref("aaa_schemas_description"), enabled: Type.Ref("aaa_enabled"), filters: Type.Ref("aaa_filters"), id: Type.Ref("aaa_policy_id"), mechanisms: Type.Ref("aaa_mechanisms"), modified: Type.Ref("aaa_timestamp"), name: Type.Ref("aaa_schemas_name") }, { additionalProperties: false })),
-  aaa_policies_components_schemas_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_policies")) }, { additionalProperties: false }))]),
-  aaa_schemas_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Array(Type.Ref("aaa_eligibility"))) }, { additionalProperties: false }))]),
+  aaa_policies_components_schemas_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_policies")) }, { additionalProperties: false }))], { additionalProperties: false }),
+  aaa_schemas_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Array(Type.Ref("aaa_eligibility"))) }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_webhook_id: Type.String({ maxLength: 32 }),
   aaa_secret: Type.String(),
   aaa_url: Type.String(),
@@ -100,16 +100,16 @@ const __schemas = Type.Module({
   aaa_sensitive_id_response: Type.Intersect([Type.Ref("aaa_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.Ref("aaa_token") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   aaa_silence_id: Type.String({ maxLength: 32 }),
   aaa_silence: Type.Partial(Type.Object({ created_at: Type.String(), end_time: Type.String(), id: Type.Ref("aaa_silence_id"), policy_id: Type.Ref("aaa_policy_id"), start_time: Type.String(), updated_at: Type.String() }, { additionalProperties: false })),
-  aaa_silence_components_schemas_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Ref("aaa_silence") }, { additionalProperties: false }))]),
+  aaa_silence_components_schemas_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Ref("aaa_silence") }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_silence_create_request: Type.Partial(Type.Object({ end_time: Type.String(), policy_id: Type.Ref("aaa_policy_id"), start_time: Type.String() }, { additionalProperties: false })),
   aaa_silence_update_request: Type.Partial(Type.Object({ end_time: Type.String(), id: Type.Ref("aaa_silence_id"), start_time: Type.String() }, { additionalProperties: false })),
-  aaa_silences_components_schemas_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_silence")) }, { additionalProperties: false }))]),
+  aaa_silences_components_schemas_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_silence")) }, { additionalProperties: false }))], { additionalProperties: false }),
   aaa_single_response: Type.Intersect([Type.Ref("aaa_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("aaa_policies") }, { additionalProperties: false }))]),
   aaa_unsubscribe_email: Type.Partial(Type.Object({ account_id: Type.Ref("aaa_account_id"), email: Type.String({ format: "email" }), id: Type.Ref("aaa_policy_id"), name: Type.Ref("aaa_schemas_name"), token: Type.String() }, { additionalProperties: false })),
   aaa_unsubscribe_email_post: Type.Partial(Type.Object({ account_id: Type.Ref("aaa_account_id"), email: Type.String({ format: "email" }), id: Type.Ref("aaa_policy_id") }, { additionalProperties: false })),
   aaa_unsubscribe_email_post_single_response: Type.Intersect([Type.Ref("aaa_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("aaa_unsubscribe_email_post") }, { additionalProperties: false }))]),
   aaa_unsubscribe_email_single_response: Type.Intersect([Type.Ref("aaa_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("aaa_unsubscribe_email") }, { additionalProperties: false }))]),
-  aaa_webhooks_components_schemas_response_collection: Type.Intersect([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_webhooks")) }, { additionalProperties: false }))]),
+  aaa_webhooks_components_schemas_response_collection: Type.Composite([Type.Ref("aaa_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("aaa_webhooks")) }, { additionalProperties: false }))], { additionalProperties: false }),
   abuse_reports_MitigationSummary: Type.Object({ accepted_url_count: Type.Integer(), active_count: Type.Integer(), external_host_notified: Type.Boolean(), in_review_count: Type.Integer(), pending_count: Type.Integer() }, { additionalProperties: false }),
   abuse_reports_ReportStatus: Type.Union([Type.Literal("accepted"), Type.Literal("in_review")]),
   abuse_reports_SubmitterDetails: Type.Partial(Type.Object({ company: Type.String(), email: Type.String(), name: Type.String(), telephone: Type.String() }, { additionalProperties: false })),
@@ -247,12 +247,12 @@ const __schemas = Type.Module({
   access_title: Type.String(),
   access_landing_page_design: Type.Partial(Type.Object({ button_color: Type.Ref("access_button_color"), button_text_color: Type.Ref("access_button_text_color"), image_url: Type.Ref("access_image_url"), message: Type.Ref("access_message"), title: Type.Ref("access_title") }, { additionalProperties: false })),
   access_skip_app_launcher_login_page: Type.Boolean(),
-  access_app_launcher_props: Type.Intersect([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ app_launcher_logo_url: Type.Ref("access_app_launcher_logo_url"), bg_color: Type.Ref("access_bg_color"), domain: Type.Unknown(), footer_links: Type.Ref("access_footer_links"), header_bg_color: Type.Ref("access_header_bg_color"), landing_page_design: Type.Ref("access_landing_page_design"), name: Type.Unknown(), skip_app_launcher_login_page: Type.Ref("access_skip_app_launcher_login_page"), type: Type.Ref("access_type") }, { additionalProperties: false }))]),
+  access_app_launcher_props: Type.Composite([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ app_launcher_logo_url: Type.Ref("access_app_launcher_logo_url"), bg_color: Type.Ref("access_bg_color"), domain: Type.Unknown(), footer_links: Type.Ref("access_footer_links"), header_bg_color: Type.Ref("access_header_bg_color"), landing_page_design: Type.Ref("access_landing_page_design"), name: Type.Unknown(), skip_app_launcher_login_page: Type.Ref("access_skip_app_launcher_login_page"), type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_domain_3: Type.String(),
   access_session_duration_4: Type.String(),
   access_type_3: Type.Union([Type.Literal("self_hosted"), Type.Literal("saas"), Type.Literal("ssh"), Type.Literal("vnc"), Type.Literal("app_launcher"), Type.Literal("warp"), Type.Literal("biso"), Type.Literal("bookmark"), Type.Literal("dash_sso")]),
   access_feature_app_props_2: Type.Object({ allowed_idps: Type.Optional(Type.Ref("access_allowed_idps")), auto_redirect_to_identity: Type.Optional(Type.Ref("access_auto_redirect_to_identity_2")), domain: Type.Optional(Type.Ref("access_domain_3")), name: Type.Optional(Type.Ref("access_name_8")), session_duration: Type.Optional(Type.Ref("access_session_duration_4")), type: Type.Ref("access_type_3") }, { additionalProperties: false }),
-  access_app_launcher_props_2: Type.Intersect([Type.Ref("access_feature_app_props_2"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.String() }, { additionalProperties: false }))]),
+  access_app_launcher_props_2: Type.Composite([Type.Ref("access_feature_app_props_2"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }),
   access_app_launcher_visible: Type.Boolean(),
   access_app_launcher_visible_2: Type.Boolean(),
   access_uuid_2: Type.String({ maxLength: 36 }),
@@ -299,10 +299,10 @@ const __schemas = Type.Module({
   access_purpose_justification_prompt: Type.String(),
   access_purpose_justification_required: Type.Boolean(),
   access_session_duration_3: Type.String(),
-  access_policy_req: Type.Intersect([Type.Ref("access_base_policy_req"), Type.Partial(Type.Object({ approval_groups: Type.Ref("access_approval_groups"), approval_required: Type.Ref("access_approval_required"), connection_rules: Type.Ref("access_connection_rules"), isolation_required: Type.Ref("access_isolation_required"), mfa_config: Type.Ref("access_mfa_config"), purpose_justification_prompt: Type.Ref("access_purpose_justification_prompt"), purpose_justification_required: Type.Ref("access_purpose_justification_required"), session_duration: Type.Ref("access_session_duration_3") }, { additionalProperties: false }))]),
+  access_policy_req: Type.Composite([Type.Ref("access_base_policy_req"), Type.Partial(Type.Object({ approval_groups: Type.Ref("access_approval_groups"), approval_required: Type.Ref("access_approval_required"), connection_rules: Type.Ref("access_connection_rules"), isolation_required: Type.Ref("access_isolation_required"), mfa_config: Type.Ref("access_mfa_config"), purpose_justification_prompt: Type.Ref("access_purpose_justification_prompt"), purpose_justification_required: Type.Ref("access_purpose_justification_required"), session_duration: Type.Ref("access_session_duration_3") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_app_policy_request: Type.Intersect([Type.Partial(Type.Object({ precedence: Type.Ref("access_precedence") }, { additionalProperties: false })), Type.Ref("access_policy_req"), Type.Record(Type.String(), Type.Unknown())]),
   access_base_policy_resp: Type.Partial(Type.Object({ created_at: Type.Ref("access_timestamp"), decision: Type.Ref("access_decision"), exclude: Type.Ref("access_exclude_2"), id: Type.Ref("access_uuid_2"), include: Type.Ref("access_include_2"), name: Type.Ref("access_name_9"), require: Type.Ref("access_require_2"), updated_at: Type.Ref("access_timestamp") }, { additionalProperties: false })),
-  access_policy_resp: Type.Intersect([Type.Ref("access_base_policy_resp"), Type.Partial(Type.Object({ approval_groups: Type.Ref("access_approval_groups"), approval_required: Type.Ref("access_approval_required"), connection_rules: Type.Ref("access_connection_rules"), isolation_required: Type.Ref("access_isolation_required"), mfa_config: Type.Ref("access_mfa_config"), purpose_justification_prompt: Type.Ref("access_purpose_justification_prompt"), purpose_justification_required: Type.Ref("access_purpose_justification_required"), session_duration: Type.Ref("access_session_duration_3") }, { additionalProperties: false }))]),
+  access_policy_resp: Type.Composite([Type.Ref("access_base_policy_resp"), Type.Partial(Type.Object({ approval_groups: Type.Ref("access_approval_groups"), approval_required: Type.Ref("access_approval_required"), connection_rules: Type.Ref("access_connection_rules"), isolation_required: Type.Ref("access_isolation_required"), mfa_config: Type.Ref("access_mfa_config"), purpose_justification_prompt: Type.Ref("access_purpose_justification_prompt"), purpose_justification_required: Type.Ref("access_purpose_justification_required"), session_duration: Type.Ref("access_session_duration_3") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_app_policy_response: Type.Intersect([Type.Ref("access_policy_resp"), Type.Partial(Type.Object({ precedence: Type.Ref("access_precedence") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_app_req_embedded_policies: Type.Partial(Type.Object({ policies: Type.Array(__typedOpenapiOneOf([Type.Ref("access_app_policy_link"), Type.Ref("access_uuid_2"), Type.Intersect([Type.Record(Type.String(), Type.Unknown()), Type.Partial(Type.Object({ id: Type.Ref("access_uuid_2") }, { additionalProperties: false })), Type.Ref("access_app_policy_request")])])) }, { additionalProperties: false })),
   access_scim_config_authentication_http_basic: Type.Object({ password: Type.String(), scheme: Type.Literal("httpbasic"), user: Type.String() }, { additionalProperties: false }),
@@ -338,36 +338,36 @@ const __schemas = Type.Module({
   access_saml_saas_app: Type.Partial(Type.Object({ auth_type: Type.Union([Type.Literal("saml"), Type.Literal("oidc")]), consumer_service_url: Type.String(), created_at: Type.Ref("access_created_at"), custom_attributes: Type.Array(Type.Partial(Type.Object({ friendly_name: Type.String(), name: Type.String(), name_format: Type.Union([Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"), Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:basic"), Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:uri")]), required: Type.Boolean(), source: Type.Partial(Type.Object({ name: Type.String(), name_by_idp: Type.Array(Type.Partial(Type.Object({ idp_id: Type.String(), source_name: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })) }, { additionalProperties: false }))), default_relay_state: Type.String(), idp_entity_id: Type.String(), name_id_format: Type.Union([Type.Literal("id"), Type.Literal("email")]), name_id_transform_jsonata: Type.String(), public_key: Type.String(), saml_attribute_transform_jsonata: Type.String(), sp_entity_id: Type.String(), sso_endpoint: Type.String(), updated_at: Type.Ref("access_updated_at") }, { additionalProperties: false })),
   access_oidc_saas_app: Type.Partial(Type.Object({ access_token_lifetime: Type.String(), allow_pkce_without_client_secret: Type.Boolean(), app_launcher_url: Type.String(), auth_type: Type.Union([Type.Literal("saml"), Type.Literal("oidc")]), client_id: Type.String(), client_secret: Type.String(), created_at: Type.Ref("access_created_at"), custom_claims: Type.Array(Type.Partial(Type.Object({ name: Type.String(), required: Type.Boolean(), scope: Type.Union([Type.Literal("groups"), Type.Literal("profile"), Type.Literal("email"), Type.Literal("openid")]), source: Type.Partial(Type.Object({ name: Type.String(), name_by_idp: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })) }, { additionalProperties: false }))), grant_types: Type.Array(Type.Union([Type.Literal("authorization_code"), Type.Literal("authorization_code_with_pkce"), Type.Literal("refresh_tokens"), Type.Literal("hybrid"), Type.Literal("implicit")])), group_filter_regex: Type.String(), hybrid_and_implicit_options: Type.Partial(Type.Object({ return_access_token_from_authorization_endpoint: Type.Boolean(), return_id_token_from_authorization_endpoint: Type.Boolean() }, { additionalProperties: false })), public_key: Type.String(), redirect_uris: Type.Array(Type.String()), refresh_token_options: Type.Partial(Type.Object({ lifetime: Type.String() }, { additionalProperties: false })), scopes: Type.Array(Type.Union([Type.Literal("openid"), Type.Literal("groups"), Type.Literal("email"), Type.Literal("profile")])), updated_at: Type.Ref("access_updated_at") }, { additionalProperties: false })),
   access_saas_props: Type.Partial(Type.Object({ allowed_idps: Type.Ref("access_allowed_idps"), app_launcher_visible: Type.Ref("access_app_launcher_visible"), auto_redirect_to_identity: Type.Ref("access_auto_redirect_to_identity_2"), custom_pages: Type.Ref("access_custom_pages_2"), logo_url: Type.Ref("access_logo_url"), name: Type.Ref("access_name_8"), saas_app: __typedOpenapiOneOf([Type.Ref("access_saml_saas_app"), Type.Ref("access_oidc_saas_app")]), scim_config: Type.Ref("access_scim_config"), tags: Type.Ref("access_tags"), type: Type.Ref("access_type") }, { additionalProperties: false })),
-  access_ssh_props: Type.Intersect([Type.Ref("access_self_hosted_props"), Type.Partial(Type.Object({ type: Type.Ref("access_type") }, { additionalProperties: false }))]),
-  access_vnc_props: Type.Intersect([Type.Ref("access_self_hosted_props"), Type.Partial(Type.Object({ type: Type.Ref("access_type") }, { additionalProperties: false }))]),
-  access_warp_props: Type.Intersect([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Ref("access_type") }, { additionalProperties: false }))]),
-  access_biso_props: Type.Intersect([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Ref("access_type") }, { additionalProperties: false }))]),
-  access_proxy_endpoint_props: Type.Intersect([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Ref("access_type") }, { additionalProperties: false }))]),
+  access_ssh_props: Type.Composite([Type.Ref("access_self_hosted_props"), Type.Partial(Type.Object({ type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_vnc_props: Type.Composite([Type.Ref("access_self_hosted_props"), Type.Partial(Type.Object({ type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_warp_props: Type.Composite([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_biso_props: Type.Composite([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_proxy_endpoint_props: Type.Composite([Type.Ref("access_feature_app_props"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_bookmark_props: Type.Partial(Type.Object({ app_launcher_visible: Type.Ref("access_app_launcher_visible"), domain: Type.String(), logo_url: Type.Ref("access_logo_url"), name: Type.Ref("access_name_8"), tags: Type.Ref("access_tags"), type: Type.Ref("access_type") }, { additionalProperties: false })),
   access_port: Type.Integer(),
   access_target_attributes: Type.Record(Type.String(), Type.Array(Type.String())),
   access_target_criteria_base: Type.Object({ port: Type.Ref("access_port"), target_attributes: Type.Ref("access_target_attributes") }, { additionalProperties: false }),
   access_protocol_infra_app: Type.Literal("SSH"),
-  access_target_criteria_infra_app: Type.Intersect([Type.Ref("access_target_criteria_base"), Type.Partial(Type.Object({ protocol: Type.Ref("access_protocol_infra_app") }, { additionalProperties: false }))]),
+  access_target_criteria_infra_app: Type.Composite([Type.Ref("access_target_criteria_base"), Type.Partial(Type.Object({ protocol: Type.Ref("access_protocol_infra_app") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_app_resp_embedded_target_criteria_infra: Type.Partial(Type.Object({ target_criteria: Type.Array(Type.Ref("access_target_criteria_infra_app")) }, { additionalProperties: false })),
   access_infra_props: Type.Intersect([Type.Partial(Type.Object({ name: Type.Ref("access_name_8"), type: Type.Ref("access_type") }, { additionalProperties: false })), Type.Ref("access_app_resp_embedded_target_criteria_infra"), Type.Record(Type.String(), Type.Unknown())]),
   access_usernames: Type.Array(Type.String()),
   access_connection_rules_ssh: Type.Object({ allow_email_alias: Type.Optional(Type.Ref("access_allow_email_alias")), usernames: Type.Ref("access_usernames") }, { additionalProperties: false }),
   access_connection_rules_infra: Type.Partial(Type.Object({ ssh: Type.Ref("access_connection_rules_ssh") }, { additionalProperties: false })),
   access_infra_mfa_config: Type.Partial(Type.Object({ allowed_authenticators: Type.Array(Type.Literal("piv_key")), mfa_disabled: Type.Boolean(), session_duration: Type.String() }, { additionalProperties: false })),
-  access_infra_policy_req: Type.Intersect([Type.Ref("access_base_policy_req"), Type.Partial(Type.Object({ connection_rules: Type.Ref("access_connection_rules_infra"), mfa_config: Type.Ref("access_infra_mfa_config") }, { additionalProperties: false }))]),
+  access_infra_policy_req: Type.Composite([Type.Ref("access_base_policy_req"), Type.Partial(Type.Object({ connection_rules: Type.Ref("access_connection_rules_infra"), mfa_config: Type.Ref("access_infra_mfa_config") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_infra_app_req_embedded_policies: Type.Partial(Type.Object({ policies: Type.Array(Type.Ref("access_infra_policy_req")) }, { additionalProperties: false })),
   access_protocol_self_hosted_app: Type.Literal("RDP"),
-  access_target_criteria_self_hosted_app: Type.Intersect([Type.Ref("access_target_criteria_base"), Type.Partial(Type.Object({ protocol: Type.Ref("access_protocol_self_hosted_app") }, { additionalProperties: false }))]),
+  access_target_criteria_self_hosted_app: Type.Composite([Type.Ref("access_target_criteria_base"), Type.Partial(Type.Object({ protocol: Type.Ref("access_protocol_self_hosted_app") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_app_resp_embedded_target_criteria_self_hosted: Type.Partial(Type.Object({ target_criteria: Type.Array(Type.Ref("access_target_criteria_self_hosted_app")) }, { additionalProperties: false })),
-  access_rdp_props: Type.Intersect([Type.Ref("access_app_resp_embedded_target_criteria_self_hosted"), Type.Ref("access_self_hosted_props"), Type.Partial(Type.Object({ type: Type.Ref("access_type") }, { additionalProperties: false }))]),
+  access_rdp_props: Type.Composite([Type.Ref("access_app_resp_embedded_target_criteria_self_hosted"), Type.Ref("access_self_hosted_props"), Type.Partial(Type.Object({ type: Type.Ref("access_type") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_mcp_props: Type.Object({ allow_authenticate_via_warp: Type.Optional(Type.Ref("access_allow_authenticate_via_warp_2")), allowed_idps: Type.Optional(Type.Ref("access_allowed_idps")), auto_redirect_to_identity: Type.Optional(Type.Ref("access_auto_redirect_to_identity_2")), custom_deny_message: Type.Optional(Type.Ref("access_custom_deny_message")), custom_deny_url: Type.Optional(Type.Ref("access_custom_deny_url")), custom_non_identity_deny_url: Type.Optional(Type.Ref("access_custom_non_identity_deny_url")), custom_pages: Type.Optional(Type.Ref("access_custom_pages_2")), destinations: Type.Optional(Type.Ref("access_destinations")), http_only_cookie_attribute: Type.Optional(Type.Ref("access_http_only_cookie_attribute")), logo_url: Type.Optional(Type.Ref("access_logo_url")), name: Type.Optional(Type.Ref("access_name_8")), oauth_configuration: Type.Optional(Type.Ref("access_oauth_configuration")), options_preflight_bypass: Type.Optional(Type.Ref("access_options_preflight_bypass")), same_site_cookie_attribute: Type.Optional(Type.Ref("access_same_site_cookie_attribute")), scim_config: Type.Optional(Type.Ref("access_scim_config")), session_duration: Type.Optional(Type.Ref("access_session_duration_2")), tags: Type.Optional(Type.Ref("access_tags")), type: Type.Ref("access_type") }, { additionalProperties: false }),
   access_mcp_portal_props: Type.Object({ allow_authenticate_via_warp: Type.Optional(Type.Ref("access_allow_authenticate_via_warp_2")), allowed_idps: Type.Optional(Type.Ref("access_allowed_idps")), auto_redirect_to_identity: Type.Optional(Type.Ref("access_auto_redirect_to_identity_2")), custom_deny_message: Type.Optional(Type.Ref("access_custom_deny_message")), custom_deny_url: Type.Optional(Type.Ref("access_custom_deny_url")), custom_non_identity_deny_url: Type.Optional(Type.Ref("access_custom_non_identity_deny_url")), custom_pages: Type.Optional(Type.Ref("access_custom_pages_2")), destinations: Type.Optional(Type.Ref("access_destinations")), domain: Type.Optional(Type.Ref("access_domain")), http_only_cookie_attribute: Type.Optional(Type.Ref("access_http_only_cookie_attribute")), logo_url: Type.Optional(Type.Ref("access_logo_url")), name: Type.Optional(Type.Ref("access_name_8")), oauth_configuration: Type.Optional(Type.Ref("access_oauth_configuration")), options_preflight_bypass: Type.Optional(Type.Ref("access_options_preflight_bypass")), same_site_cookie_attribute: Type.Optional(Type.Ref("access_same_site_cookie_attribute")), scim_config: Type.Optional(Type.Ref("access_scim_config")), session_duration: Type.Optional(Type.Ref("access_session_duration_2")), tags: Type.Optional(Type.Ref("access_tags")), type: Type.Ref("access_type") }, { additionalProperties: false }),
   access_app_request: Type.Union([Type.Intersect([Type.Ref("access_self_hosted_props"), Type.Ref("access_app_req_embedded_policies"), Type.Ref("access_app_req_embedded_scim_config"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_saas_props"), Type.Ref("access_app_req_embedded_policies"), Type.Ref("access_app_req_embedded_scim_config"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_ssh_props"), Type.Ref("access_app_req_embedded_policies"), Type.Ref("access_app_req_embedded_scim_config"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_vnc_props"), Type.Ref("access_app_req_embedded_policies"), Type.Ref("access_app_req_embedded_scim_config"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_app_launcher_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_warp_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_biso_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_proxy_endpoint_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_bookmark_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_infra_props"), Type.Ref("access_infra_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_rdp_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_mcp_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_mcp_portal_props"), Type.Ref("access_app_req_embedded_policies"), Type.Record(Type.String(), Type.Unknown())])]),
   access_app_resp_embedded_policies: Type.Partial(Type.Object({ policies: Type.Array(Type.Ref("access_app_policy_response")) }, { additionalProperties: false })),
   access_aud_2: Type.String({ maxLength: 64 }),
   access_basic_app_response_props: Type.Partial(Type.Object({ aud: Type.Ref("access_aud_2"), created_at: Type.Ref("access_created_at"), id: Type.Ref("access_uuid"), updated_at: Type.Ref("access_updated_at") }, { additionalProperties: false })),
-  access_infra_policy_resp: Type.Intersect([Type.Ref("access_base_policy_resp"), Type.Partial(Type.Object({ connection_rules: Type.Ref("access_connection_rules_infra"), mfa_config: Type.Ref("access_infra_mfa_config") }, { additionalProperties: false }))]),
+  access_infra_policy_resp: Type.Composite([Type.Ref("access_base_policy_resp"), Type.Partial(Type.Object({ connection_rules: Type.Ref("access_connection_rules_infra"), mfa_config: Type.Ref("access_infra_mfa_config") }, { additionalProperties: false }))], { additionalProperties: false }),
   access_infra_app_resp_embedded_policies: Type.Partial(Type.Object({ policies: Type.Array(Type.Ref("access_infra_policy_resp")) }, { additionalProperties: false })),
   access_app_response: Type.Union([Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_self_hosted_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_saas_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_ssh_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_vnc_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_app_launcher_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_warp_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_biso_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_proxy_endpoint_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_bookmark_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_infra_props"), Type.Ref("access_infra_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_rdp_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_mcp_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props"), Type.Ref("access_mcp_portal_props"), Type.Ref("access_app_resp_embedded_policies"), Type.Record(Type.String(), Type.Unknown())])]),
   access_app_settings_request: Type.Partial(Type.Object({ allow_iframe: Type.Ref("access_allow_iframe"), skip_interstitial: Type.Ref("access_skip_interstitial") }, { additionalProperties: false })),
@@ -387,10 +387,10 @@ const __schemas = Type.Module({
   access_saml_saas_app_2: Type.Partial(Type.Object({ auth_type: Type.Union([Type.Literal("saml"), Type.Literal("oidc")]), consumer_service_url: Type.String(), created_at: Type.Ref("access_timestamp"), custom_attributes: Type.Array(Type.Partial(Type.Object({ friendly_name: Type.String(), name: Type.String(), name_format: Type.Union([Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"), Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:basic"), Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:uri")]), required: Type.Boolean(), source: Type.Partial(Type.Object({ name: Type.String(), name_by_idp: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })) }, { additionalProperties: false }))), idp_entity_id: Type.String(), name_id_format: Type.Union([Type.Literal("id"), Type.Literal("email")]), name_id_transform_jsonata: Type.String(), public_key: Type.String(), sp_entity_id: Type.String(), sso_endpoint: Type.String(), updated_at: Type.Ref("access_timestamp") }, { additionalProperties: false })),
   access_oidc_saas_app_2: Type.Partial(Type.Object({ access_token_lifetime: Type.String(), allow_pkce_without_client_secret: Type.Boolean(), app_launcher_url: Type.String(), auth_type: Type.Union([Type.Literal("saml"), Type.Literal("oidc")]), client_id: Type.String(), client_secret: Type.String(), created_at: Type.Ref("access_timestamp"), custom_claims: Type.Array(Type.Partial(Type.Object({ name: Type.String(), required: Type.Boolean(), scope: Type.Union([Type.Literal("groups"), Type.Literal("profile"), Type.Literal("email"), Type.Literal("openid")]), source: Type.Partial(Type.Object({ name: Type.String(), name_by_idp: Type.Array(Type.Partial(Type.Object({ idp_id: Type.String(), source_name: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })) }, { additionalProperties: false }))), grant_types: Type.Array(Type.Union([Type.Literal("authorization_code"), Type.Literal("authorization_code_with_pkce"), Type.Literal("refresh_tokens"), Type.Literal("hybrid"), Type.Literal("implicit")])), group_filter_regex: Type.String(), hybrid_and_implicit_options: Type.Partial(Type.Object({ return_access_token_from_authorization_endpoint: Type.Boolean(), return_id_token_from_authorization_endpoint: Type.Boolean() }, { additionalProperties: false })), public_key: Type.String(), redirect_uris: Type.Array(Type.String()), refresh_token_options: Type.Partial(Type.Object({ lifetime: Type.String() }, { additionalProperties: false })), scopes: Type.Array(Type.Union([Type.Literal("openid"), Type.Literal("groups"), Type.Literal("email"), Type.Literal("profile")])), updated_at: Type.Ref("access_timestamp") }, { additionalProperties: false })),
   access_saas_props_2: Type.Partial(Type.Object({ allowed_idps: Type.Ref("access_allowed_idps"), app_launcher_visible: Type.Ref("access_app_launcher_visible"), auto_redirect_to_identity: Type.Ref("access_auto_redirect_to_identity_2"), logo_url: Type.Ref("access_logo_url"), name: Type.Ref("access_name_8"), saas_app: __typedOpenapiOneOf([Type.Ref("access_saml_saas_app_2"), Type.Ref("access_oidc_saas_app_2")]), type: Type.String() }, { additionalProperties: false })),
-  access_ssh_props_2: Type.Intersect([Type.Ref("access_self_hosted_props_2"), Type.Partial(Type.Object({ type: Type.String() }, { additionalProperties: false }))]),
-  access_vnc_props_2: Type.Intersect([Type.Ref("access_self_hosted_props_2"), Type.Partial(Type.Object({ type: Type.String() }, { additionalProperties: false }))]),
-  access_warp_props_2: Type.Intersect([Type.Ref("access_feature_app_props_2"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.String() }, { additionalProperties: false }))]),
-  access_biso_props_2: Type.Intersect([Type.Ref("access_feature_app_props_2"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.String() }, { additionalProperties: false }))]),
+  access_ssh_props_2: Type.Composite([Type.Ref("access_self_hosted_props_2"), Type.Partial(Type.Object({ type: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_vnc_props_2: Type.Composite([Type.Ref("access_self_hosted_props_2"), Type.Partial(Type.Object({ type: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_warp_props_2: Type.Composite([Type.Ref("access_feature_app_props_2"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }),
+  access_biso_props_2: Type.Composite([Type.Ref("access_feature_app_props_2"), Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }),
   access_bookmark_props_2: Type.Object({ app_launcher_visible: Type.Optional(Type.Unknown()), domain: Type.Unknown(), logo_url: Type.Optional(Type.Ref("access_logo_url")), name: Type.Optional(Type.Ref("access_name_8")), type: Type.String() }, { additionalProperties: false }),
   access_apps: Type.Union([Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_self_hosted_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_saas_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_ssh_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_vnc_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_app_launcher_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_warp_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_biso_props_2"), Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([Type.Ref("access_basic_app_response_props_2"), Type.Ref("access_bookmark_props_2"), Type.Record(Type.String(), Type.Unknown())])]),
   access_associated_hostnames: Type.Array(Type.String()),
@@ -412,7 +412,7 @@ const __schemas = Type.Module({
   access_azureAD: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ conditional_access_enabled: Type.Boolean(), directory_id: Type.String(), prompt: Type.Union([Type.Literal("login"), Type.Literal("select_account"), Type.Literal("none")]), support_groups: Type.Boolean() }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_identity_provider_2: Type.Object({ config: Type.Record(Type.String(), Type.Unknown()), id: Type.Optional(Type.Ref("access_uuid")), name: Type.Ref("access_name_3"), scim_config: Type.Optional(Type.Partial(Type.Object({ enabled: Type.Boolean(), identity_update_behavior: Type.Union([Type.Literal("automatic"), Type.Literal("reauth"), Type.Literal("no_action")]), scim_base_url: Type.String(), seat_deprovision: Type.Boolean(), secret: Type.String(), user_deprovision: Type.Boolean() }, { additionalProperties: false }))), type: Type.Union([Type.Literal("onetimepin"), Type.Literal("azureAD"), Type.Literal("saml"), Type.Literal("centrify"), Type.Literal("facebook"), Type.Literal("github"), Type.Literal("google-apps"), Type.Literal("google"), Type.Literal("linkedin"), Type.Literal("oidc"), Type.Literal("okta"), Type.Literal("onelogin"), Type.Literal("pingone"), Type.Literal("yandex"), Type.Literal("cloudflare")]) }, { additionalProperties: false }),
   access_generic_oauth_config_2: Type.Partial(Type.Object({ client_id: Type.String(), client_secret: Type.String() }, { additionalProperties: false })),
-  access_azureAD_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ conditional_access_enabled: Type.Boolean(), directory_id: Type.String(), prompt: Type.Union([Type.Literal("login"), Type.Literal("select_account"), Type.Literal("none")]), support_groups: Type.Boolean() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_azureAD_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ conditional_access_enabled: Type.Boolean(), directory_id: Type.String(), prompt: Type.Union([Type.Literal("login"), Type.Literal("select_account"), Type.Literal("none")]), support_groups: Type.Boolean() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_domain_2: Type.String(),
   access_logo_url_2: Type.String(),
   access_name_12: Type.String(),
@@ -422,8 +422,8 @@ const __schemas = Type.Module({
   access_ca: Type.Partial(Type.Object({ aud: Type.Ref("access_aud"), id: Type.Ref("access_id_2"), public_key: Type.Ref("access_public_key") }, { additionalProperties: false })),
   access_id_3: Type.String({ maxLength: 48 }),
   access_ca_2: Type.Partial(Type.Object({ aud: Type.Ref("access_aud_3"), id: Type.Ref("access_id_3"), public_key: Type.Ref("access_public_key") }, { additionalProperties: false })),
-  access_centrify: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ centrify_account: Type.String(), centrify_app_id: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_centrify_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ centrify_account: Type.String(), centrify_app_id: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_centrify: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ centrify_account: Type.String(), centrify_app_id: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_centrify_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ centrify_account: Type.String(), centrify_app_id: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_saml_certificate_2: Type.Object({ is_current: Type.Boolean(), not_after: Type.String({ format: "date-time" }), public_certificate: Type.String(), uid: Type.String() }, { additionalProperties: false }),
   access_saml_certificate_set_2: Type.Object({ created_at: Type.String({ format: "date-time" }), current_certificate: Type.Optional(Type.Ref("access_saml_certificate_2")), previous_certificate: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), uid: Type.String(), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   access_certificate_set_list_response: Type.Intersect([Type.Ref("access_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("access_saml_certificate_set_2")) }, { additionalProperties: false }))]),
@@ -475,10 +475,10 @@ const __schemas = Type.Module({
   access_gateway_seat_2: Type.Boolean(),
   access_github: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_github_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config_2") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_google: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support")]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_google: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support")], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_google_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config_2") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_google_apps: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ apps_domain: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_google_apps_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ apps_domain: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_google_apps: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ apps_domain: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_google_apps_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ apps_domain: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_id: Type.String(),
   access_meta: Type.Partial(Type.Object({ created: Type.String({ format: "date-time" }), lastModified: Type.String({ format: "date-time" }) }, { additionalProperties: false })),
   access_groups: Type.Partial(Type.Object({ displayName: Type.String(), externalId: Type.Ref("access_externalId"), id: Type.Ref("access_id"), meta: Type.Ref("access_meta"), schemas: Type.Array(Type.String()) }, { additionalProperties: false })),
@@ -498,19 +498,19 @@ const __schemas = Type.Module({
   access_identifier_3: Type.String(),
   access_identifier_4: Type.Unknown(),
   access_linkedin: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_oidc: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ auth_url: Type.String(), certs_url: Type.String(), pkce_enabled: Type.Boolean(), scopes: Type.Array(Type.String()), token_url: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_okta: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ authorization_server_id: Type.String(), okta_account: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_onelogin: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ onelogin_account: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_pingone: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ ping_env_id: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_oidc: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ auth_url: Type.String(), certs_url: Type.String(), pkce_enabled: Type.Boolean(), scopes: Type.Array(Type.String()), token_url: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_okta: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ authorization_server_id: Type.String(), okta_account: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_onelogin: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ onelogin_account: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_pingone: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config"), Type.Ref("access_custom_claims_support"), Type.Partial(Type.Object({ ping_env_id: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_saml: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ attributes: Type.Array(Type.String()), email_attribute_name: Type.String(), enable_encryption: Type.Boolean(), header_attributes: Type.Array(Type.Partial(Type.Object({ attribute_name: Type.String(), header_name: Type.String() }, { additionalProperties: false }))), idp_public_certs: Type.Array(Type.String()), issuer_url: Type.String(), sign_request: Type.Boolean(), sso_target_url: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_yandex: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_onetimepin: Type.Intersect([Type.Ref("access_identity_provider"), Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ redirect_url: Type.String() }, { additionalProperties: false })), type: Type.Literal("onetimepin") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_identity_providers: Type.Union([Type.Ref("access_azureAD"), Type.Ref("access_centrify"), Type.Ref("access_facebook"), Type.Ref("access_github"), Type.Ref("access_google"), Type.Ref("access_google_apps"), Type.Ref("access_linkedin"), Type.Ref("access_oidc"), Type.Ref("access_okta"), Type.Ref("access_onelogin"), Type.Ref("access_pingone"), Type.Ref("access_saml"), Type.Ref("access_yandex"), Type.Ref("access_onetimepin"), Type.Ref("access_cloudflare")]),
   access_linkedin_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config_2") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_oidc_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ auth_url: Type.String(), certs_url: Type.String(), claims: Type.Array(Type.String()), scopes: Type.Array(Type.String()), token_url: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_okta_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ okta_account: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_onelogin_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ onelogin_account: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_pingone_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Intersect([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ ping_env_id: Type.String() }, { additionalProperties: false }))]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_oidc_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ auth_url: Type.String(), certs_url: Type.String(), claims: Type.Array(Type.String()), scopes: Type.Array(Type.String()), token_url: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_okta_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ okta_account: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_onelogin_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ onelogin_account: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
+  access_pingone_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Composite([Type.Ref("access_generic_oauth_config_2"), Type.Partial(Type.Object({ ping_env_id: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_saml_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ attributes: Type.Array(Type.String()), email_attribute_name: Type.String(), header_attributes: Type.Array(Type.Partial(Type.Object({ attribute_name: Type.String(), header_name: Type.String() }, { additionalProperties: false }))), idp_public_certs: Type.Array(Type.String()), issuer_url: Type.String(), sign_request: Type.Boolean(), sso_target_url: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_yandex_2: Type.Intersect([Type.Ref("access_identity_provider_2"), Type.Partial(Type.Object({ config: Type.Ref("access_generic_oauth_config_2") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_identity_providers_2: Type.Union([Type.Ref("access_azureAD_2"), Type.Ref("access_centrify_2"), Type.Ref("access_facebook_2"), Type.Ref("access_github_2"), Type.Ref("access_google_2"), Type.Ref("access_google_apps_2"), Type.Ref("access_linkedin_2"), Type.Ref("access_oidc_2"), Type.Ref("access_okta_2"), Type.Ref("access_onelogin_2"), Type.Ref("access_pingone_2"), Type.Ref("access_saml_2"), Type.Ref("access_yandex_2"), Type.Ref("access_cloudflare_2")]),
@@ -586,7 +586,7 @@ const __schemas = Type.Module({
   access_resource_user_email: Type.Array(Type.String({ format: "email" })),
   access_response_collection: Type.Intersect([Type.Ref("access_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Union([Type.Ref("access_azureAD"), Type.Ref("access_centrify"), Type.Ref("access_facebook"), Type.Ref("access_github"), Type.Ref("access_google"), Type.Ref("access_google_apps"), Type.Ref("access_linkedin"), Type.Ref("access_oidc"), Type.Ref("access_okta"), Type.Ref("access_onelogin"), Type.Ref("access_pingone"), Type.Ref("access_saml"), Type.Ref("access_yandex"), Type.Ref("access_onetimepin"), Type.Ref("access_cloudflare")])) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   access_response_collection_10: Type.Intersect([Type.Ref("access_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("access_custom_page_without_html")) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  access_response_collection_11: Type.Intersect([Type.Ref("access_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("access_access_requests")) }, { additionalProperties: false }))]),
+  access_response_collection_11: Type.Composite([Type.Ref("access_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("access_access_requests")) }, { additionalProperties: false }))], { additionalProperties: false }),
   access_response_collection_12: Type.Intersect([Type.Ref("access_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("access_jit_request_log")) }, { additionalProperties: false }))]),
   access_seat_uid: Type.String({ maxLength: 36 }),
   access_seats: Type.Partial(Type.Object({ access_seat: Type.Ref("access_access_seat"), created_at: Type.Ref("access_timestamp"), gateway_seat: Type.Ref("access_gateway_seat"), seat_uid: Type.Ref("access_seat_uid"), updated_at: Type.Ref("access_timestamp") }, { additionalProperties: false })),
@@ -714,7 +714,7 @@ const __schemas = Type.Module({
   addressing_filename: Type.String(),
   addressing_ips: Type.Array(Type.Ref("addressing_address_maps_ip")),
   addressing_memberships: Type.Array(Type.Ref("addressing_address_maps_membership")),
-  addressing_full_response: Type.Intersect([Type.Ref("addressing_api_response_single"), Type.Partial(Type.Object({ result: Type.Intersect([Type.Ref("addressing_address_maps"), Type.Partial(Type.Object({ ips: Type.Ref("addressing_ips"), memberships: Type.Ref("addressing_memberships") }, { additionalProperties: false }))]) }, { additionalProperties: false }))]),
+  addressing_full_response: Type.Intersect([Type.Ref("addressing_api_response_single"), Type.Partial(Type.Object({ result: Type.Composite([Type.Ref("addressing_address_maps"), Type.Partial(Type.Object({ ips: Type.Ref("addressing_ips"), memberships: Type.Ref("addressing_memberships") }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false }))]),
   addressing_id_response: Type.Intersect([Type.Ref("addressing_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.Ref("addressing_delegation_identifier") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   addressing_ip_address: Type.String(),
   addressing_schemas_asn: Type.Union([Type.Integer(), Type.Null()]),
@@ -814,10 +814,10 @@ const __schemas = Type.Module({
   alexandria_category_name: Type.String(),
   alexandria_category: Type.Object({ created_at: Type.Ref("alexandria_category_created_at"), description: Type.Ref("alexandria_category_description"), id: Type.Ref("alexandria_category_id"), name: Type.Ref("alexandria_category_name") }, { additionalProperties: false }),
   alexandria_categories: Type.Array(Type.Ref("alexandria_category")),
-  alexandria_get_application_response: Type.Intersect([Type.Ref("alexandria_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_application") }, { additionalProperties: false }))]),
+  alexandria_get_application_response: Type.Composite([Type.Ref("alexandria_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_application") }, { additionalProperties: false }))], { additionalProperties: false }),
   alexandria_get_applications_response: Type.Intersect([Type.Ref("alexandria_api_response_collection"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_applications") }, { additionalProperties: false }))]),
-  alexandria_get_categories_response: Type.Intersect([Type.Ref("alexandria_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_categories") }, { additionalProperties: false }))]),
-  alexandria_get_category_response: Type.Intersect([Type.Ref("alexandria_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_category") }, { additionalProperties: false }))]),
+  alexandria_get_categories_response: Type.Composite([Type.Ref("alexandria_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_categories") }, { additionalProperties: false }))], { additionalProperties: false }),
+  alexandria_get_category_response: Type.Composite([Type.Ref("alexandria_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("alexandria_category") }, { additionalProperties: false }))], { additionalProperties: false }),
   analytics_engine_JsonFormatResponse: Type.Object({ data: Type.Array(Type.Record(Type.String(), Type.Unknown())), meta: Type.Array(Type.Object({ name: Type.String(), type: Type.String() }, { additionalProperties: false })), rows: Type.Integer() }, { additionalProperties: false }),
   api_shield_action: Type.Union([Type.Literal("log"), Type.Literal("block")]),
   api_shield_timestamp: Type.String({ format: "date-time" }),
@@ -854,7 +854,7 @@ const __schemas = Type.Module({
   api_shield_api_response_collection: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   api_shield_api_response_common_failure: Type.Object({ errors: Type.Ref("api_shield_messages"), messages: Type.Ref("api_shield_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   api_shield_api_response_single: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Record(Type.String(), Type.Unknown())]),
-  api_shield_api_response_single_obj: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
+  api_shield_api_response_single_obj: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))], { additionalProperties: false }),
   api_shield_api_discovery_origin: Type.Union([Type.Literal("ML"), Type.Literal("SessionIdentifier"), Type.Literal("LabelDiscovery")]),
   api_shield_api_discovery_state_patch: Type.Union([Type.Literal("review"), Type.Literal("ignored")]),
   api_shield_api_discovery_patch_multiple_request_entry: Type.Partial(Type.Object({ state: Type.Ref("api_shield_api_discovery_state_patch") }, { additionalProperties: false })),
@@ -875,7 +875,7 @@ const __schemas = Type.Module({
   api_shield_bulk_put_labels_on_operation_request: Type.Object({ managed: Type.Object({ labels: Type.Array(Type.Ref("api_shield_label_name")) }, { additionalProperties: false }), selector: Type.Ref("api_shield_operation_id_selector"), user: Type.Object({ labels: Type.Array(Type.Ref("api_shield_label_name")) }, { additionalProperties: false }) }, { additionalProperties: false }),
   api_shield_confidence_intervals_bounds: Type.Partial(Type.Object({ lower: Type.Number(), upper: Type.Number() }, { additionalProperties: false })),
   api_shield_configuration: Type.Object({ auth_id_characteristics: Type.Ref("api_shield_auth_id_characteristics") }, { additionalProperties: false }),
-  api_shield_configuration_single_response: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Ref("api_shield_configuration") }, { additionalProperties: false })]),
+  api_shield_configuration_single_response: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Ref("api_shield_configuration") }, { additionalProperties: false })], { additionalProperties: false }),
   api_shield_rule_properties: Type.Partial(Type.Object({ action: Type.Ref("api_shield_action"), description: Type.Ref("api_shield_description_2"), enabled: Type.Ref("api_shield_enabled"), expression: Type.Ref("api_shield_expression"), selector: Type.Ref("api_shield_selector"), title: Type.Ref("api_shield_title_2") }, { additionalProperties: false })),
   api_shield_create_single_rule_request: Type.Intersect([Type.Record(Type.String(), Type.Unknown()), Type.Ref("api_shield_rule_properties")]),
   api_shield_credentials_JWT_Key_oct_patch_request: Type.Intersect([Type.Ref("api_shield_credentials_JWT_Key_common"), Type.Object({ alg: Type.Union([Type.Literal("HS256"), Type.Literal("HS384"), Type.Literal("HS512")]), k: Type.Optional(Type.String()), kty: Type.Literal("oct") }, { additionalProperties: false }), Type.Record(Type.String(), Type.Unknown())]),
@@ -887,10 +887,10 @@ const __schemas = Type.Module({
   api_shield_data_points: Type.Integer(),
   api_shield_delete_labels_on_operation_request: Type.Partial(Type.Object({ managed: Type.Array(Type.Ref("api_shield_label_name")), user: Type.Array(Type.Ref("api_shield_label_name")) }, { additionalProperties: false })),
   api_shield_traffic_stats: Type.Partial(Type.Object({ traffic_stats: Type.Object({ last_updated: Type.Ref("api_shield_timestamp_2"), period_seconds: Type.Integer(), requests: Type.Number() }, { additionalProperties: false }) }, { additionalProperties: false })),
-  api_shield_discovery_operation: Type.Intersect([Type.Object({ features: Type.Optional(Type.Ref("api_shield_traffic_stats")), id: Type.Ref("api_shield_uuid_2"), last_updated: Type.Ref("api_shield_timestamp_2"), origin: Type.Array(Type.Ref("api_shield_api_discovery_origin")), state: Type.Ref("api_shield_api_discovery_state") }, { additionalProperties: false }), Type.Ref("api_shield_basic_operation")]),
+  api_shield_discovery_operation: Type.Composite([Type.Object({ features: Type.Optional(Type.Ref("api_shield_traffic_stats")), id: Type.Ref("api_shield_uuid_2"), last_updated: Type.Ref("api_shield_timestamp_2"), origin: Type.Array(Type.Ref("api_shield_api_discovery_origin")), state: Type.Ref("api_shield_api_discovery_state") }, { additionalProperties: false }), Type.Ref("api_shield_basic_operation")], { additionalProperties: false }),
   api_shield_index: Type.Object({ index: Type.Integer({ minimum: 1 }) }, { additionalProperties: false }),
   api_shield_position: __typedOpenapiOneOf([Type.Ref("api_shield_index"), Type.Ref("api_shield_before"), Type.Ref("api_shield_after")]),
-  api_shield_edit_single_rule_request: Type.Intersect([Type.Ref("api_shield_rule_properties"), Type.Partial(Type.Object({ position: Type.Ref("api_shield_position") }, { additionalProperties: false }))]),
+  api_shield_edit_single_rule_request: Type.Composite([Type.Ref("api_shield_rule_properties"), Type.Partial(Type.Object({ position: Type.Ref("api_shield_position") }, { additionalProperties: false }))], { additionalProperties: false }),
   api_shield_label_description: Type.String(),
   api_shield_label_metadata: Type.Record(Type.String(), Type.Unknown()),
   api_shield_label_source: Type.Union([Type.Literal("user"), Type.Literal("managed")]),
@@ -903,7 +903,7 @@ const __schemas = Type.Module({
   api_shield_identifier: Type.String({ maxLength: 32 }),
   api_shield_identifier_2: Type.Intersect([Type.Ref("api_shield_identifier"), Type.String()]),
   api_shield_label_request: Type.Object({ description: Type.Optional(Type.Ref("api_shield_label_description")), metadata: Type.Optional(Type.Ref("api_shield_label_metadata")), name: Type.Ref("api_shield_label_name") }, { additionalProperties: false }),
-  api_shield_standard_operation: Type.Intersect([Type.Ref("api_shield_basic_operation"), Type.Object({ last_updated: Type.Ref("api_shield_timestamp_2"), operation_id: Type.Ref("api_shield_uuid_2") }, { additionalProperties: false })]),
+  api_shield_standard_operation: Type.Composite([Type.Ref("api_shield_basic_operation"), Type.Object({ last_updated: Type.Ref("api_shield_timestamp_2"), operation_id: Type.Ref("api_shield_uuid_2") }, { additionalProperties: false })], { additionalProperties: false }),
   api_shield_p50: Type.Integer(),
   api_shield_p90: Type.Integer(),
   api_shield_p99: Type.Integer(),
@@ -918,7 +918,7 @@ const __schemas = Type.Module({
   api_shield_operation_feature_schema_info: Type.Partial(Type.Object({ schema_info: Type.Partial(Type.Object({ active_schema: Type.Partial(Type.Object({ created_at: Type.Ref("api_shield_timestamp"), id: Type.Ref("api_shield_uuid_2"), is_learned: Type.Boolean(), name: Type.String() }, { additionalProperties: false })), learned_available: Type.Boolean(), mitigation_action: Type.Union([Type.Union([Type.Literal("none"), Type.Literal("log"), Type.Literal("block")]), Type.Null()]) }, { additionalProperties: false })) }, { additionalProperties: false })),
   api_shield_operation_features: Type.Union([Type.Ref("api_shield_operation_feature_thresholds"), Type.Ref("api_shield_operation_feature_parameter_schemas"), Type.Ref("api_shield_operation_feature_api_routing"), Type.Ref("api_shield_operation_feature_confidence_intervals"), Type.Ref("api_shield_operation_feature_schema_info")]),
   api_shield_operation: Type.Intersect([Type.Ref("api_shield_standard_operation"), Type.Union([Type.Partial(Type.Object({ features: Type.Ref("api_shield_operation_features") }, { additionalProperties: false })), Type.Null()])]),
-  api_shield_multiple_operation_response: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Array(Type.Ref("api_shield_operation")) }, { additionalProperties: false })]),
+  api_shield_multiple_operation_response: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Array(Type.Ref("api_shield_operation")) }, { additionalProperties: false })], { additionalProperties: false }),
   api_shield_multiple_operation_response_paginated: Type.Intersect([Type.Ref("api_shield_api_response_collection"), Type.Object({ result: Type.Array(Type.Ref("api_shield_operation")) }, { additionalProperties: false })]),
   api_shield_object_with_operation_id: Type.Object({ operation_id: Type.Intersect([Type.String(), Type.Ref("api_shield_uuid_2")]) }, { additionalProperties: false }),
   api_shield_old_kind: Type.Literal("openapi_v3"),
@@ -933,7 +933,7 @@ const __schemas = Type.Module({
   api_shield_old_schema_upload_log_event: Type.Object({ code: Type.Integer(), locations: Type.Optional(Type.Array(Type.String())), message: Type.Optional(Type.String()) }, { additionalProperties: false }),
   api_shield_old_schema_upload_details_errors_critical: Type.Partial(Type.Object({ critical: Type.Array(Type.Ref("api_shield_old_schema_upload_log_event")), errors: Type.Array(Type.Ref("api_shield_old_schema_upload_log_event")) }, { additionalProperties: false })),
   api_shield_old_schema_upload_details_warnings_only: Type.Partial(Type.Object({ warnings: Type.Array(Type.Ref("api_shield_old_schema_upload_log_event")) }, { additionalProperties: false })),
-  api_shield_old_schema_upload_failure: Type.Intersect([Type.Ref("api_shield_api_response_common_failure"), Type.Partial(Type.Object({ upload_details: Type.Ref("api_shield_old_schema_upload_details_errors_critical") }, { additionalProperties: false }))]),
+  api_shield_old_schema_upload_failure: Type.Composite([Type.Ref("api_shield_api_response_common_failure"), Type.Partial(Type.Object({ upload_details: Type.Ref("api_shield_old_schema_upload_details_errors_critical") }, { additionalProperties: false }))], { additionalProperties: false }),
   api_shield_old_schema_upload_response: Type.Object({ schema: Type.Ref("api_shield_old_public_schema"), upload_details: Type.Optional(Type.Ref("api_shield_old_schema_upload_details_warnings_only")) }, { additionalProperties: false }),
   api_shield_old_validation_default_mitigation_action: Type.Union([Type.Literal("none"), Type.Literal("log"), Type.Literal("block")]),
   api_shield_old_validation_default_mitigation_action_patch: Type.Union([Type.Union([Type.Literal("none"), Type.Literal("log"), Type.Literal("block"), Type.Literal(null)]), Type.Null()]),
@@ -948,8 +948,8 @@ const __schemas = Type.Module({
   api_shield_operation_schema_fragment: Type.Union([Type.Partial(Type.Object({ parameters: Type.Array(Type.Record(Type.String(), Type.Unknown())), requestBody: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false })), Type.Null()]),
   api_shield_operation_schemas: Type.Partial(Type.Object({ learned: Type.Ref("api_shield_operation_schema_fragment"), uploaded: Type.Ref("api_shield_operation_schema_fragment") }, { additionalProperties: false })),
   api_shield_operation_with_labels_only: Type.Intersect([Type.Ref("api_shield_standard_operation"), Type.Partial(Type.Object({ labels: Type.Array(Type.Ref("api_shield_label")) }, { additionalProperties: false }))]),
-  api_shield_patch_discoveries_response: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Ref("api_shield_api_discovery_patch_multiple_request") }, { additionalProperties: false })]),
-  api_shield_patch_discovery_response: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ state: Type.Ref("api_shield_api_discovery_state") }, { additionalProperties: false })) }, { additionalProperties: false })]),
+  api_shield_patch_discoveries_response: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Ref("api_shield_api_discovery_patch_multiple_request") }, { additionalProperties: false })], { additionalProperties: false }),
+  api_shield_patch_discovery_response: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ state: Type.Ref("api_shield_api_discovery_state") }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }),
   api_shield_patch_label_request: Type.Partial(Type.Object({ description: Type.Ref("api_shield_label_description"), metadata: Type.Ref("api_shield_label_metadata") }, { additionalProperties: false })),
   api_shield_per_operation_setting: Type.Object({ mitigation_action: Type.Union([Type.Literal("log"), Type.Literal("block"), Type.Literal("none")]), operation_id: Type.Ref("api_shield_uuid_2") }, { additionalProperties: false }),
   api_shield_per_operation_bulk_settings: Type.Record(Type.String(), Type.Ref("api_shield_per_operation_setting")),
@@ -962,12 +962,12 @@ const __schemas = Type.Module({
   api_shield_replace_operations_attached_to_label_request: Type.Object({ selector: Type.Ref("api_shield_operation_id_selector") }, { additionalProperties: false }),
   api_shield_request_expression_templates_fallthrough: Type.Object({ hosts: Type.Array(Type.String()) }, { additionalProperties: false }),
   api_shield_response_expression_templates_fallthrough: Type.Object({ expression: Type.String(), title: Type.String() }, { additionalProperties: false }),
-  api_shield_schema_response_with_thresholds: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ schemas: Type.Array(Type.Ref("api_shield_openapi_with_thresholds")), timestamp: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })]),
+  api_shield_schema_response_with_thresholds: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ schemas: Type.Array(Type.Ref("api_shield_openapi_with_thresholds")), timestamp: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }),
   api_shield_schema_hosts: Type.Object({ created_at: Type.Ref("api_shield_timestamp_2"), hosts: Type.Array(Type.String()), name: Type.String(), schema_id: Type.Intersect([Type.Ref("api_shield_uuid_2"), Type.String({ format: "uuid" }), Type.String()]) }, { additionalProperties: false }),
   api_shield_schema_issue_notification: Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String(), source: Type.Optional(Type.Union([Type.Partial(Type.Object({ locations: Type.Array(Type.String()) }, { additionalProperties: false })), Type.Null()])) }, { additionalProperties: false }),
-  api_shield_schema_response_discovery: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Object({ schemas: Type.Array(Type.Ref("api_shield_openapi")), timestamp: Type.Ref("api_shield_timestamp_2") }, { additionalProperties: false }) }, { additionalProperties: false })]),
+  api_shield_schema_response_discovery: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Object({ schemas: Type.Array(Type.Ref("api_shield_openapi")), timestamp: Type.Ref("api_shield_timestamp_2") }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }),
   api_shield_selector_operation_state: Type.Union([Type.Literal("included"), Type.Literal("excluded"), Type.Literal("ignored")]),
-  api_shield_single_operation_response: Type.Intersect([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Intersect([Type.Ref("api_shield_operation"), Type.Partial(Type.Object({ schemas: Type.Ref("api_shield_operation_schemas") }, { additionalProperties: false }))]) }, { additionalProperties: false })]),
+  api_shield_single_operation_response: Type.Composite([Type.Ref("api_shield_api_response_common"), Type.Object({ result: Type.Intersect([Type.Ref("api_shield_operation"), Type.Partial(Type.Object({ schemas: Type.Ref("api_shield_operation_schemas") }, { additionalProperties: false }))]) }, { additionalProperties: false })], { additionalProperties: false }),
   argo_analytics_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   argo_analytics_api_response_common: Type.Object({ errors: Type.Ref("argo_analytics_messages"), messages: Type.Ref("argo_analytics_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.Unknown()), Type.String()]), success: Type.Literal(true) }, { additionalProperties: false }),
   argo_analytics_api_response_common_failure: Type.Object({ errors: Type.Ref("argo_analytics_messages"), messages: Type.Ref("argo_analytics_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
@@ -996,8 +996,8 @@ const __schemas = Type.Module({
   art_DataSecurityFindingsTimeseriesResponse: Type.Object({ errors: Type.Array(Type.Ref("art_APIError")), messages: Type.Array(Type.Ref("art_APIMessage")), result: Type.Ref("art_DataSecurityFindingsTimeseriesResult"), success: Type.Boolean() }, { additionalProperties: false }),
   art_ErrorResponse: Type.Object({ errors: Type.Array(Type.Ref("art_APIError")), messages: Type.Array(Type.Ref("art_APIMessage")), result: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), success: Type.Boolean() }, { additionalProperties: false }),
   art_QuerySummary: Type.Ref("art_CommonQuery"),
-  art_QueryTimeseries: Type.Intersect([Type.Ref("art_CommonQuery"), Type.Object({ resolution: Type.String() }, { additionalProperties: false })]),
-  art_QueryTopN: Type.Intersect([Type.Ref("art_CommonQuery"), Type.Object({ n: Type.Integer({ minimum: 1 }), orderBy: Type.String() }, { additionalProperties: false })]),
+  art_QueryTimeseries: Type.Composite([Type.Ref("art_CommonQuery"), Type.Object({ resolution: Type.String() }, { additionalProperties: false })], { additionalProperties: false }),
+  art_QueryTopN: Type.Composite([Type.Ref("art_CommonQuery"), Type.Object({ n: Type.Integer({ minimum: 1 }), orderBy: Type.String() }, { additionalProperties: false })], { additionalProperties: false }),
   art_SummaryResult: Type.Object({ currentTotal: Type.Array(Type.Ref("art_ResultValues")), previousTotal: Type.Array(Type.Ref("art_ResultValues")) }, { additionalProperties: false }),
   art_SummaryResponse: Type.Object({ errors: Type.Array(Type.Ref("art_APIError")), messages: Type.Array(Type.Ref("art_APIMessage")), result: Type.Ref("art_SummaryResult"), success: Type.Boolean() }, { additionalProperties: false }),
   art_TimeseriesResult: Type.Object({ resolution: Type.String(), slots: Type.Array(Type.Ref("art_ResultValues")) }, { additionalProperties: false }),
@@ -1093,17 +1093,17 @@ const __schemas = Type.Module({
   bot_management_sbfm_static_resource_protection_turned_on: Type.String(),
   bot_management_sbfm_verified_bots_turned_on: Type.String(),
   bot_management_suppress_session_score: Type.Boolean(),
-  bot_management_bm_subscription_config: Type.Intersect([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ auto_update_model: Type.Ref("bot_management_auto_update_model"), bm_cookie_enabled: Type.Ref("bot_management_bm_cookie_enabled"), stale_zone_configuration: Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode_turned_on"), optimize_wordpress: Type.Ref("bot_management_optimize_wordpress_turned_on"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated_turned_on"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated_turned_on"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection_turned_on"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots_turned_on") }, { additionalProperties: false })), suppress_session_score: Type.Ref("bot_management_suppress_session_score") }, { additionalProperties: false }))]),
+  bot_management_bm_subscription_config: Type.Composite([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ auto_update_model: Type.Ref("bot_management_auto_update_model"), bm_cookie_enabled: Type.Ref("bot_management_bm_cookie_enabled"), stale_zone_configuration: Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode_turned_on"), optimize_wordpress: Type.Ref("bot_management_optimize_wordpress_turned_on"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated_turned_on"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated_turned_on"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection_turned_on"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots_turned_on") }, { additionalProperties: false })), suppress_session_score: Type.Ref("bot_management_suppress_session_score") }, { additionalProperties: false }))], { additionalProperties: false }),
   bot_management_fight_mode: Type.Boolean(),
   bot_management_suppress_session_score_turned_off: Type.Boolean(),
-  bot_management_bot_fight_mode_config: Type.Intersect([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode"), stale_zone_configuration: Type.Partial(Type.Object({ optimize_wordpress: Type.Ref("bot_management_optimize_wordpress_turned_on"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated_turned_on"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated_turned_on"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection_turned_on"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots_turned_on"), suppress_session_score: Type.Ref("bot_management_suppress_session_score_turned_off") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  bot_management_bot_fight_mode_config: Type.Composite([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode"), stale_zone_configuration: Type.Partial(Type.Object({ optimize_wordpress: Type.Ref("bot_management_optimize_wordpress_turned_on"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated_turned_on"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated_turned_on"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection_turned_on"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots_turned_on"), suppress_session_score: Type.Ref("bot_management_suppress_session_score_turned_off") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   bot_management_optimize_wordpress: Type.Boolean(),
   bot_management_sbfm_definitely_automated: Type.Union([Type.Literal("allow"), Type.Literal("block"), Type.Literal("managed_challenge")]),
   bot_management_sbfm_static_resource_protection: Type.Boolean(),
   bot_management_sbfm_verified_bots: Type.Union([Type.Literal("allow"), Type.Literal("block")]),
-  bot_management_sbfm_definitely_config: Type.Intersect([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ optimize_wordpress: Type.Ref("bot_management_optimize_wordpress"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots"), stale_zone_configuration: Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode_turned_on"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated_turned_on") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  bot_management_sbfm_definitely_config: Type.Composite([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ optimize_wordpress: Type.Ref("bot_management_optimize_wordpress"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots"), stale_zone_configuration: Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode_turned_on"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated_turned_on") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   bot_management_sbfm_likely_automated: Type.Union([Type.Literal("allow"), Type.Literal("block"), Type.Literal("managed_challenge")]),
-  bot_management_sbfm_likely_config: Type.Intersect([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ optimize_wordpress: Type.Ref("bot_management_optimize_wordpress"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots"), stale_zone_configuration: Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode_turned_on") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  bot_management_sbfm_likely_config: Type.Composite([Type.Ref("bot_management_base_config"), Type.Partial(Type.Object({ optimize_wordpress: Type.Ref("bot_management_optimize_wordpress"), sbfm_definitely_automated: Type.Ref("bot_management_sbfm_definitely_automated"), sbfm_likely_automated: Type.Ref("bot_management_sbfm_likely_automated"), sbfm_static_resource_protection: Type.Ref("bot_management_sbfm_static_resource_protection"), sbfm_verified_bots: Type.Ref("bot_management_sbfm_verified_bots"), stale_zone_configuration: Type.Partial(Type.Object({ fight_mode: Type.Ref("bot_management_fight_mode_turned_on") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   bot_management_bot_management_response_body: Type.Intersect([Type.Ref("bot_management_api_response_single"), Type.Partial(Type.Object({ result: __typedOpenapiOneOf([Type.Ref("bot_management_bot_fight_mode_config"), Type.Ref("bot_management_sbfm_definitely_config"), Type.Ref("bot_management_sbfm_likely_config"), Type.Ref("bot_management_bm_subscription_config")]) }, { additionalProperties: false }))]),
   bot_management_config_single: __typedOpenapiOneOf([Type.Ref("bot_management_bot_fight_mode_config"), Type.Ref("bot_management_sbfm_definitely_config"), Type.Ref("bot_management_sbfm_likely_config"), Type.Ref("bot_management_bm_subscription_config")]),
   bot_management_metric_requests: Type.Object({ metric: Type.String(), requests: Type.Integer() }, { additionalProperties: false }),
@@ -1249,7 +1249,7 @@ const __schemas = Type.Module({
   cache_rules_origin_cloud_regions_list_result: Type.Object({ editable: Type.Boolean(), id: Type.Literal("origin_public_cloud_region"), modified_on: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), value: Type.Array(Type.Ref("cache_rules_origin_cloud_region_entry")) }, { additionalProperties: false }),
   cache_rules_origin_h2_max_streams_value: Type.Integer({ minimum: 1, maximum: 1000 }),
   cache_rules_origin_h2_max_streams: Type.Intersect([Type.Ref("cache_rules_base"), Type.Partial(Type.Object({ id: Type.Literal("origin_h2_max_streams"), value: Type.Ref("cache_rules_origin_h2_max_streams_value") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  cache_rules_origin_h2_max_streams_response_value: Type.Intersect([Type.Ref("cache_rules_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("cache_rules_origin_h2_max_streams") }, { additionalProperties: false }))]),
+  cache_rules_origin_h2_max_streams_response_value: Type.Composite([Type.Ref("cache_rules_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("cache_rules_origin_h2_max_streams") }, { additionalProperties: false }))], { additionalProperties: false }),
   cache_rules_origin_max_http_version_value: Type.Union([Type.Literal("2"), Type.Literal("1")]),
   cache_rules_origin_max_http_version: Type.Intersect([Type.Ref("cache_rules_base"), Type.Partial(Type.Object({ id: Type.Literal("origin_max_http_version"), value: Type.Ref("cache_rules_origin_max_http_version_value") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   cache_rules_origin_max_http_version_response_value: Type.Partial(Type.Object({ result: Type.Ref("cache_rules_origin_max_http_version") }, { additionalProperties: false })),
@@ -1305,17 +1305,17 @@ const __schemas = Type.Module({
   calls_identifier: Type.String({ minLength: 32, maxLength: 32 }),
   calls_app: Type.Partial(Type.Object({ created: Type.Ref("calls_created"), modified: Type.Ref("calls_modified"), name: Type.Ref("calls_name"), uid: Type.Ref("calls_identifier") }, { additionalProperties: false })),
   calls_app_editable_fields: Type.Partial(Type.Object({ name: Type.Ref("calls_name") }, { additionalProperties: false })),
-  calls_app_response_collection: Type.Intersect([Type.Ref("calls_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("calls_app")) }, { additionalProperties: false }))]),
+  calls_app_response_collection: Type.Composite([Type.Ref("calls_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("calls_app")) }, { additionalProperties: false }))], { additionalProperties: false }),
   calls_app_response_single: Type.Intersect([Type.Ref("calls_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("calls_app") }, { additionalProperties: false }))]),
   calls_secret: Type.String({ minLength: 64, maxLength: 64 }),
   calls_app_with_secret: Type.Partial(Type.Object({ created: Type.Ref("calls_created"), modified: Type.Ref("calls_modified"), name: Type.Ref("calls_name"), secret: Type.Ref("calls_secret"), uid: Type.Ref("calls_identifier") }, { additionalProperties: false })),
   calls_app_response_single_with_secret: Type.Intersect([Type.Ref("calls_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("calls_app_with_secret") }, { additionalProperties: false }))]),
   calls_turn_key: Type.String({ minLength: 64, maxLength: 64 }),
   calls_turn_key_object: Type.Partial(Type.Object({ created: Type.Ref("calls_created"), modified: Type.Ref("calls_modified"), name: Type.Ref("calls_name"), uid: Type.Ref("calls_identifier") }, { additionalProperties: false })),
-  calls_turn_key_collection: Type.Intersect([Type.Ref("calls_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("calls_turn_key_object")) }, { additionalProperties: false }))]),
+  calls_turn_key_collection: Type.Composite([Type.Ref("calls_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("calls_turn_key_object")) }, { additionalProperties: false }))], { additionalProperties: false }),
   calls_turn_key_name: Type.String(),
   calls_turn_key_editable_fields: Type.Partial(Type.Object({ name: Type.Ref("calls_turn_key_name") }, { additionalProperties: false })),
-  calls_turn_key_response_collection: Type.Intersect([Type.Ref("calls_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("calls_turn_key_object")) }, { additionalProperties: false }))]),
+  calls_turn_key_response_collection: Type.Composite([Type.Ref("calls_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("calls_turn_key_object")) }, { additionalProperties: false }))], { additionalProperties: false }),
   calls_turn_key_response_single: Type.Intersect([Type.Ref("calls_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("calls_turn_key_object") }, { additionalProperties: false }))]),
   calls_turn_key_with_key: Type.Partial(Type.Object({ created: Type.Ref("calls_created"), key: Type.Ref("calls_turn_key"), modified: Type.Ref("calls_modified"), name: Type.Ref("calls_turn_key_name"), uid: Type.Ref("calls_identifier") }, { additionalProperties: false })),
   calls_turn_key_single_with_secret: Type.Intersect([Type.Ref("calls_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("calls_turn_key_with_key") }, { additionalProperties: false }))]),
@@ -1421,14 +1421,14 @@ const __schemas = Type.Module({
   cloudflare_pipelines_TimestampField: Type.Partial(Type.Object({ unit: Type.Ref("cloudflare_pipelines_TimestampUnit") }, { additionalProperties: false })),
   cloudflare_pipelines_ListField: Type.Object({ items: Type.Ref("cloudflare_pipelines_SourceField") }, { additionalProperties: false }),
   cloudflare_pipelines_StructField: Type.Object({ fields: Type.Array(Type.Ref("cloudflare_pipelines_SourceField")), name: Type.Optional(Type.Union([Type.String(), Type.Null()])) }, { additionalProperties: false }),
-  cloudflare_pipelines_FieldType: __typedOpenapiOneOf([Type.Object({ type: Type.Literal("int32") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("int64") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("float32") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("float64") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("bool") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("string") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("binary") }, { additionalProperties: false }), Type.Intersect([Type.Ref("cloudflare_pipelines_TimestampField"), Type.Object({ type: Type.Literal("timestamp") }, { additionalProperties: false })]), Type.Object({ type: Type.Literal("json") }, { additionalProperties: false }), Type.Intersect([Type.Ref("cloudflare_pipelines_StructField"), Type.Object({ type: Type.Literal("struct") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("cloudflare_pipelines_ListField"), Type.Object({ type: Type.Literal("list") }, { additionalProperties: false })])]),
+  cloudflare_pipelines_FieldType: __typedOpenapiOneOf([Type.Object({ type: Type.Literal("int32") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("int64") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("float32") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("float64") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("bool") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("string") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("binary") }, { additionalProperties: false }), Type.Composite([Type.Ref("cloudflare_pipelines_TimestampField"), Type.Object({ type: Type.Literal("timestamp") }, { additionalProperties: false })], { additionalProperties: false }), Type.Object({ type: Type.Literal("json") }, { additionalProperties: false }), Type.Composite([Type.Ref("cloudflare_pipelines_StructField"), Type.Object({ type: Type.Literal("struct") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("cloudflare_pipelines_ListField"), Type.Object({ type: Type.Literal("list") }, { additionalProperties: false })], { additionalProperties: false })]),
   cloudflare_pipelines_SourceField: Type.Intersect([Type.Ref("cloudflare_pipelines_FieldType"), Type.Object({ metadata_key: Type.Optional(Type.Union([Type.String(), Type.Null()])), name: Type.String(), required: Type.Optional(Type.Boolean()), sql_name: Type.Optional(Type.String()) }, { additionalProperties: false })]),
   cloudflare_pipelines_DecimalEncoding: Type.Union([Type.Literal("number"), Type.Literal("string"), Type.Literal("bytes")]),
   cloudflare_pipelines_TimestampFormat: Type.Union([Type.Literal("rfc3339"), Type.Literal("unix_millis")]),
   cloudflare_pipelines_JsonFormat: Type.Partial(Type.Object({ decimal_encoding: Type.Ref("cloudflare_pipelines_DecimalEncoding"), timestamp_format: Type.Ref("cloudflare_pipelines_TimestampFormat"), unstructured: Type.Boolean() }, { additionalProperties: false })),
   cloudflare_pipelines_ParquetCompression: Type.Union([Type.Literal("uncompressed"), Type.Literal("snappy"), Type.Literal("gzip"), Type.Literal("zstd"), Type.Literal("lz4")]),
   cloudflare_pipelines_ParquetFormat: Type.Partial(Type.Object({ compression: Type.Ref("cloudflare_pipelines_ParquetCompression"), row_group_bytes: Type.Union([Type.Integer({ minimum: 0 }), Type.Null()]) }, { additionalProperties: false })),
-  cloudflare_pipelines_Format: __typedOpenapiOneOf([Type.Intersect([Type.Ref("cloudflare_pipelines_JsonFormat"), Type.Object({ type: Type.Literal("json") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("cloudflare_pipelines_ParquetFormat"), Type.Object({ type: Type.Literal("parquet") }, { additionalProperties: false })])]),
+  cloudflare_pipelines_Format: __typedOpenapiOneOf([Type.Composite([Type.Ref("cloudflare_pipelines_JsonFormat"), Type.Object({ type: Type.Literal("json") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("cloudflare_pipelines_ParquetFormat"), Type.Object({ type: Type.Literal("parquet") }, { additionalProperties: false })], { additionalProperties: false })]),
   cloudflare_pipelines_ConnectionSchema: Type.Partial(Type.Object({ fields: Type.Array(Type.Ref("cloudflare_pipelines_SourceField")), format: Type.Ref("cloudflare_pipelines_Format"), inferred: Type.Union([Type.Boolean(), Type.Null()]) }, { additionalProperties: false })),
   cloudflare_pipelines_PipelineEdge: Type.Object({ dest_id: Type.Integer({ minimum: 0 }), edge_type: Type.String(), key_type: Type.String(), src_id: Type.Integer({ minimum: 0 }), value_type: Type.String() }, { additionalProperties: false }),
   cloudflare_pipelines_PipelineNode: Type.Object({ description: Type.String(), node_id: Type.Integer({ minimum: 0 }), operator: Type.String(), parallelism: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }),
@@ -1447,7 +1447,7 @@ const __schemas = Type.Module({
   cloudflare_pipelines_workers_pipelines_stream_id: Type.String({ minLength: 32, maxLength: 32 }),
   cloudforce_one_port_scan_api_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
   cloudforce_one_port_scan_api_api_response_common: Type.Object({ errors: Type.Ref("cloudforce_one_port_scan_api_messages"), messages: Type.Ref("cloudforce_one_port_scan_api_messages"), success: Type.Literal(true) }, { additionalProperties: false }),
-  cloudforce_one_port_scan_api_api_response_common_failure: Type.Intersect([Type.Ref("cloudforce_one_port_scan_api_api_response_common"), Type.Partial(Type.Object({ errors: Type.Record(Type.String(), Type.Unknown()), success: Type.Boolean() }, { additionalProperties: false }))]),
+  cloudforce_one_port_scan_api_api_response_common_failure: Type.Composite([Type.Ref("cloudforce_one_port_scan_api_api_response_common"), Type.Partial(Type.Object({ errors: Type.Record(Type.String(), Type.Unknown()), success: Type.Boolean() }, { additionalProperties: false }))], { additionalProperties: false }),
   cloudforce_one_port_scan_api_frequency: Type.Number(),
   cloudforce_one_port_scan_api_ips: Type.Array(Type.String()),
   cloudforce_one_port_scan_api_port: Type.Object({ number: Type.Optional(Type.Number()), proto: Type.Optional(Type.String()), status: Type.Optional(Type.String()) }, { additionalProperties: false }),
@@ -1455,7 +1455,7 @@ const __schemas = Type.Module({
   cloudforce_one_port_scan_api_scan_config: Type.Object({ account_id: Type.String(), frequency: Type.Ref("cloudforce_one_port_scan_api_frequency"), id: Type.String(), ips: Type.Ref("cloudforce_one_port_scan_api_ips"), ports: Type.Ref("cloudforce_one_port_scan_api_ports") }, { additionalProperties: false }),
   cloudforce_one_requests_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
   cloudforce_one_requests_api_response_common: Type.Object({ errors: Type.Ref("cloudforce_one_requests_messages"), messages: Type.Ref("cloudforce_one_requests_messages"), success: Type.Literal(true) }, { additionalProperties: false }),
-  cloudforce_one_requests_api_response_common_failure: Type.Intersect([Type.Ref("cloudforce_one_requests_api_response_common"), Type.Partial(Type.Object({ errors: Type.Partial(Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false })), success: Type.Boolean() }, { additionalProperties: false }))]),
+  cloudforce_one_requests_api_response_common_failure: Type.Composite([Type.Ref("cloudforce_one_requests_api_response_common"), Type.Partial(Type.Object({ errors: Type.Partial(Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false })), success: Type.Boolean() }, { additionalProperties: false }))], { additionalProperties: false }),
   cloudforce_one_requests_asset_content: Type.String(),
   cloudforce_one_requests_identifier: Type.String({ maxLength: 32 }),
   cloudforce_one_requests_labels: Type.Array(Type.String()),
@@ -1506,7 +1506,7 @@ const __schemas = Type.Module({
   cloudforce_one_PartialAccountExemptions: Type.Partial(Type.Object({ namespace: Type.Array(Type.String({ minLength: 1 })), tag_match: Type.Array(Type.String({ minLength: 1 })), worker_name: Type.Array(Type.String({ minLength: 1 })) }, { additionalProperties: false })),
   cloudforce_one_RuleMetaEntry: Type.Object({ key: Type.String(), type: Type.Union([Type.Literal("string"), Type.Literal("bool"), Type.Literal("int")]), value: Type.Union([Type.String(), Type.Boolean(), Type.Number()]) }, { additionalProperties: false }),
   cloudforce_one_Rule: Type.Object({ content: Type.String(), created_at: Type.Number(), created_by: Type.String(), description: Type.String(), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), is_public: Type.Boolean(), meta: Type.Optional(Type.Array(Type.Ref("cloudforce_one_RuleMetaEntry"))), name: Type.String(), namespaces: Type.Array(Type.String()), path: Type.String(), pending_approval_id: Type.Union([Type.Number(), Type.Null()]), structured_source: Type.Optional(Type.Union([Type.String(), Type.Null()])), updated_at: Type.Number(), updated_by: Type.String() }, { additionalProperties: false }),
-  cloudforce_one_RuleSearchResult: Type.Intersect([Type.Ref("cloudforce_one_Rule"), Type.Partial(Type.Object({ score: Type.Number({ minimum: 0, maximum: 1 }), scoring_details: Type.Partial(Type.Object({ fusion_method: Type.String(), keyword_rank: Type.Number(), keyword_score: Type.Number(), reranking_score: Type.Number(), vector_rank: Type.Number(), vector_score: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  cloudforce_one_RuleSearchResult: Type.Composite([Type.Ref("cloudforce_one_Rule"), Type.Partial(Type.Object({ score: Type.Number({ minimum: 0, maximum: 1 }), scoring_details: Type.Partial(Type.Object({ fusion_method: Type.String(), keyword_rank: Type.Number(), keyword_score: Type.Number(), reranking_score: Type.Number(), vector_rank: Type.Number(), vector_score: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   cloudforce_one_RulesListResponse: Type.Object({ rules: Type.Array(Type.Ref("cloudforce_one_Rule")), total: Type.Number() }, { additionalProperties: false }),
   cloudforce_one_RulesSearchResponse: Type.Object({ fallback: Type.Optional(Type.Boolean()), interpreted: Type.Optional(Type.Object({ filters: Type.Optional(Type.Record(Type.String(), Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]))), retrieval_type: Type.String() }, { additionalProperties: false })), mode: Type.String(), results: Type.Array(Type.Ref("cloudforce_one_RuleSearchResult")), total: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }),
   cloudforce_one_StatsResponse: Type.Object({ pending_approvals: Type.Number(), rules_by_namespace: Type.Record(Type.String(), Type.Number()), total_rules: Type.Number() }, { additionalProperties: false }),
@@ -1521,7 +1521,7 @@ const __schemas = Type.Module({
   csam_config_service_api_response_single: Type.Object({ errors: Type.Array(Type.Ref("csam_config_service_api_response_message")), messages: Type.Array(Type.Ref("csam_config_service_api_response_message")), result: Type.Optional(Type.Record(Type.String(), Type.Unknown())), success: Type.Boolean() }, { additionalProperties: false }),
   csam_config_service_csam_scanner_value: Type.Partial(Type.Object({ email: Type.String({ maxLength: 254 }), email_state: Type.Union([Type.Literal("valid"), Type.Literal("pending"), Type.Literal("unverified")]), enabled: Type.Boolean(), sources: Type.Record(Type.String(), Type.Boolean()), zone_plan: Type.String() }, { additionalProperties: false })),
   csam_config_service_csam_scanner_setting: Type.Partial(Type.Object({ editable: Type.Boolean(), id: Type.Literal("csam_scanner"), modified_on: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), value: Type.Ref("csam_config_service_csam_scanner_value") }, { additionalProperties: false })),
-  csam_config_service_csam_scanner_single_response: Type.Intersect([Type.Ref("csam_config_service_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("csam_config_service_csam_scanner_setting") }, { additionalProperties: false }))]),
+  csam_config_service_csam_scanner_single_response: Type.Composite([Type.Ref("csam_config_service_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("csam_config_service_csam_scanner_setting") }, { additionalProperties: false }))], { additionalProperties: false }),
   csam_config_service_csam_scanner_third_party_update_value: Type.Partial(Type.Object({ email: Type.String({ maxLength: 254 }), enabled: Type.Boolean(), resend_email: Type.Boolean(), sources: Type.Record(Type.String(), Type.Boolean()) }, { additionalProperties: false })),
   csam_config_service_csam_scanner_third_party_update_request: Type.Partial(Type.Object({ id: Type.Literal("csam_scanner"), value: Type.Ref("csam_config_service_csam_scanner_third_party_update_value") }, { additionalProperties: false })),
   csam_config_service_zone_identifier: Type.String({ minLength: 1, maxLength: 32 }),
@@ -1549,10 +1549,10 @@ const __schemas = Type.Module({
   custom_indicator_feeds_provider_name: Type.String(),
   custom_indicator_feeds_indicator_feed_metadata: Type.Partial(Type.Object({ created_on: Type.String({ format: "date-time" }), description: Type.Ref("custom_indicator_feeds_description"), id: Type.Ref("custom_indicator_feeds_id"), is_attributable: Type.Ref("custom_indicator_feeds_is_attributable"), is_downloadable: Type.Ref("custom_indicator_feeds_is_downloadable"), is_public: Type.Ref("custom_indicator_feeds_is_public"), last_upload_summary: Type.Ref("custom_indicator_feeds_last_upload_summary"), latest_upload_error: Type.String(), latest_upload_status: Type.Union([Type.Literal("Mirroring"), Type.Literal("Unifying"), Type.Literal("Loading"), Type.Literal("Provisioning"), Type.Literal("Complete"), Type.Literal("Error")]), modified_on: Type.String({ format: "date-time" }), name: Type.Ref("custom_indicator_feeds_name"), provider_id: Type.Ref("custom_indicator_feeds_provider_id"), provider_name: Type.Ref("custom_indicator_feeds_provider_name") }, { additionalProperties: false })),
   custom_indicator_feeds_indicator_feed_metadata_response: Type.Intersect([Type.Ref("custom_indicator_feeds_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("custom_indicator_feeds_indicator_feed_metadata") }, { additionalProperties: false }))]),
-  custom_indicator_feeds_indicator_feed_response: Type.Intersect([Type.Ref("custom_indicator_feeds_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("custom_indicator_feeds_indicator_feed_item")) }, { additionalProperties: false }))]),
+  custom_indicator_feeds_indicator_feed_response: Type.Composite([Type.Ref("custom_indicator_feeds_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("custom_indicator_feeds_indicator_feed_item")) }, { additionalProperties: false }))], { additionalProperties: false }),
   custom_indicator_feeds_indicator_feed_response_single: Type.Intersect([Type.Ref("custom_indicator_feeds_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("custom_indicator_feeds_indicator_feed_item") }, { additionalProperties: false }))]),
   custom_indicator_feeds_permission_list_item: Type.Partial(Type.Object({ description: Type.Ref("custom_indicator_feeds_description"), id: Type.Ref("custom_indicator_feeds_id"), is_attributable: Type.Ref("custom_indicator_feeds_is_attributable"), is_downloadable: Type.Ref("custom_indicator_feeds_is_downloadable"), is_public: Type.Ref("custom_indicator_feeds_is_public"), name: Type.Ref("custom_indicator_feeds_name") }, { additionalProperties: false })),
-  custom_indicator_feeds_permission_list_item_response: Type.Intersect([Type.Ref("custom_indicator_feeds_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("custom_indicator_feeds_permission_list_item")) }, { additionalProperties: false }))]),
+  custom_indicator_feeds_permission_list_item_response: Type.Composite([Type.Ref("custom_indicator_feeds_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("custom_indicator_feeds_permission_list_item")) }, { additionalProperties: false }))], { additionalProperties: false }),
   custom_indicator_feeds_permissions_request: Type.Partial(Type.Object({ account_tag: Type.String(), feed_id: Type.Integer() }, { additionalProperties: false })),
   custom_indicator_feeds_permissions_update: Type.Partial(Type.Object({ success: Type.Boolean() }, { additionalProperties: false })),
   custom_indicator_feeds_permissions_response: Type.Intersect([Type.Ref("custom_indicator_feeds_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("custom_indicator_feeds_permissions_update") }, { additionalProperties: false }))]),
@@ -1666,7 +1666,7 @@ const __schemas = Type.Module({
   digital_experience_monitoring_device_state_over_time: Type.Partial(Type.Object({ battery_cycles: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), battery_pct: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_float")), connection_type: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_string")), cpu_pct: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_float")), disk_read_bps: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), disk_usage_pct: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_float")), disk_write_bps: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), mode: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_string")), network_rcvd_bps: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), network_sent_bps: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), network_ssid: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_string")), ram_available_kb: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), ram_used_pct: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_float")), rtt: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_rtt_stats")), status: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_string")), top_cpu_applications: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_cpu_apps")), top_ram_applications: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_ram_apps")), tunnel_stats: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_tunnel_stats")), tunnel_type: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_string")), unique_networks: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")), wifi_strength_dbm: Type.Array(Type.Ref("digital_experience_monitoring_timeslot_int")) }, { additionalProperties: false })),
   digital_experience_monitoring_device_state_top_networks_summary: Type.Object({ count: Type.Integer(), name: Type.String() }, { additionalProperties: false }),
   digital_experience_monitoring_device_status_over_time_result: Type.Object({ over_time: Type.Ref("digital_experience_monitoring_device_state_over_time"), top_networks: Type.Array(Type.Ref("digital_experience_monitoring_device_state_top_networks_summary")) }, { additionalProperties: false }),
-  digital_experience_monitoring_dex_delete_response_collection: Type.Intersect([Type.Ref("digital_experience_monitoring_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ dex_tests: Type.Array(Type.Ref("digital_experience_monitoring_device_dex_test_schemas_http")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  digital_experience_monitoring_dex_delete_response_collection: Type.Composite([Type.Ref("digital_experience_monitoring_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ dex_tests: Type.Array(Type.Ref("digital_experience_monitoring_device_dex_test_schemas_http")) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   digital_experience_monitoring_dex_response_collection: Type.Intersect([Type.Ref("digital_experience_monitoring_api_response_collection_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("digital_experience_monitoring_device_dex_test_schemas_http")) }, { additionalProperties: false }))]),
   digital_experience_monitoring_dex_targeted_test: Type.Object({ data: Type.Ref("digital_experience_monitoring_device_dex_test_schemas_data"), enabled: Type.Boolean(), name: Type.String(), test_id: Type.String() }, { additionalProperties: false }),
   digital_experience_monitoring_dex_rule: Type.Object({ created_at: Type.String(), description: Type.Optional(Type.String()), id: Type.Ref("digital_experience_monitoring_uuid"), match: Type.String(), name: Type.String(), targeted_tests: Type.Optional(Type.Array(Type.Ref("digital_experience_monitoring_dex_targeted_test"))), updated_at: Type.Optional(Type.String()) }, { additionalProperties: false }),
@@ -1726,7 +1726,7 @@ const __schemas = Type.Module({
   dlp_Pattern: Type.Object({ regex: Type.String(), validation: Type.Optional(Type.Ref("dlp_Validation")) }, { additionalProperties: false }),
   dlp_CustomEntry: Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), pattern: Type.Ref("dlp_Pattern"), profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_CustomEntryUpdateType: Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), name: Type.String(), pattern: Type.Ref("dlp_Pattern") }, { additionalProperties: false }),
-  dlp_CustomEntryUpdate: Type.Intersect([Type.Ref("dlp_CustomEntryUpdateType"), Type.Object({ enabled: Type.Boolean() }, { additionalProperties: false })]),
+  dlp_CustomEntryUpdate: Type.Composite([Type.Ref("dlp_CustomEntryUpdateType"), Type.Object({ enabled: Type.Boolean() }, { additionalProperties: false })], { additionalProperties: false }),
   dlp_CustomPromptTopicEntry: Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_EntryConfidence: Type.Object({ ai_context_available: Type.Boolean(), available: Type.Boolean() }, { additionalProperties: false }),
   dlp_PromptTopicType: Type.Union([Type.Literal("Intent"), Type.Literal("Content")]),
@@ -1736,12 +1736,12 @@ const __schemas = Type.Module({
   dlp_ExactDataEntry: Type.Object({ case_sensitive: Type.Boolean(), created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), secret: Type.Boolean(), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_DocumentFingerprintEntry: Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_WordListEntry: Type.Object({ created_at: Type.String({ format: "date-time" }), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), updated_at: Type.String({ format: "date-time" }), word_list: Type.Unknown() }, { additionalProperties: false }),
-  dlp_Entry: __typedOpenapiOneOf([Type.Intersect([Type.Ref("dlp_CustomEntry"), Type.Object({ type: Type.Literal("custom") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_CustomPromptTopicEntry"), Type.Object({ type: Type.Literal("custom_prompt_topic") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_PredefinedEntry"), Type.Object({ type: Type.Literal("predefined") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_IntegrationEntry"), Type.Object({ type: Type.Literal("integration") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_ExactDataEntry"), Type.Object({ type: Type.Literal("exact_data") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_DocumentFingerprintEntry"), Type.Object({ type: Type.Literal("document_fingerprint") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_WordListEntry"), Type.Object({ type: Type.Literal("word_list") }, { additionalProperties: false })])]),
+  dlp_Entry: __typedOpenapiOneOf([Type.Composite([Type.Ref("dlp_CustomEntry"), Type.Object({ type: Type.Literal("custom") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_CustomPromptTopicEntry"), Type.Object({ type: Type.Literal("custom_prompt_topic") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_PredefinedEntry"), Type.Object({ type: Type.Literal("predefined") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_IntegrationEntry"), Type.Object({ type: Type.Literal("integration") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_ExactDataEntry"), Type.Object({ type: Type.Literal("exact_data") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_DocumentFingerprintEntry"), Type.Object({ type: Type.Literal("document_fingerprint") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_WordListEntry"), Type.Object({ type: Type.Literal("word_list") }, { additionalProperties: false })], { additionalProperties: false })]),
   dlp_SensitivityLevelRef: Type.Object({ group_id: Type.String({ format: "uuid" }), level_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }),
   dlp_CustomProfile: Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer({ minimum: 0, maximum: 1000 }), confidence_threshold: Type.Optional(Type.Ref("dlp_Confidence")), context_awareness: Type.Optional(Type.Ref("dlp_ContextAwareness")), created_at: Type.String({ format: "date-time" }), data_classes: Type.Optional(Type.Array(Type.String({ format: "uuid" }))), data_tags: Type.Optional(Type.Array(Type.String({ format: "uuid" }))), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), entries: Type.Optional(Type.Array(Type.Ref("dlp_Entry"))), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Boolean(), sensitivity_levels: Type.Optional(Type.Array(Type.Ref("dlp_SensitivityLevelRef"))), shared_entries: Type.Optional(Type.Array(Type.Ref("dlp_Entry"))), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_CustomProfileArray: Type.Array(Type.Ref("dlp_CustomProfile")),
   dlp_NewCustomEntry: Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), enabled: Type.Boolean(), name: Type.String(), pattern: Type.Ref("dlp_Pattern") }, { additionalProperties: false }),
-  dlp_NewCustomEntryWithId: Type.Intersect([Type.Ref("dlp_NewCustomEntry"), Type.Object({ entry_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })]),
+  dlp_NewCustomEntryWithId: Type.Composite([Type.Ref("dlp_NewCustomEntry"), Type.Object({ entry_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })], { additionalProperties: false }),
   dlp_ProfileEntryUpdate: __typedOpenapiOneOf([Type.Ref("dlp_NewCustomEntryWithId"), Type.Ref("dlp_NewCustomEntry")]),
   dlp_SharedEntryUpdate: Type.Object({ enabled: Type.Boolean(), entry_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }),
   dlp_CustomProfileUpdate: Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Optional(Type.Union([Type.Integer(), Type.Null()])), confidence_threshold: Type.Optional(Type.Union([Type.String(), Type.Null()])), context_awareness: Type.Optional(Type.Ref("dlp_ContextAwareness")), data_classes: Type.Optional(Type.Union([Type.Array(Type.String({ format: "uuid" })), Type.Null()])), data_tags: Type.Optional(Type.Union([Type.Array(Type.String({ format: "uuid" })), Type.Null()])), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), entries: Type.Optional(Type.Union([Type.Array(Type.Ref("dlp_ProfileEntryUpdate")), Type.Null()])), name: Type.String(), ocr_enabled: Type.Optional(Type.Boolean()), sensitivity_levels: Type.Optional(Type.Union([Type.Array(Type.Ref("dlp_SensitivityLevelRef")), Type.Null()])), shared_entries: Type.Optional(Type.Array(Type.Ref("dlp_SharedEntryUpdate"))) }, { additionalProperties: false }),
@@ -1755,7 +1755,7 @@ const __schemas = Type.Module({
   dlp_DataTagCategory: Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), id: Type.String({ format: "uuid" }), name: Type.String(), tags: Type.Array(Type.Ref("dlp_DataTag")), template_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_DataTagCategoryArray: Type.Array(Type.Ref("dlp_DataTagCategory")),
   dlp_DataTagUpdate: Type.Partial(Type.Object({ description: Type.Union([Type.String(), Type.Null()]), name: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false })),
-  dlp_DataTagCategoryTagUpdate: Type.Intersect([Type.Ref("dlp_DataTagUpdate"), Type.Partial(Type.Object({ id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]) }, { additionalProperties: false }))]),
+  dlp_DataTagCategoryTagUpdate: Type.Composite([Type.Ref("dlp_DataTagUpdate"), Type.Partial(Type.Object({ id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   dlp_DataTagTemplate: Type.Object({ description: Type.String(), name: Type.String() }, { additionalProperties: false }),
   dlp_DataTagCategoryTemplate: Type.Object({ description: Type.String(), id: Type.String({ format: "uuid" }), name: Type.String(), tags: Type.Array(Type.Ref("dlp_DataTagTemplate")) }, { additionalProperties: false }),
   dlp_DataTagCategoryTemplateArray: Type.Array(Type.Ref("dlp_DataTagCategoryTemplate")),
@@ -1783,7 +1783,7 @@ const __schemas = Type.Module({
   dlp_NewWordListEntry: Type.Object({ enabled: Type.Boolean(), name: Type.String(), words: Type.Array(Type.String()) }, { additionalProperties: false }),
   dlp_EntryOfNewProfile: __typedOpenapiOneOf([Type.Ref("dlp_NewCustomEntry"), Type.Ref("dlp_NewWordListEntry")]),
   dlp_EntryProfile: Type.Object({ id: Type.String({ format: "uuid" }), name: Type.String() }, { additionalProperties: false }),
-  dlp_EntryUpdateType: __typedOpenapiOneOf([Type.Intersect([Type.Ref("dlp_CustomEntryUpdateType"), Type.Object({ type: Type.Literal("custom") }, { additionalProperties: false })]), Type.Object({ type: Type.Literal("predefined") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("integration") }, { additionalProperties: false })]),
+  dlp_EntryUpdateType: __typedOpenapiOneOf([Type.Composite([Type.Ref("dlp_CustomEntryUpdateType"), Type.Object({ type: Type.Literal("custom") }, { additionalProperties: false })], { additionalProperties: false }), Type.Object({ type: Type.Literal("predefined") }, { additionalProperties: false }), Type.Object({ type: Type.Literal("integration") }, { additionalProperties: false })]),
   dlp_EntryUpdate: Type.Intersect([Type.Ref("dlp_EntryUpdateType"), Type.Object({ enabled: Type.Boolean() }, { additionalProperties: false })]),
   dlp_EntryWithUploadStatus: Type.Intersect([Type.Ref("dlp_Entry"), Type.Partial(Type.Object({ upload_status: Type.Ref("dlp_DatasetUploadStatus") }, { additionalProperties: false }))]),
   dlp_EntryWithSharedProfiles: Type.Intersect([Type.Ref("dlp_EntryWithUploadStatus"), Type.Object({ profiles: Type.Array(Type.Ref("dlp_EntryProfile")) }, { additionalProperties: false })]),
@@ -1802,7 +1802,7 @@ const __schemas = Type.Module({
   dlp_NewPredefinedEntry: Type.Object({ enabled: Type.Boolean(), entry_id: Type.String({ format: "uuid" }), profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])) }, { additionalProperties: false }),
   dlp_PredefinedProfileEntryUpdate: Type.Object({ enabled: Type.Boolean(), id: Type.String({ format: "uuid" }) }, { additionalProperties: false }),
   dlp_PredefinedProfileUpdate: Type.Partial(Type.Object({ ai_context_enabled: Type.Boolean(), allowed_match_count: Type.Union([Type.Integer({ minimum: 0, maximum: 1000 }), Type.Null()]), confidence_threshold: Type.Union([Type.String(), Type.Null()]), context_awareness: Type.Ref("dlp_ContextAwareness"), entries: Type.Array(Type.Ref("dlp_PredefinedProfileEntryUpdate")), ocr_enabled: Type.Boolean() }, { additionalProperties: false })),
-  dlp_NewPredefinedProfile: Type.Intersect([Type.Ref("dlp_PredefinedProfileUpdate"), Type.Object({ profile_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })]),
+  dlp_NewPredefinedProfile: Type.Composite([Type.Ref("dlp_PredefinedProfileUpdate"), Type.Object({ profile_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })], { additionalProperties: false }),
   dlp_NewSensitivityLevel: Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), name: Type.String() }, { additionalProperties: false }),
   dlp_NewSensitivityGroup: Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), levels: Type.Optional(Type.Array(Type.Ref("dlp_NewSensitivityLevel"))), name: Type.String(), template_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])) }, { additionalProperties: false }),
   dlp_PayloadLogSettingUpdateLegacy: Type.Partial(Type.Object({ masking_level: Type.Ref("dlp_PayloadLogMaskingLevel"), public_key: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false })),
@@ -1810,7 +1810,7 @@ const __schemas = Type.Module({
   dlp_PredefinedProfile: Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer(), confidence_threshold: Type.Optional(Type.Ref("dlp_Confidence")), context_awareness: Type.Optional(Type.Ref("dlp_ContextAwareness")), entries: Type.Array(Type.Ref("dlp_Entry")), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Optional(Type.Boolean()), open_access: Type.Optional(Type.Boolean()) }, { additionalProperties: false }),
   dlp_PredefinedProfileConfig: Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer(), confidence_threshold: Type.Union([Type.String(), Type.Null()]), enabled_entries: Type.Array(Type.String({ format: "uuid" })), entries: Type.Array(Type.Ref("dlp_Entry")), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Optional(Type.Boolean()), open_access: Type.Optional(Type.Boolean()) }, { additionalProperties: false }),
   dlp_PredefinedProfileConfigUpdate: Type.Partial(Type.Object({ ai_context_enabled: Type.Boolean(), allowed_match_count: Type.Union([Type.Integer({ minimum: 0, maximum: 1000 }), Type.Null()]), confidence_threshold: Type.Union([Type.String(), Type.Null()]), enabled_entries: Type.Union([Type.Array(Type.String({ format: "uuid" })), Type.Null()]), entries: Type.Array(Type.Ref("dlp_PredefinedProfileEntryUpdate")), ocr_enabled: Type.Boolean() }, { additionalProperties: false })),
-  dlp_Profile: __typedOpenapiOneOf([Type.Intersect([Type.Ref("dlp_CustomProfile"), Type.Object({ type: Type.Literal("custom") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_PredefinedProfile"), Type.Object({ type: Type.Literal("predefined") }, { additionalProperties: false })]), Type.Intersect([Type.Ref("dlp_IntegrationProfile"), Type.Object({ type: Type.Literal("integration") }, { additionalProperties: false })])]),
+  dlp_Profile: __typedOpenapiOneOf([Type.Composite([Type.Ref("dlp_CustomProfile"), Type.Object({ type: Type.Literal("custom") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_PredefinedProfile"), Type.Object({ type: Type.Literal("predefined") }, { additionalProperties: false })], { additionalProperties: false }), Type.Composite([Type.Ref("dlp_IntegrationProfile"), Type.Object({ type: Type.Literal("integration") }, { additionalProperties: false })], { additionalProperties: false })]),
   dlp_ProfileArray: Type.Array(Type.Ref("dlp_Profile")),
   dlp_RegexValidationQuery: Type.Object({ max_match_bytes: Type.Optional(Type.Union([Type.Integer({ minimum: 0 }), Type.Null()])), regex: Type.String() }, { additionalProperties: false }),
   dlp_RegexValidationResult: Type.Object({ valid: Type.Boolean() }, { additionalProperties: false }),
@@ -1824,7 +1824,7 @@ const __schemas = Type.Module({
   dlp_SensitivityGroup: Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), id: Type.String({ format: "uuid" }), levels: Type.Array(Type.Ref("dlp_SensitivityLevel")), name: Type.String(), template_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dlp_SensitivityGroupArray: Type.Array(Type.Ref("dlp_SensitivityGroup")),
   dlp_SensitivityLevelUpdate: Type.Partial(Type.Object({ description: Type.Union([Type.String(), Type.Null()]), name: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false })),
-  dlp_SensitivityGroupLevelUpdate: Type.Intersect([Type.Ref("dlp_SensitivityLevelUpdate"), Type.Partial(Type.Object({ id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]) }, { additionalProperties: false }))]),
+  dlp_SensitivityGroupLevelUpdate: Type.Composite([Type.Ref("dlp_SensitivityLevelUpdate"), Type.Partial(Type.Object({ id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   dlp_SensitivityLevelTemplate: Type.Object({ description: Type.String(), name: Type.String() }, { additionalProperties: false }),
   dlp_SensitivityGroupTemplate: Type.Object({ description: Type.String(), id: Type.String({ format: "uuid" }), levels: Type.Array(Type.Ref("dlp_SensitivityLevelTemplate")), name: Type.String() }, { additionalProperties: false }),
   dlp_SensitivityGroupTemplateArray: Type.Array(Type.Ref("dlp_SensitivityGroupTemplate")),
@@ -1845,7 +1845,7 @@ const __schemas = Type.Module({
   dls_CreatePrefixBindingInput: Type.Object({ cidr: Type.String(), prefix_id: Type.String({ maxLength: 64 }), region_key: Type.String({ minLength: 1, maxLength: 128, pattern: "^[a-z0-9_-]+$" }) }, { additionalProperties: false }),
   dls_coded_message: Type.Object({ code: Type.Integer({ minimum: 1000 }), error_chain: Type.Optional(Type.Array(Type.Ref("dls_coded_message"))), message: Type.String() }, { additionalProperties: false }),
   dls_response: Type.Object({ messages: Type.Array(Type.Ref("dls_coded_message")), success: Type.Boolean() }, { additionalProperties: false }),
-  dls_good_response: Type.Intersect([Type.Ref("dls_response"), Type.Partial(Type.Object({ errors: Type.Array(Type.Ref("dls_coded_message")) }, { additionalProperties: false }))]),
+  dls_good_response: Type.Composite([Type.Ref("dls_response"), Type.Partial(Type.Object({ errors: Type.Array(Type.Ref("dls_coded_message")) }, { additionalProperties: false }))], { additionalProperties: false }),
   dls_RegionPublic: Type.Object({ created_on: Type.String({ format: "date-time" }), id: Type.String(), modified_on: Type.String({ format: "date-time" }), name: Type.String(), region_key: Type.String({ minLength: 1, maxLength: 128, pattern: "^[a-z0-9_-]+$" }), version: Type.Integer(), version_created_on: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
   dls_FetchPublicRegionResponse: Type.Intersect([Type.Ref("dls_good_response"), Type.Object({ result: Type.Ref("dls_RegionPublic") }, { additionalProperties: false })]),
   dls_PrefixBinding: Type.Object({ cidr: Type.String(), id: Type.String(), prefix_id: Type.String(), region_key: Type.String({ minLength: 1, maxLength: 128, pattern: "^[a-z0-9_-]+$" }) }, { additionalProperties: false }),
@@ -1859,7 +1859,7 @@ const __schemas = Type.Module({
   dls_api_response_collection: Type.Intersect([Type.Ref("dls_api_response_common"), Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   dls_api_response_common_failure: Type.Object({ errors: Type.Ref("dls_messages"), messages: Type.Ref("dls_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   dls_none: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]),
-  dls_bad_response: Type.Intersect([Type.Ref("dls_response"), Type.Object({ errors: Type.Array(Type.Ref("dls_coded_message")), result: Type.Optional(Type.Ref("dls_none")) }, { additionalProperties: false })]),
+  dls_bad_response: Type.Composite([Type.Ref("dls_response"), Type.Object({ errors: Type.Array(Type.Ref("dls_coded_message")), result: Type.Optional(Type.Ref("dls_none")) }, { additionalProperties: false })], { additionalProperties: false }),
   dls_hostname_schemas: Type.String(),
   dls_identifier: Type.String({ maxLength: 32 }),
   dls_region_key: Type.String(),
@@ -2102,19 +2102,19 @@ const __schemas = Type.Module({
   dos_asn_description: Type.String(),
   dos_asn_type: Type.Union([Type.Literal("hosting_provider"), Type.Literal("isp"), Type.Literal("organization")]),
   dos_dns_protection_rule_list_response: Type.Intersect([Type.Ref("dos_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("dos_DnsProtectionRule")) }, { additionalProperties: false }))]),
-  dos_dns_protection_rule_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_DnsProtectionRule") }, { additionalProperties: false }))]),
+  dos_dns_protection_rule_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_DnsProtectionRule") }, { additionalProperties: false }))], { additionalProperties: false }),
   dos_expression_filter_list_response: Type.Intersect([Type.Ref("dos_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("dos_ExpressionFilter")) }, { additionalProperties: false }))]),
-  dos_expression_filter_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_ExpressionFilter") }, { additionalProperties: false }))]),
+  dos_expression_filter_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_ExpressionFilter") }, { additionalProperties: false }))], { additionalProperties: false }),
   dos_identifier: Type.String({ maxLength: 32 }),
   dos_infra_prefix_list_response: Type.Intersect([Type.Ref("dos_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("dos_InfraPrefix")) }, { additionalProperties: false }))]),
-  dos_infra_prefix_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_InfraPrefix") }, { additionalProperties: false }))]),
+  dos_infra_prefix_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_InfraPrefix") }, { additionalProperties: false }))], { additionalProperties: false }),
   dos_prefix_list_response: Type.Intersect([Type.Ref("dos_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("dos_Prefix")) }, { additionalProperties: false }))]),
-  dos_prefix_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_Prefix") }, { additionalProperties: false }))]),
-  dos_protection_status_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_ProtectionStatus") }, { additionalProperties: false }))]),
+  dos_prefix_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_Prefix") }, { additionalProperties: false }))], { additionalProperties: false }),
+  dos_protection_status_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_ProtectionStatus") }, { additionalProperties: false }))], { additionalProperties: false }),
   dos_syn_protection_rule_list_response: Type.Intersect([Type.Ref("dos_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("dos_SynProtectionRule")) }, { additionalProperties: false }))]),
-  dos_syn_protection_rule_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_SynProtectionRule") }, { additionalProperties: false }))]),
+  dos_syn_protection_rule_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_SynProtectionRule") }, { additionalProperties: false }))], { additionalProperties: false }),
   dos_tcp_flow_protection_rule_list_response: Type.Intersect([Type.Ref("dos_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("dos_TcpFlowProtectionRule")) }, { additionalProperties: false }))]),
-  dos_tcp_flow_protection_rule_response: Type.Intersect([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_TcpFlowProtectionRule") }, { additionalProperties: false }))]),
+  dos_tcp_flow_protection_rule_response: Type.Composite([Type.Ref("dos_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("dos_TcpFlowProtectionRule") }, { additionalProperties: false }))], { additionalProperties: false }),
   dos_timestamp: Type.String({ format: "date-time" }),
   dos_uuid: Type.String({ maxLength: 36 }),
   email_auth_ApprovedSourceResponse: Type.Partial(Type.Object({ created: Type.String({ format: "date-time" }), created_at: Type.String({ format: "date-time" }), domain: Type.String(), ips: Type.Array(Type.String()), modified: Type.String({ format: "date-time" }), modified_at: Type.String({ format: "date-time" }), name: Type.String(), slug: Type.String(), tag: Type.String() }, { additionalProperties: false })),
@@ -2341,7 +2341,7 @@ const __schemas = Type.Module({
   firewall_status: Type.Literal("active"),
   firewall_package_definition: Type.Object({ description: Type.Ref("firewall_schemas_description"), detection_mode: Type.Ref("firewall_detection_mode"), id: Type.Ref("firewall_identifier"), name: Type.Ref("firewall_name"), status: Type.Optional(Type.Ref("firewall_status")), zone_id: Type.Ref("firewall_identifier") }, { additionalProperties: false }),
   firewall_sensitivity: Type.Union([Type.Literal("high"), Type.Literal("medium"), Type.Literal("low"), Type.Literal("off")]),
-  firewall_anomaly_package: Type.Intersect([Type.Ref("firewall_package_definition"), Type.Partial(Type.Object({ action_mode: Type.Ref("firewall_action_mode"), description: Type.Ref("firewall_anomaly_description"), detection_mode: Type.Ref("firewall_anomaly_detection_mode"), name: Type.Ref("firewall_anomaly_name"), sensitivity: Type.Ref("firewall_sensitivity") }, { additionalProperties: false }))]),
+  firewall_anomaly_package: Type.Composite([Type.Ref("firewall_package_definition"), Type.Partial(Type.Object({ action_mode: Type.Ref("firewall_action_mode"), description: Type.Ref("firewall_anomaly_description"), detection_mode: Type.Ref("firewall_anomaly_detection_mode"), name: Type.Ref("firewall_anomaly_name"), sensitivity: Type.Ref("firewall_sensitivity") }, { additionalProperties: false }))], { additionalProperties: false }),
   firewall_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   firewall_api_response_common: Type.Object({ errors: Type.Ref("firewall_messages"), messages: Type.Ref("firewall_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.Record(Type.String(), Type.Unknown())), Type.String()]), success: Type.Literal(true) }, { additionalProperties: false }),
   firewall_result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() }, { additionalProperties: false })),
@@ -2393,7 +2393,7 @@ const __schemas = Type.Module({
   firewall_ref: Type.String({ maxLength: 50 }),
   firewall_filter_rule_base: Type.Partial(Type.Object({ action: Type.Ref("firewall_schemas_action"), description: Type.Ref("firewall_firewall_rules_components_schemas_description"), id: Type.Ref("firewall_firewall_rules_components_schemas_id"), paused: Type.Ref("firewall_components_schemas_paused"), priority: Type.Ref("firewall_components_schemas_priority"), products: Type.Ref("firewall_products"), ref: Type.Ref("firewall_ref") }, { additionalProperties: false })),
   firewall_filter_rule_response: Type.Intersect([Type.Ref("firewall_filter_rule_base"), Type.Partial(Type.Object({ filter: __typedOpenapiOneOf([Type.Ref("firewall_filter"), Type.Ref("firewall_deleted_filter")]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  firewall_filter_rule_update_request: Type.Intersect([Type.Ref("firewall_filter"), Type.Partial(Type.Object({ id: Type.Ref("firewall_filters_components_schemas_id") }, { additionalProperties: false }))]),
+  firewall_filter_rule_update_request: Type.Composite([Type.Ref("firewall_filter"), Type.Partial(Type.Object({ id: Type.Ref("firewall_filters_components_schemas_id") }, { additionalProperties: false }))], { additionalProperties: false }),
   firewall_filter_rules_response_collection: Type.Intersect([Type.Ref("firewall_api_response_collection"), Type.Object({ result: Type.Array(Type.Ref("firewall_filter_rule_response")) }, { additionalProperties: false })]),
   firewall_filter_rules_response_collection_delete: Type.Intersect([Type.Ref("firewall_api_response_collection"), Type.Object({ result: Type.Array(Type.Ref("firewall_filter_rule_response")) }, { additionalProperties: false })]),
   firewall_filter_rules_single_response: Type.Intersect([Type.Ref("firewall_api_response_single"), Type.Object({ result: Type.Ref("firewall_filter_rule_response") }, { additionalProperties: false })]),
@@ -2593,7 +2593,7 @@ const __schemas = Type.Module({
   iam_oauth_client_common: Type.Partial(Type.Object({ allowed_cors_origins: Type.Array(Type.String()), client_name: Type.String(), client_uri: Type.String(), grant_types: Type.Ref("iam_oauth_client_grant_types"), logo_uri: Type.String(), policy_uri: Type.String(), post_logout_redirect_uris: Type.Array(Type.String()), redirect_uris: Type.Array(Type.String()), response_types: Type.Ref("iam_oauth_client_response_types"), scopes: Type.Array(Type.String()), token_endpoint_auth_method: Type.Ref("iam_oauth_client_token_endpoint_auth_method"), tos_uri: Type.String() }, { additionalProperties: false })),
   iam_oauth_client_identifier: Type.String(),
   iam_oauth_client_uri_verification: Type.Partial(Type.Object({ status: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("verified"), Type.Literal("failed")]), text: Type.String() }, { additionalProperties: false })),
-  iam_oauth_client: Type.Intersect([Type.Ref("iam_oauth_client_common"), Type.Object({ client_id: Type.Ref("iam_oauth_client_identifier"), client_uri_verification: Type.Optional(Type.Ref("iam_oauth_client_uri_verification")), created_at: Type.Optional(Type.String({ format: "date-time" })), has_rotated_secret: Type.Optional(Type.Boolean()), promoted_at: Type.Optional(Type.String({ format: "date-time" })), updated_at: Type.Optional(Type.String({ format: "date-time" })), visibility: Type.Union([Type.Literal("public"), Type.Literal("private")]) }, { additionalProperties: false })]),
+  iam_oauth_client: Type.Composite([Type.Ref("iam_oauth_client_common"), Type.Object({ client_id: Type.Ref("iam_oauth_client_identifier"), client_uri_verification: Type.Optional(Type.Ref("iam_oauth_client_uri_verification")), created_at: Type.Optional(Type.String({ format: "date-time" })), has_rotated_secret: Type.Optional(Type.Boolean()), promoted_at: Type.Optional(Type.String({ format: "date-time" })), updated_at: Type.Optional(Type.String({ format: "date-time" })), visibility: Type.Union([Type.Literal("public"), Type.Literal("private")]) }, { additionalProperties: false })], { additionalProperties: false }),
   iam_collection_oauth_client_response: Type.Intersect([Type.Ref("iam_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("iam_oauth_client")) }, { additionalProperties: false }))]),
   iam_oauth_scope: Type.Object({ category: Type.Optional(Type.String()), id: Type.String(), name: Type.String(), scopes: Type.Optional(Type.Array(Type.String())) }, { additionalProperties: false }),
   iam_collection_oauth_scopes_response: Type.Intersect([Type.Ref("iam_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("iam_oauth_scope")) }, { additionalProperties: false }))]),
@@ -2652,7 +2652,7 @@ const __schemas = Type.Module({
   iam_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   iam_oauth_client_create_request: Type.Intersect([Type.Ref("iam_oauth_client_common"), Type.Record(Type.String(), Type.Unknown())]),
   iam_oauth_client_rotate_secret_response: Type.Intersect([Type.Ref("iam_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ client_secret: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  iam_oauth_client_update_request: Type.Intersect([Type.Ref("iam_oauth_client_common"), Type.Partial(Type.Object({ visibility: Type.Literal("public") }, { additionalProperties: false }))]),
+  iam_oauth_client_update_request: Type.Composite([Type.Ref("iam_oauth_client_common"), Type.Partial(Type.Object({ visibility: Type.Literal("public") }, { additionalProperties: false }))], { additionalProperties: false }),
   iam_oauth_client_with_secret: Type.Intersect([Type.Ref("iam_oauth_client"), Type.Partial(Type.Object({ client_secret: Type.String() }, { additionalProperties: false }))]),
   iam_permissions_group_response_collection: Type.Intersect([Type.Ref("iam_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ category: Type.Union([Type.Literal("developer_platform"), Type.Literal("ai_and_machine_learning"), Type.Literal("dns_and_zones"), Type.Literal("app_security"), Type.Literal("rules_and_configuration"), Type.Literal("cloudflare_one_and_zero_trust"), Type.Literal("analytics_and_logs"), Type.Literal("network_services"), Type.Literal("media"), Type.Literal("email_and_messaging"), Type.Literal("cache_and_performance"), Type.Literal("account_and_billing"), Type.Literal("other")]), id: Type.String(), name: Type.String(), scopes: Type.Array(Type.Union([Type.Literal("com.cloudflare.api.account"), Type.Literal("com.cloudflare.api.account.zone"), Type.Literal("com.cloudflare.api.user"), Type.Literal("com.cloudflare.edge.r2.bucket")])) }, { additionalProperties: false }))) }, { additionalProperties: false }))]),
   iam_properties_name: Type.String({ maxLength: 100 }),
@@ -2709,7 +2709,7 @@ const __schemas = Type.Module({
   iam_single_organization_response: Type.Intersect([Type.Ref("iam_api_response_single"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
   iam_single_permission_groups_response: Type.Intersect([Type.Ref("iam_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("iam_permission_group") }, { additionalProperties: false }))]),
   iam_single_role_response: Type.Intersect([Type.Ref("iam_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("iam_role") }, { additionalProperties: false }))]),
-  iam_token_with_value: Type.Intersect([Type.Ref("iam_token_base"), Type.Partial(Type.Object({ value: Type.Ref("iam_value") }, { additionalProperties: false }))]),
+  iam_token_with_value: Type.Composite([Type.Ref("iam_token_base"), Type.Partial(Type.Object({ value: Type.Ref("iam_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   iam_single_token_create_response: Type.Intersect([Type.Ref("iam_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("iam_token_with_value") }, { additionalProperties: false }))]),
   iam_single_token_response: Type.Intersect([Type.Ref("iam_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("iam_token_base") }, { additionalProperties: false }))]),
   iam_telephone: Type.Union([Type.String({ maxLength: 20 }), Type.Null()]),
@@ -2727,7 +2727,7 @@ const __schemas = Type.Module({
   iam_unit_identifier: Type.String(),
   iam_update_member_with_policies: Type.Object({ policies: Type.Array(Type.Ref("iam_create_member_policy")) }, { additionalProperties: false }),
   iam_update_member_with_roles: Type.Partial(Type.Object({ id: Type.Ref("iam_membership_components_schemas_identifier"), roles: Type.Array(Type.Ref("iam_role")), status: Type.Union([Type.Literal("accepted"), Type.Literal("pending")]), user: Type.Object({ email: Type.Ref("iam_email"), first_name: Type.Optional(Type.Ref("iam_first_name")), id: Type.Optional(Type.Ref("iam_common_components_schemas_identifier")), last_name: Type.Optional(Type.Ref("iam_last_name")), two_factor_authentication_enabled: Type.Optional(Type.Ref("iam_two_factor_authentication_enabled")) }, { additionalProperties: false }) }, { additionalProperties: false })),
-  iam_update_user_group_body: Type.Partial(Type.Object({ name: Type.String(), policies: Type.Array(Type.Intersect([Type.Object({ id: Type.String() }, { additionalProperties: false }), Type.Ref("iam_user_group_policy_write_body")])) }, { additionalProperties: false })),
+  iam_update_user_group_body: Type.Partial(Type.Object({ name: Type.String(), policies: Type.Array(Type.Composite([Type.Object({ id: Type.String() }, { additionalProperties: false }), Type.Ref("iam_user_group_policy_write_body")], { additionalProperties: false })) }, { additionalProperties: false })),
   iam_user_group_identifier: Type.Ref("iam_common_components_schemas_identifier"),
   iam_user_group: Type.Object({ created_on: Type.String({ format: "date-time" }), id: Type.Ref("iam_user_group_identifier"), modified_on: Type.String({ format: "date-time" }), name: Type.String(), policies: Type.Optional(Type.Array(Type.Partial(Type.Object({ access: Type.Ref("iam_access"), id: Type.Ref("iam_policy_identifier"), permission_groups: Type.Ref("iam_permission_groups"), resource_groups: Type.Ref("iam_resource_groups") }, { additionalProperties: false })))) }, { additionalProperties: false }),
   iam_user_group_member: Type.Object({ email: Type.Optional(Type.Ref("iam_email")), id: Type.String(), status: Type.Optional(Type.Union([Type.Literal("accepted"), Type.Literal("pending")])) }, { additionalProperties: false }),
@@ -2762,7 +2762,7 @@ const __schemas = Type.Module({
   images_image_key_value: Type.String(),
   images_image_keys: Type.Partial(Type.Object({ name: Type.Ref("images_image_key_name"), value: Type.Ref("images_image_key_value") }, { additionalProperties: false })),
   images_image_keys_response: Type.Partial(Type.Object({ keys: Type.Array(Type.Ref("images_image_keys")) }, { additionalProperties: false })),
-  images_image_key_response_collection: Type.Intersect([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("images_image_keys_response") }, { additionalProperties: false }))]),
+  images_image_key_response_collection: Type.Composite([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("images_image_keys_response") }, { additionalProperties: false }))], { additionalProperties: false }),
   images_image_patch_request: Type.Partial(Type.Object({ creator: Type.String(), metadata: Type.Record(Type.String(), Type.Unknown()), requireSignedURLs: Type.Boolean() }, { additionalProperties: false })),
   images_image_response_blob: Type.Union([Type.String(), Type.Record(Type.String(), Type.Unknown())]),
   images_image_response_single: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("images_image") }, { additionalProperties: false }))]),
@@ -2777,11 +2777,11 @@ const __schemas = Type.Module({
   images_image_variant_flat_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("images_image_variant_definition") }, { additionalProperties: false }))]),
   images_image_variant_public_request: Type.Partial(Type.Object({ hero: Type.Object({ id: Type.Ref("images_image_variant_identifier"), neverRequireSignedURLs: Type.Optional(Type.Ref("images_image_variant_neverRequireSignedURLs")), options: Type.Ref("images_image_variant_options") }, { additionalProperties: false }) }, { additionalProperties: false })),
   images_image_variants_response: Type.Partial(Type.Object({ variants: Type.Ref("images_image_variant_public_request") }, { additionalProperties: false })),
-  images_image_variant_list_response: Type.Intersect([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("images_image_variants_response") }, { additionalProperties: false }))]),
+  images_image_variant_list_response: Type.Composite([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("images_image_variants_response") }, { additionalProperties: false }))], { additionalProperties: false }),
   images_image_variant_patch_request: Type.Object({ neverRequireSignedURLs: Type.Optional(Type.Ref("images_image_variant_neverRequireSignedURLs")), options: Type.Ref("images_image_variant_options") }, { additionalProperties: false }),
   images_image_variant_response: Type.Partial(Type.Object({ variant: Type.Ref("images_image_variant_definition") }, { additionalProperties: false })),
   images_image_variant_simple_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("images_image_variant_response") }, { additionalProperties: false }))]),
-  images_images_list_response: Type.Intersect([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ images: Type.Array(Type.Ref("images_image")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  images_images_list_response: Type.Composite([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ images: Type.Array(Type.Ref("images_image")) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   images_images_list_response_v2: Type.Intersect([Type.Ref("images_api_response_collection_v2"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ images: Type.Array(Type.Ref("images_image")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   images_images_stats_allowed: Type.Number(),
   images_images_stats_current: Type.Number(),
@@ -2799,16 +2799,16 @@ const __schemas = Type.Module({
   images_sourcingkit_migration: Type.Partial(Type.Object({ conflictBehaviour: Type.Ref("images_sourcingkit_conflict_behaviour"), createdAt: Type.String({ format: "date-time" }), endedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), excludedContentTypes: Type.Union([Type.Array(Type.Ref("images_sourcingkit_acceptable_content_type")), Type.Null()]), id: Type.String({ format: "uuid" }), imagesPathPrefix: Type.Union([Type.String(), Type.Null()]), logStopped: Type.Boolean(), pathPrefix: Type.Union([Type.String(), Type.Null()]), rootDirectory: Type.Union([Type.String(), Type.Null()]), sourceId: Type.Union([Type.String({ format: "uuid" }), Type.Null()]), startedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), status: Type.Ref("images_sourcingkit_migration_status") }, { additionalProperties: false })),
   images_sourcingkit_migration_create_request: Type.Object({ conflictBehaviour: Type.Optional(Type.Ref("images_sourcingkit_conflict_behaviour")), excludedContentTypes: Type.Optional(Type.Array(Type.Ref("images_sourcingkit_acceptable_content_type"))), pathPrefix: Type.Optional(Type.String({ minLength: 1, maxLength: 128 })), rootDirectory: Type.Optional(Type.String({ minLength: 1, maxLength: 128 })), sourceId: Type.String({ format: "uuid" }) }, { additionalProperties: false }),
   images_sourcingkit_migration_create_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.String({ format: "uuid" }) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  images_sourcingkit_migration_list_response: Type.Intersect([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ migrations: Type.Array(Type.Ref("images_sourcingkit_migration")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  images_sourcingkit_migration_list_response: Type.Composite([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ migrations: Type.Array(Type.Ref("images_sourcingkit_migration")) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   images_sourcingkit_migration_log_type: Type.Union([Type.Literal("default"), Type.Literal("importSkippedUnsupportedContentType"), Type.Literal("importSkippedExcludedContentType"), Type.Literal("importSkippedInvalidMedia"), Type.Literal("importErrorRetryExhaustion"), Type.Literal("importSkippedOversized"), Type.Literal("migrationErrorFailedContinuation"), Type.Literal("migrationStart"), Type.Literal("migrationAbort"), Type.Literal("migrationError"), Type.Literal("migrationComplete"), Type.Literal("importSkippedStorageClass")]),
   images_sourcingkit_migration_log: Type.Partial(Type.Object({ createdAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), logType: Type.Ref("images_sourcingkit_migration_log_type"), msg: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false })),
-  images_sourcingkit_migration_log_list_response: Type.Intersect([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ logs: Type.Array(Type.Ref("images_sourcingkit_migration_log")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  images_sourcingkit_migration_log_list_response: Type.Composite([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ logs: Type.Array(Type.Ref("images_sourcingkit_migration_log")) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   images_sourcingkit_migration_progress_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ endedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), importErrorsCount: Type.Integer(), importSuccessCount: Type.Integer(), isAccurate: Type.Boolean(), scannedCount: Type.Integer(), skippedConflictCount: Type.Integer(), skippedExcludedContentTypeCount: Type.Integer(), skippedInvalidMediaCount: Type.Integer(), skippedInvalidNameCount: Type.Integer(), skippedOversizeCount: Type.Integer(), skippedStorageClassCount: Type.Integer(), skippedUnsupportedContentTypeCount: Type.Integer(), startedAt: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), status: Type.Ref("images_sourcingkit_migration_status") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   images_sourcingkit_migration_single_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("images_sourcingkit_migration") }, { additionalProperties: false }))]),
   images_sourcingkit_source: Type.Partial(Type.Object({ bucket: Type.String(), createdAt: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), name: Type.String(), region: Type.Union([Type.String(), Type.Null()]), updatedAt: Type.String({ format: "date-time" }), vendor: Type.Ref("images_sourcingkit_vendor") }, { additionalProperties: false })),
   images_sourcingkit_source_create_request: Type.Object({ account: Type.Optional(Type.String()), bucket: Type.String({ minLength: 1, maxLength: 128 }), name: Type.String({ minLength: 1, maxLength: 128 }), secret: Type.Record(Type.String(), Type.Unknown()), vendor: Type.Ref("images_sourcingkit_vendor") }, { additionalProperties: false }),
   images_sourcingkit_source_create_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.String({ format: "uuid" }) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  images_sourcingkit_source_list_response: Type.Intersect([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ sources: Type.Array(Type.Ref("images_sourcingkit_source")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  images_sourcingkit_source_list_response: Type.Composite([Type.Ref("images_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ sources: Type.Array(Type.Ref("images_sourcingkit_source")) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   images_sourcingkit_source_single_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("images_sourcingkit_source") }, { additionalProperties: false }))]),
   images_sourcingkit_source_update_request: Type.Object({ name: Type.String({ minLength: 1, maxLength: 128 }) }, { additionalProperties: false }),
   images_sourcingkit_source_update_response: Type.Intersect([Type.Ref("images_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.String({ format: "uuid" }) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
@@ -2823,8 +2823,8 @@ const __schemas = Type.Module({
   infra_ServiceHost: __typedOpenapiOneOf([Type.Ref("infra_IPv4Host"), Type.Ref("infra_IPv6Host"), Type.Ref("infra_DualStackHost"), Type.Ref("infra_HostnameHost")]),
   infra_ServiceType: Type.Union([Type.Literal("tcp"), Type.Literal("http")]),
   infra_ServiceCommon: Type.Object({ created_at: Type.Optional(Type.String({ format: "date-time" })), host: Type.Ref("infra_ServiceHost"), name: Type.String(), service_id: Type.Optional(Type.String({ format: "uuid" })), tls_settings: Type.Optional(Type.Union([Type.Intersect([Type.Ref("infra_ApiTlsSettings"), Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), Type.Null()])), type: Type.Ref("infra_ServiceType"), updated_at: Type.Optional(Type.String({ format: "date-time" })) }, { additionalProperties: false }),
-  infra_HttpServiceConfig: Type.Intersect([Type.Ref("infra_ServiceCommon"), Type.Partial(Type.Object({ http_port: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]), https_port: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]) }, { additionalProperties: false }))]),
-  infra_TcpServiceConfig: Type.Intersect([Type.Ref("infra_ServiceCommon"), Type.Partial(Type.Object({ app_protocol: Type.Union([Type.Union([Type.Literal("postgresql"), Type.Literal("mysql")]), Type.Null()]), tcp_port: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]) }, { additionalProperties: false }))]),
+  infra_HttpServiceConfig: Type.Composite([Type.Ref("infra_ServiceCommon"), Type.Partial(Type.Object({ http_port: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]), https_port: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
+  infra_TcpServiceConfig: Type.Composite([Type.Ref("infra_ServiceCommon"), Type.Partial(Type.Object({ app_protocol: Type.Union([Type.Union([Type.Literal("postgresql"), Type.Literal("mysql")]), Type.Null()]), tcp_port: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   infra_ServiceConfig: __typedOpenapiOneOf([Type.Ref("infra_HttpServiceConfig"), Type.Ref("infra_TcpServiceConfig")]),
   infra_ConnectivityServiceArray: Type.Array(Type.Ref("infra_ServiceConfig")),
   infra_IPInfo: Type.Partial(Type.Object({ ipv4: Type.Partial(Type.Object({ ip_addr: Type.String(), virtual_network_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })), ipv6: Type.Partial(Type.Object({ ip_addr: Type.String(), virtual_network_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })) }, { additionalProperties: false })),
@@ -2841,16 +2841,16 @@ const __schemas = Type.Module({
   intel_sinkholes_api_response_common: Type.Object({ errors: Type.Ref("intel_sinkholes_messages"), messages: Type.Ref("intel_sinkholes_messages"), success: Type.Literal(true) }, { additionalProperties: false }),
   intel_sinkholes_api_response_common_failure: Type.Object({ errors: Type.Ref("intel_sinkholes_messages"), messages: Type.Ref("intel_sinkholes_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   intel_sinkholes_api_response_common_failure_schemas: Type.Ref("intel_sinkholes_api_response_common_failure"),
-  intel_sinkholes_api_response_single_empty: Type.Intersect([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
+  intel_sinkholes_api_response_single_empty: Type.Composite([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))], { additionalProperties: false }),
   intel_sinkholes_identifier: Type.String({ maxLength: 32 }),
   intel_sinkholes_ingress_item: Type.Partial(Type.Object({ cidr: Type.String(), created_on: Type.String({ format: "date-time" }), id: Type.String(), modified_on: Type.String({ format: "date-time" }), sinkhole_id: Type.String(), zone_tag: Type.String() }, { additionalProperties: false })),
-  intel_sinkholes_ingress_collection_response: Type.Intersect([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("intel_sinkholes_ingress_item")) }, { additionalProperties: false }))]),
+  intel_sinkholes_ingress_collection_response: Type.Composite([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("intel_sinkholes_ingress_item")) }, { additionalProperties: false }))], { additionalProperties: false }),
   intel_sinkholes_ingress_create_params: Type.Object({ cidr: Type.String() }, { additionalProperties: false }),
-  intel_sinkholes_ingress_single_response: Type.Intersect([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("intel_sinkholes_ingress_item") }, { additionalProperties: false }))]),
+  intel_sinkholes_ingress_single_response: Type.Composite([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("intel_sinkholes_ingress_item") }, { additionalProperties: false }))], { additionalProperties: false }),
   intel_sinkholes_sinkhole_item: Type.Partial(Type.Object({ account_tag: Type.String(), created_on: Type.String({ format: "date-time" }), id: Type.String(), modified_on: Type.String({ format: "date-time" }), name: Type.String(), r2_bucket: Type.String(), r2_id: Type.String() }, { additionalProperties: false })),
-  intel_sinkholes_sinkhole_collection_response: Type.Intersect([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("intel_sinkholes_sinkhole_item")) }, { additionalProperties: false }))]),
+  intel_sinkholes_sinkhole_collection_response: Type.Composite([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("intel_sinkholes_sinkhole_item")) }, { additionalProperties: false }))], { additionalProperties: false }),
   intel_sinkholes_sinkhole_create_params: Type.Object({ name: Type.String(), r2_bucket: Type.Optional(Type.String()), r2_id: Type.Optional(Type.String()), r2_secret: Type.Optional(Type.String()) }, { additionalProperties: false }),
-  intel_sinkholes_sinkhole_single_response: Type.Intersect([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("intel_sinkholes_sinkhole_item") }, { additionalProperties: false }))]),
+  intel_sinkholes_sinkhole_single_response: Type.Composite([Type.Ref("intel_sinkholes_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("intel_sinkholes_sinkhole_item") }, { additionalProperties: false }))], { additionalProperties: false }),
   intel_additional_information: Type.Partial(Type.Object({ suspected_malware_family: Type.String() }, { additionalProperties: false })),
   intel_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   intel_api_response_common: Type.Object({ errors: Type.Ref("intel_messages"), messages: Type.Ref("intel_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Array(__typedOpenapiOneOf([Type.String(), Type.Record(Type.String(), Type.Unknown())])), Type.String()]), success: Type.Literal(true) }, { additionalProperties: false }),
@@ -2926,7 +2926,7 @@ const __schemas = Type.Module({
   lex_LogField: Type.Object({ enabled: Type.Boolean(), name: Type.String() }, { additionalProperties: false }),
   lex_CreateDatasetRequest: Type.Object({ dataset: Type.String(), fields: Type.Optional(Type.Array(Type.Ref("lex_LogField"))) }, { additionalProperties: false }),
   lex_DatasetSummary: Type.Object({ created_at: Type.String({ format: "date-time" }), dataset: Type.String(), dataset_id: Type.String({ pattern: "^[a-f0-9]{32}$" }), enabled: Type.Boolean(), object_id: Type.String(), object_type: Type.Union([Type.Literal("account"), Type.Literal("zone")]), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
-  lex_DatasetResponse: Type.Intersect([Type.Ref("lex_DatasetSummary"), Type.Partial(Type.Object({ fields: Type.Array(Type.Ref("lex_LogField")) }, { additionalProperties: false }))]),
+  lex_DatasetResponse: Type.Composite([Type.Ref("lex_DatasetSummary"), Type.Partial(Type.Object({ fields: Type.Array(Type.Ref("lex_LogField")) }, { additionalProperties: false }))], { additionalProperties: false }),
   lex_DatasetDetailResponse: Type.Object({ errors: Type.Array(Type.Ref("lex_V4Error_2")), messages: Type.Array(Type.String()), result: Type.Optional(Type.Ref("lex_DatasetResponse")), success: Type.Boolean() }, { additionalProperties: false }),
   lex_DatasetSummaryListResponse: Type.Object({ errors: Type.Array(Type.Ref("lex_V4Error_2")), messages: Type.Array(Type.String()), result: Type.Optional(Type.Union([Type.Array(Type.Ref("lex_DatasetSummary")), Type.Null()])), success: Type.Boolean() }, { additionalProperties: false }),
   lex_V4Error: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false }),
@@ -2946,7 +2946,7 @@ const __schemas = Type.Module({
   lists_bulk_operation_completed: Type.Object({ completed: Type.Ref("lists_completed"), id: Type.Ref("lists_operation_id"), status: Type.Literal("completed") }, { additionalProperties: false }),
   lists_bulk_operation_failed: Type.Object({ completed: Type.Ref("lists_completed"), error: Type.String(), id: Type.Ref("lists_operation_id"), status: Type.Literal("failed") }, { additionalProperties: false }),
   lists_operation: __typedOpenapiOneOf([Type.Ref("lists_bulk_operation_pending_or_running"), Type.Ref("lists_bulk_operation_completed"), Type.Ref("lists_bulk_operation_failed")]),
-  lists_bulk_operation_response_single: Type.Intersect([Type.Partial(Type.Object({ result: Type.Ref("lists_operation") }, { additionalProperties: false })), Type.Ref("lists_api_response_common")]),
+  lists_bulk_operation_response_single: Type.Composite([Type.Partial(Type.Object({ result: Type.Ref("lists_operation") }, { additionalProperties: false })), Type.Ref("lists_api_response_common")], { additionalProperties: false }),
   lists_created_on: Type.String(),
   lists_description: Type.String({ maxLength: 500 }),
   lists_item_ip: Type.String(),
@@ -2955,25 +2955,25 @@ const __schemas = Type.Module({
   lists_item_id: Type.String({ minLength: 32, maxLength: 32 }),
   lists_modified_on: Type.String(),
   lists_item_base: Type.Object({ comment: Type.Optional(Type.Ref("lists_item_comment")), created_on: Type.Ref("lists_created_on"), id: Type.Ref("lists_item_id"), modified_on: Type.Ref("lists_modified_on") }, { additionalProperties: false }),
-  lists_list_item_ip_full: Type.Intersect([Type.Ref("lists_list_item_ip_object"), Type.Ref("lists_item_base")]),
+  lists_list_item_ip_full: Type.Composite([Type.Ref("lists_list_item_ip_object"), Type.Ref("lists_item_base")], { additionalProperties: false }),
   lists_item_hostname: Type.Object({ exclude_exact_hostname: Type.Optional(Type.Boolean()), url_hostname: Type.String() }, { additionalProperties: false }),
   lists_list_item_hostname_object: Type.Object({ hostname: Type.Ref("lists_item_hostname") }, { additionalProperties: false }),
-  lists_list_item_hostname_full: Type.Intersect([Type.Ref("lists_list_item_hostname_object"), Type.Ref("lists_item_base")]),
+  lists_list_item_hostname_full: Type.Composite([Type.Ref("lists_list_item_hostname_object"), Type.Ref("lists_item_base")], { additionalProperties: false }),
   lists_item_redirect: Type.Object({ include_subdomains: Type.Optional(Type.Boolean()), preserve_path_suffix: Type.Optional(Type.Boolean()), preserve_query_string: Type.Optional(Type.Boolean()), source_url: Type.String(), status_code: Type.Optional(Type.Union([Type.Literal(301), Type.Literal(302), Type.Literal(307), Type.Literal(308)])), subpath_matching: Type.Optional(Type.Boolean()), target_url: Type.String() }, { additionalProperties: false }),
   lists_list_item_redirect_object: Type.Object({ redirect: Type.Ref("lists_item_redirect") }, { additionalProperties: false }),
-  lists_list_item_redirect_full: Type.Intersect([Type.Ref("lists_list_item_redirect_object"), Type.Ref("lists_item_base")]),
+  lists_list_item_redirect_full: Type.Composite([Type.Ref("lists_list_item_redirect_object"), Type.Ref("lists_item_base")], { additionalProperties: false }),
   lists_item_asn: Type.Integer(),
   lists_list_item_asn_object: Type.Object({ asn: Type.Ref("lists_item_asn") }, { additionalProperties: false }),
-  lists_list_item_asn_full: Type.Intersect([Type.Ref("lists_list_item_asn_object"), Type.Ref("lists_item_base")]),
+  lists_list_item_asn_full: Type.Composite([Type.Ref("lists_list_item_asn_object"), Type.Ref("lists_item_base")], { additionalProperties: false }),
   lists_item: __typedOpenapiOneOf([Type.Ref("lists_list_item_ip_full"), Type.Ref("lists_list_item_hostname_full"), Type.Ref("lists_list_item_redirect_full"), Type.Ref("lists_list_item_asn_full")]),
-  lists_item_response_single: Type.Intersect([Type.Partial(Type.Object({ result: Type.Ref("lists_item") }, { additionalProperties: false })), Type.Ref("lists_api_response_common")]),
+  lists_item_response_single: Type.Composite([Type.Partial(Type.Object({ result: Type.Ref("lists_item") }, { additionalProperties: false })), Type.Ref("lists_api_response_common")], { additionalProperties: false }),
   lists_item_comment_object: Type.Partial(Type.Object({ comment: Type.Ref("lists_item_comment") }, { additionalProperties: false })),
   lists_items: Type.Array(Type.Ref("lists_item")),
   lists_items_list_response_collection: Type.Intersect([Type.Partial(Type.Object({ result: Type.Ref("lists_items"), result_info: Type.Partial(Type.Object({ cursors: Type.Partial(Type.Object({ after: Type.String(), before: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })) }, { additionalProperties: false })), Type.Ref("lists_api_response_collection")]),
-  lists_list_item_ip_comment: Type.Intersect([Type.Ref("lists_list_item_ip_object"), Type.Ref("lists_item_comment_object")]),
-  lists_list_item_redirect_comment: Type.Intersect([Type.Ref("lists_list_item_redirect_object"), Type.Ref("lists_item_comment_object")]),
-  lists_list_item_hostname_comment: Type.Intersect([Type.Ref("lists_list_item_hostname_object"), Type.Ref("lists_item_comment_object")]),
-  lists_list_item_asn_comment: Type.Intersect([Type.Ref("lists_list_item_asn_object"), Type.Ref("lists_item_comment_object")]),
+  lists_list_item_ip_comment: Type.Composite([Type.Ref("lists_list_item_ip_object"), Type.Ref("lists_item_comment_object")], { additionalProperties: false }),
+  lists_list_item_redirect_comment: Type.Composite([Type.Ref("lists_list_item_redirect_object"), Type.Ref("lists_item_comment_object")], { additionalProperties: false }),
+  lists_list_item_hostname_comment: Type.Composite([Type.Ref("lists_list_item_hostname_object"), Type.Ref("lists_item_comment_object")], { additionalProperties: false }),
+  lists_list_item_asn_comment: Type.Composite([Type.Ref("lists_list_item_asn_object"), Type.Ref("lists_item_comment_object")], { additionalProperties: false }),
   lists_items_update_request_collection: Type.Array(__typedOpenapiOneOf([Type.Ref("lists_list_item_ip_comment"), Type.Ref("lists_list_item_redirect_comment"), Type.Ref("lists_list_item_hostname_comment"), Type.Ref("lists_list_item_asn_comment")])),
   lists_kind: Type.Union([Type.Literal("ip"), Type.Literal("redirect"), Type.Literal("hostname"), Type.Literal("asn")]),
   lists_list_id: Type.String({ minLength: 32, maxLength: 32 }),
@@ -3071,15 +3071,15 @@ const __schemas = Type.Module({
   load_balancing_timeout: Type.Integer(),
   load_balancing_type: Type.Union([Type.Literal("http"), Type.Literal("https"), Type.Literal("tcp"), Type.Literal("udp_icmp"), Type.Literal("icmp_ping"), Type.Literal("smtp")]),
   load_balancing_monitor_editable: Type.Partial(Type.Object({ allow_insecure: Type.Ref("load_balancing_allow_insecure"), consecutive_down: Type.Ref("load_balancing_consecutive_down"), consecutive_up: Type.Ref("load_balancing_consecutive_up"), description: Type.Ref("load_balancing_description"), expected_body: Type.Ref("load_balancing_expected_body"), expected_codes: Type.Ref("load_balancing_expected_codes"), follow_redirects: Type.Ref("load_balancing_follow_redirects"), header: Type.Ref("load_balancing_header"), interval: Type.Ref("load_balancing_interval"), method: Type.Ref("load_balancing_method"), path: Type.Ref("load_balancing_path"), port: Type.Ref("load_balancing_port"), probe_zone: Type.Ref("load_balancing_probe_zone"), retries: Type.Ref("load_balancing_retries"), timeout: Type.Ref("load_balancing_timeout"), type: Type.Ref("load_balancing_type") }, { additionalProperties: false })),
-  load_balancing_monitor: Type.Intersect([Type.Ref("load_balancing_monitor_editable"), Type.Partial(Type.Object({ created_on: Type.Ref("load_balancing_timestamp"), id: Type.Ref("load_balancing_identifier"), modified_on: Type.Ref("load_balancing_timestamp") }, { additionalProperties: false }))]),
+  load_balancing_monitor: Type.Composite([Type.Ref("load_balancing_monitor_editable"), Type.Partial(Type.Object({ created_on: Type.Ref("load_balancing_timestamp"), id: Type.Ref("load_balancing_identifier"), modified_on: Type.Ref("load_balancing_timestamp") }, { additionalProperties: false }))], { additionalProperties: false }),
   load_balancing_monitor_group_id: Type.String(),
   load_balancing_monitor_id: Type.String(),
   load_balancing_monitor_group_member: Type.Object({ created_at: Type.Optional(Type.String({ format: "date-time" })), enabled: Type.Boolean(), monitor_id: Type.Ref("load_balancing_monitor_id"), monitoring_only: Type.Boolean(), must_be_healthy: Type.Boolean(), updated_at: Type.Optional(Type.String({ format: "date-time" })) }, { additionalProperties: false }),
   load_balancing_monitor_group: Type.Object({ created_on: Type.Optional(Type.String({ format: "date-time" })), description: Type.String(), id: Type.Ref("load_balancing_monitor_group_id"), members: Type.Array(Type.Ref("load_balancing_monitor_group_member")), modified_on: Type.Optional(Type.String({ format: "date-time" })) }, { additionalProperties: false }),
-  load_balancing_monitor_group_references_response: Type.Intersect([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))]),
-  load_balancing_monitor_group_response_collection: Type.Intersect([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("load_balancing_monitor_group")), result_info: Type.Ref("load_balancing_result_info") }, { additionalProperties: false }))]),
-  load_balancing_monitor_group_single_response: Type.Intersect([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("load_balancing_monitor_group") }, { additionalProperties: false }))]),
-  load_balancing_monitor_references_response: Type.Intersect([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))]),
+  load_balancing_monitor_group_references_response: Type.Composite([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))], { additionalProperties: false }),
+  load_balancing_monitor_group_response_collection: Type.Composite([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("load_balancing_monitor_group")), result_info: Type.Ref("load_balancing_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
+  load_balancing_monitor_group_single_response: Type.Composite([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("load_balancing_monitor_group") }, { additionalProperties: false }))], { additionalProperties: false }),
+  load_balancing_monitor_references_response: Type.Composite([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))], { additionalProperties: false }),
   load_balancing_monitor_response_collection: Type.Intersect([Type.Ref("load_balancing_api_paginated_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("load_balancing_monitor")) }, { additionalProperties: false }))]),
   load_balancing_monitor_response_single: Type.Intersect([Type.Ref("load_balancing_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("load_balancing_monitor") }, { additionalProperties: false }))]),
   load_balancing_name: Type.String(),
@@ -3101,7 +3101,7 @@ const __schemas = Type.Module({
   load_balancing_schemas_identifier: Type.String(),
   load_balancing_pool: Type.Partial(Type.Object({ check_regions: Type.Ref("load_balancing_check_regions"), created_on: Type.Ref("load_balancing_timestamp"), description: Type.Ref("load_balancing_schemas_description"), disabled_at: Type.Ref("load_balancing_schemas_disabled_at"), enabled: Type.Ref("load_balancing_enabled"), id: Type.Ref("load_balancing_schemas_identifier"), latitude: Type.Ref("load_balancing_latitude"), load_shedding: Type.Ref("load_balancing_load_shedding"), longitude: Type.Ref("load_balancing_longitude"), minimum_origins: Type.Ref("load_balancing_minimum_origins"), modified_on: Type.Ref("load_balancing_timestamp"), monitor: Type.Ref("load_balancing_monitor_id"), monitor_group: Type.Ref("load_balancing_monitor_group_id"), name: Type.Ref("load_balancing_name"), networks: Type.Ref("load_balancing_networks"), notification_email: Type.Ref("load_balancing_notification_email"), notification_filter: Type.Ref("load_balancing_notification_filter"), origin_steering: Type.Ref("load_balancing_origin_steering"), origins: Type.Ref("load_balancing_origins") }, { additionalProperties: false })),
   load_balancing_pool_name: Type.String(),
-  load_balancing_pools_references_response: Type.Intersect([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))]),
+  load_balancing_pools_references_response: Type.Composite([Type.Ref("load_balancing_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))], { additionalProperties: false }),
   load_balancing_preview_id: Type.Unknown(),
   load_balancing_preview_response: Type.Intersect([Type.Ref("load_balancing_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ pools: Type.Record(Type.String(), Type.String()), preview_id: Type.Ref("load_balancing_identifier") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   load_balancing_preview_result: Type.Record(Type.String(), Type.Partial(Type.Object({ healthy: Type.Boolean(), origins: Type.Array(Type.Record(Type.String(), Type.Ref("load_balancing_origin_health_data"))) }, { additionalProperties: false }))),
@@ -3145,37 +3145,37 @@ const __schemas = Type.Module({
   logpush_dataset: Type.Union([Type.Union([Type.Literal("access_requests"), Type.Literal("audit_logs"), Type.Literal("audit_logs_v2"), Type.Literal("biso_user_actions"), Type.Literal("casb_findings"), Type.Literal("device_posture_results"), Type.Literal("dex_application_tests"), Type.Literal("dex_device_state_events"), Type.Literal("dlp_forensic_copies"), Type.Literal("dns_firewall_logs"), Type.Literal("dns_logs"), Type.Literal("email_security_alerts"), Type.Literal("email_security_post_delivery_events"), Type.Literal("firewall_events"), Type.Literal("gateway_dns"), Type.Literal("gateway_http"), Type.Literal("gateway_network"), Type.Literal("http_requests"), Type.Literal("ipsec_logs"), Type.Literal("magic_ids_detections"), Type.Literal("mcp_portal_logs"), Type.Literal("mnm_flow_logs"), Type.Literal("nel_reports"), Type.Literal("network_analytics_logs"), Type.Literal("page_shield_events"), Type.Literal("sinkhole_http_logs"), Type.Literal("spectrum_events"), Type.Literal("ssh_logs"), Type.Literal("turnstile_events"), Type.Literal("warp_config_changes"), Type.Literal("warp_toggle_changes"), Type.Literal("websocket_analytics"), Type.Literal("workers_trace_events"), Type.Literal("zaraz_events"), Type.Literal("zero_trust_network_sessions")]), Type.Null()]),
   logpush_destination_conf: Type.String({ format: "uri", maxLength: 4096 }),
   logpush_destination_conf_2: Type.String({ format: "uri", maxLength: 4096 }),
-  logpush_destination_exists_response: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ exists: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))]),
+  logpush_destination_exists_response: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ exists: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   logpush_enabled: Type.Boolean(),
   logpush_error_message: Type.Union([Type.String(), Type.Null()]),
   logpush_fields: Type.String(),
   logpush_filter: Type.Union([Type.String(), Type.Null()]),
   logpush_filter_2: Type.String(),
   logpush_frequency: Type.Union([Type.Union([Type.Literal("high"), Type.Literal("low")]), Type.Null()]),
-  logpush_get_ownership_response: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ filename: Type.String(), message: Type.String(), valid: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))]),
+  logpush_get_ownership_response: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ filename: Type.String(), message: Type.String(), valid: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   logpush_id: Type.Integer({ minimum: 1 }),
   logpush_identifier: Type.String({ maxLength: 32 }),
   logpush_sample: Type.Integer(),
   logpush_session_id: Type.String(),
   logpush_instant_logs_job: Type.Union([Type.Partial(Type.Object({ destination_conf: Type.Ref("logpush_destination_conf_2"), fields: Type.Ref("logpush_fields"), filter: Type.Ref("logpush_filter_2"), sample: Type.Ref("logpush_sample"), session_id: Type.Ref("logpush_session_id") }, { additionalProperties: false })), Type.Null()]),
-  logpush_instant_logs_job_response_collection: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("logpush_instant_logs_job")) }, { additionalProperties: false }))]),
+  logpush_instant_logs_job_response_collection: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("logpush_instant_logs_job")) }, { additionalProperties: false }))], { additionalProperties: false }),
   logpush_instant_logs_job_response_single: Type.Intersect([Type.Ref("logpush_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("logpush_instant_logs_job") }, { additionalProperties: false }))]),
   logpush_kind: Type.Union([Type.Literal(""), Type.Literal("edge")]),
   logpush_last_complete: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
   logpush_last_error: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
   logpush_logpull_options: Type.Union([Type.String({ format: "uri-reference", maxLength: 4096 }), Type.Null()]),
-  logpush_logpush_field_response_collection: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
+  logpush_logpush_field_response_collection: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))], { additionalProperties: false }),
   logpush_max_upload_bytes: Type.Union([__typedOpenapiOneOf([Type.Literal(0), Type.Integer({ minimum: 5000000, maximum: 1000000000 })]), Type.Null()]),
   logpush_max_upload_interval_seconds: Type.Union([__typedOpenapiOneOf([Type.Literal(0), Type.Integer({ minimum: 30, maximum: 300 })]), Type.Null()]),
   logpush_max_upload_records: Type.Union([__typedOpenapiOneOf([Type.Literal(0), Type.Integer({ minimum: 1000, maximum: 1000000 })]), Type.Null()]),
   logpush_name: Type.Union([Type.String({ maxLength: 512, pattern: "^[a-zA-Z0-9\\._-]*$" }), Type.Null()]),
   logpush_output_options: Type.Union([Type.Partial(Type.Object({ "CVE-2021-44228": Type.Union([Type.Boolean(), Type.Null()]), batch_prefix: Type.Union([Type.String(), Type.Null()]), batch_suffix: Type.Union([Type.String(), Type.Null()]), field_delimiter: Type.Union([Type.String(), Type.Null()]), field_names: Type.Array(Type.String()), merge_subrequests: Type.Union([Type.Boolean(), Type.Null()]), output_type: Type.Union([Type.Literal("ndjson"), Type.Literal("csv")]), record_delimiter: Type.Union([Type.String(), Type.Null()]), record_prefix: Type.Union([Type.String(), Type.Null()]), record_suffix: Type.Union([Type.String(), Type.Null()]), record_template: Type.Union([Type.String(), Type.Null()]), sample_rate: Type.Union([Type.Number({ minimum: 0, maximum: 1 }), Type.Null()]), timestamp_format: Type.Union([Type.Literal("unixnano"), Type.Literal("unix"), Type.Literal("rfc3339"), Type.Literal("rfc3339ms"), Type.Literal("rfc3339ns")]) }, { additionalProperties: false })), Type.Null()]),
   logpush_logpush_job: Type.Union([Type.Partial(Type.Object({ dataset: Type.Ref("logpush_dataset"), destination_conf: Type.Ref("logpush_destination_conf"), enabled: Type.Ref("logpush_enabled"), error_message: Type.Ref("logpush_error_message"), frequency: Type.Ref("logpush_frequency"), id: Type.Ref("logpush_id"), kind: Type.Ref("logpush_kind"), last_complete: Type.Ref("logpush_last_complete"), last_error: Type.Ref("logpush_last_error"), logpull_options: Type.Ref("logpush_logpull_options"), max_upload_bytes: Type.Ref("logpush_max_upload_bytes"), max_upload_interval_seconds: Type.Ref("logpush_max_upload_interval_seconds"), max_upload_records: Type.Ref("logpush_max_upload_records"), name: Type.Ref("logpush_name"), output_options: Type.Ref("logpush_output_options") }, { additionalProperties: false })), Type.Null()]),
-  logpush_logpush_job_response_collection: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("logpush_logpush_job")) }, { additionalProperties: false }))]),
+  logpush_logpush_job_response_collection: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("logpush_logpush_job")) }, { additionalProperties: false }))], { additionalProperties: false }),
   logpush_logpush_job_response_single: Type.Intersect([Type.Ref("logpush_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("logpush_logpush_job") }, { additionalProperties: false }))]),
   logpush_ownership_challenge: Type.String({ maxLength: 4096, pattern: "^[a-zA-Z0-9/\\+\\._-]*$" }),
-  logpush_validate_ownership_response: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ valid: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))]),
-  logpush_validate_response: Type.Intersect([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ message: Type.String(), valid: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))]),
+  logpush_validate_ownership_response: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ valid: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
+  logpush_validate_response: Type.Composite([Type.Ref("logpush_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ message: Type.String(), valid: Type.Boolean() }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   logshare_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
   logshare_api_response_common_failure: Type.Object({ errors: Type.Ref("logshare_messages"), messages: Type.Ref("logshare_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   logshare_count: Type.Integer({ minimum: 1 }),
@@ -3218,8 +3218,8 @@ const __schemas = Type.Module({
   magic_transit_endpoint_health_check: Type.Object({ check_type: Type.Ref("magic_transit_check_type"), endpoint: Type.String(), name: Type.Optional(Type.String()) }, { additionalProperties: false }),
   magic_transit_uuid: Type.String({ maxLength: 36 }),
   magic_transit_endpoint_health_check_response: Type.Intersect([Type.Ref("magic_transit_endpoint_health_check"), Type.Partial(Type.Object({ id: Type.Ref("magic_transit_uuid") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
-  magic_transit_endpoint_health_check_response_collection: Type.Intersect([Type.Ref("magic_transit_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_transit_endpoint_health_check_response")) }, { additionalProperties: false }))]),
-  magic_transit_endpoint_health_check_response_single: Type.Intersect([Type.Ref("magic_transit_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("magic_transit_endpoint_health_check_response") }, { additionalProperties: false }))]),
+  magic_transit_endpoint_health_check_response_collection: Type.Composite([Type.Ref("magic_transit_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_transit_endpoint_health_check_response")) }, { additionalProperties: false }))], { additionalProperties: false }),
+  magic_transit_endpoint_health_check_response_single: Type.Composite([Type.Ref("magic_transit_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("magic_transit_endpoint_health_check_response") }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_transit_identifier: Type.String({ maxLength: 32 }),
   magic_transit_max_ttl: Type.Integer({ minimum: 0, maximum: 64 }),
   magic_transit_packet_type: Type.Union([Type.Literal("icmp"), Type.Literal("tcp"), Type.Literal("udp"), Type.Literal("gre"), Type.Literal("gre+icmp")]),
@@ -3230,7 +3230,7 @@ const __schemas = Type.Module({
   magic_transit_target: Type.String(),
   magic_transit_target_result: Type.Partial(Type.Object({ colos: Type.Array(Type.Ref("magic_transit_colo_result")), target: Type.Ref("magic_transit_target") }, { additionalProperties: false })),
   magic_transit_targets: Type.Array(Type.String()),
-  magic_transit_traceroute_response_collection: Type.Intersect([Type.Ref("magic_transit_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_transit_target_result")) }, { additionalProperties: false }))]),
+  magic_transit_traceroute_response_collection: Type.Composite([Type.Ref("magic_transit_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_transit_target_result")) }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_visibility_mnm_account_identifier: Type.String(),
   magic_visibility_mnm_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   magic_visibility_mnm_api_response_common: Type.Object({ errors: Type.Ref("magic_visibility_mnm_messages"), messages: Type.Ref("magic_visibility_mnm_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.Unknown()), Type.String()]), success: Type.Literal(true) }, { additionalProperties: false }),
@@ -3295,7 +3295,7 @@ const __schemas = Type.Module({
   magic_visibility_pcaps_pcaps_ownership_response: Type.Object({ destination_conf: Type.Ref("magic_visibility_pcaps_pcaps_destination_conf"), filename: Type.Ref("magic_visibility_pcaps_pcaps_ownership_challenge"), id: Type.String({ minLength: 32, maxLength: 32 }), status: Type.Union([Type.Literal("pending"), Type.Literal("success"), Type.Literal("failed")]), submitted: Type.String(), validated: Type.Optional(Type.String()) }, { additionalProperties: false }),
   magic_visibility_pcaps_pcaps_ownership_collection: Type.Intersect([Type.Ref("magic_visibility_pcaps_api_response_collection"), Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Ref("magic_visibility_pcaps_pcaps_ownership_response")), Type.Null()]) }, { additionalProperties: false }))]),
   magic_visibility_pcaps_pcaps_ownership_request: Type.Object({ destination_conf: Type.Ref("magic_visibility_pcaps_pcaps_destination_conf") }, { additionalProperties: false }),
-  magic_visibility_pcaps_pcaps_ownership_single_response: Type.Intersect([Type.Ref("magic_visibility_pcaps_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("magic_visibility_pcaps_pcaps_ownership_response") }, { additionalProperties: false }))]),
+  magic_visibility_pcaps_pcaps_ownership_single_response: Type.Composite([Type.Ref("magic_visibility_pcaps_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("magic_visibility_pcaps_pcaps_ownership_response") }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_visibility_pcaps_pcaps_ownership_validate_request: Type.Object({ destination_conf: Type.Ref("magic_visibility_pcaps_pcaps_destination_conf"), ownership_challenge: Type.Ref("magic_visibility_pcaps_pcaps_ownership_challenge") }, { additionalProperties: false }),
   magic_visibility_pcaps_pcaps_packet_limit: Type.Number({ minimum: 1, maximum: 10000 }),
   magic_visibility_pcaps_pcaps_request_full: Type.Object({ byte_limit: Type.Optional(Type.Ref("magic_visibility_pcaps_pcaps_byte_limit")), colo_name: Type.Ref("magic_visibility_pcaps_pcaps_colo_name"), destination_conf: Type.Ref("magic_visibility_pcaps_pcaps_destination_conf"), filter_v1: Type.Optional(Type.Ref("magic_visibility_pcaps_pcaps_filter_v1")), packet_limit: Type.Optional(Type.Ref("magic_visibility_pcaps_pcaps_packet_limit")), system: Type.Ref("magic_visibility_pcaps_pcaps_system"), time_limit: Type.Ref("magic_visibility_pcaps_pcaps_time_limit_full"), type: Type.Ref("magic_visibility_pcaps_pcaps_type") }, { additionalProperties: false }),
@@ -3340,13 +3340,13 @@ const __schemas = Type.Module({
   magic_app_config: Type.Intersect([Type.Object({ breakout: Type.Optional(Type.Ref("magic_app_breakout")), id: Type.Ref("magic_identifier"), preferred_wans: Type.Optional(Type.Ref("magic_app_breakout_preferred_wans")), priority: Type.Optional(Type.Ref("magic_app_priority")), site_id: Type.Ref("magic_identifier") }, { additionalProperties: false }), __typedOpenapiOneOf([Type.Object({ account_app_id: Type.Ref("magic_account_app_id") }, { additionalProperties: false }), Type.Object({ managed_app_id: Type.Ref("magic_managed_app_id") }, { additionalProperties: false })]), Type.Record(Type.String(), Type.Unknown())]),
   magic_app_config_add_single_request: Type.Intersect([__typedOpenapiOneOf([Type.Object({ account_app_id: Type.Ref("magic_account_app_id") }, { additionalProperties: false }), Type.Object({ managed_app_id: Type.Ref("magic_managed_app_id") }, { additionalProperties: false })]), Type.Union([Type.Unknown(), Type.Unknown()]), Type.Partial(Type.Object({ breakout: Type.Ref("magic_app_breakout"), preferred_wans: Type.Ref("magic_app_breakout_preferred_wans"), priority: Type.Ref("magic_app_priority") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   magic_apps_response_object: Type.Object({ errors: Type.Ref("magic_messages"), messages: Type.Ref("magic_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(true) }, { additionalProperties: false }),
-  magic_app_config_single_response: Type.Intersect([Type.Ref("magic_apps_response_object"), Type.Partial(Type.Object({ result: Type.Ref("magic_app_config") }, { additionalProperties: false }))]),
+  magic_app_config_single_response: Type.Composite([Type.Ref("magic_apps_response_object"), Type.Partial(Type.Object({ result: Type.Ref("magic_app_config") }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_app_config_update_request: Type.Partial(Type.Object({ account_app_id: Type.Ref("magic_account_app_id"), breakout: Type.Ref("magic_app_breakout"), managed_app_id: Type.Ref("magic_managed_app_id"), preferred_wans: Type.Ref("magic_app_breakout_preferred_wans"), priority: Type.Ref("magic_app_priority") }, { additionalProperties: false })),
-  magic_app_configs_collection_response: Type.Intersect([Type.Ref("magic_apps_response_object"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_app_config")) }, { additionalProperties: false }))]),
-  magic_app_single_response: Type.Intersect([Type.Ref("magic_apps_response_object"), Type.Partial(Type.Object({ result: Type.Ref("magic_account_app") }, { additionalProperties: false }))]),
+  magic_app_configs_collection_response: Type.Composite([Type.Ref("magic_apps_response_object"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_app_config")) }, { additionalProperties: false }))], { additionalProperties: false }),
+  magic_app_single_response: Type.Composite([Type.Ref("magic_apps_response_object"), Type.Partial(Type.Object({ result: Type.Ref("magic_account_app") }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_app_update_request: Type.Union([Type.Unknown(), Type.Unknown(), Type.Unknown(), Type.Unknown(), Type.Unknown()]),
   magic_apps_response_array: Type.Object({ errors: Type.Ref("magic_messages"), messages: Type.Ref("magic_messages"), result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), success: Type.Literal(true) }, { additionalProperties: false }),
-  magic_apps_collection_response: Type.Intersect([Type.Ref("magic_apps_response_array"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_app")) }, { additionalProperties: false }))]),
+  magic_apps_collection_response: Type.Composite([Type.Ref("magic_apps_response_array"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_app")) }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_automatic_return_routing: Type.Boolean(),
   magic_bgp_config: Type.Object({ customer_asn: Type.Integer({ minimum: 0 }), export_filter_id: Type.Optional(Type.String()), extra_prefixes: Type.Optional(Type.Array(Type.String({ format: "cidr" }))), import_filter_id: Type.Optional(Type.String()), md5_key: Type.Optional(Type.String()) }, { additionalProperties: false }),
   magic_bgp_filter_match_action: Type.Union([Type.Literal("allow"), Type.Literal("deny")]),
@@ -3393,7 +3393,7 @@ const __schemas = Type.Module({
   magic_create_bgp_filter_profile_request: Type.Object({ description: Type.Optional(Type.String({ maxLength: 1024 })), match_action: Type.Ref("magic_bgp_filter_match_action"), name: Type.String({ minLength: 1, maxLength: 255 }), targets: Type.Array(Type.String(), { maxItems: 1000 }) }, { additionalProperties: false }),
   magic_customer_gre_endpoint: Type.String(),
   magic_schemas_description: Type.String(),
-  magic_tunnel_health_check: Type.Intersect([Type.Ref("magic_health_check_base"), Type.Partial(Type.Object({ direction: Type.Union([Type.Literal("unidirectional"), Type.Literal("bidirectional")]) }, { additionalProperties: false }))]),
+  magic_tunnel_health_check: Type.Composite([Type.Ref("magic_health_check_base"), Type.Partial(Type.Object({ direction: Type.Union([Type.Literal("unidirectional"), Type.Literal("bidirectional")]) }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_mtu: Type.Integer(),
   magic_gre_tunnel_name: Type.String(),
   magic_ttl: Type.Integer(),
@@ -3448,7 +3448,7 @@ const __schemas = Type.Module({
   magic_lans_add_single_request: Type.Partial(Type.Object({ bond_id: Type.Ref("magic_bond_id"), ha_link: Type.Boolean(), is_breakout: Type.Boolean(), is_prioritized: Type.Boolean(), name: Type.String(), nat: Type.Ref("magic_nat"), physport: Type.Ref("magic_port"), routed_subnets: Type.Array(Type.Ref("magic_routed_subnet")), static_addressing: Type.Ref("magic_lan_static_addressing"), vlan_tag: Type.Ref("magic_vlan_tag") }, { additionalProperties: false })),
   magic_lans_collection_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_lan")) }, { additionalProperties: false }))]),
   magic_magic_bgp_filter_profile_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("magic_bgp_filter_profile") }, { additionalProperties: false }))]),
-  magic_magic_bgp_filter_profiles_list_response: Type.Intersect([Type.Ref("magic_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_bgp_filter_profile")) }, { additionalProperties: false }))]),
+  magic_magic_bgp_filter_profiles_list_response: Type.Composite([Type.Ref("magic_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("magic_bgp_filter_profile")) }, { additionalProperties: false }))], { additionalProperties: false }),
   magic_magic_bgp_settings_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("magic_bgp_settings") }, { additionalProperties: false }))]),
   magic_modified_tunnels_collection_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ modified: Type.Boolean(), modified_gre_tunnels: Type.Array(Type.Ref("magic_gre_tunnel")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   magic_multiple_route_delete_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deleted: Type.Boolean(), deleted_routes: Type.Array(Type.Ref("magic_route")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
@@ -3468,7 +3468,7 @@ const __schemas = Type.Module({
   magic_route_deleted_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deleted: Type.Boolean(), deleted_route: Type.Ref("magic_route") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   magic_route_modified_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ modified: Type.Boolean(), modified_route: Type.Ref("magic_route") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   magic_route_single_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ route: Type.Ref("magic_route") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  magic_route_update_single_request: Type.Intersect([Type.Object({ id: Type.Ref("magic_identifier") }, { additionalProperties: false }), Type.Ref("magic_route_add_single_request")]),
+  magic_route_update_single_request: Type.Composite([Type.Object({ id: Type.Ref("magic_identifier") }, { additionalProperties: false }), Type.Ref("magic_route_add_single_request")], { additionalProperties: false }),
   magic_route_update_many_request: Type.Object({ routes: Type.Array(Type.Ref("magic_route_update_single_request")) }, { additionalProperties: false }),
   magic_route_update_request: Type.Ref("magic_route_add_single_request"),
   magic_routes_collection_response: Type.Intersect([Type.Ref("magic_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ routes: Type.Array(Type.Ref("magic_route")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
@@ -3845,7 +3845,7 @@ const __schemas = Type.Module({
   page_shield_policy_expression: Type.String(),
   page_shield_policy_value: Type.String(),
   page_shield_policy: Type.Object({ action: Type.Ref("page_shield_policy_action"), description: Type.Ref("page_shield_policy_description"), enabled: Type.Ref("page_shield_policy_enabled"), expression: Type.Ref("page_shield_policy_expression"), value: Type.Ref("page_shield_policy_value") }, { additionalProperties: false }),
-  page_shield_policy_with_id: Type.Intersect([Type.Ref("page_shield_policy"), Type.Object({ id: Type.Ref("page_shield_id") }, { additionalProperties: false })]),
+  page_shield_policy_with_id: Type.Composite([Type.Ref("page_shield_policy"), Type.Object({ id: Type.Ref("page_shield_id") }, { additionalProperties: false })], { additionalProperties: false }),
   page_shield_get_zone_policy_response: Type.Intersect([Type.Ref("page_shield_api_get_response_collection"), Type.Object({ result: Type.Ref("page_shield_policy_with_id") }, { additionalProperties: false })]),
   page_shield_hash: Type.Union([Type.String({ minLength: 64, maxLength: 64 }), Type.Null()]),
   page_shield_js_integrity_score: Type.Union([Type.Integer({ minimum: 1, maximum: 99 }), Type.Null()]),
@@ -3854,7 +3854,7 @@ const __schemas = Type.Module({
   page_shield_obfuscation_score: Type.Union([Type.Integer({ minimum: 1, maximum: 99 }), Type.Null()]),
   page_shield_script: Type.Object({ added_at: Type.String({ format: "date-time" }), cryptomining_score: Type.Optional(Type.Ref("page_shield_cryptomining_score")), dataflow_score: Type.Optional(Type.Ref("page_shield_dataflow_score")), domain_reported_malicious: Type.Optional(Type.Boolean()), fetched_at: Type.Optional(Type.Ref("page_shield_fetched_at")), first_page_url: Type.Optional(Type.String()), first_seen_at: Type.String({ format: "date-time" }), hash: Type.Optional(Type.Ref("page_shield_hash")), host: Type.String(), id: Type.Ref("page_shield_id"), js_integrity_score: Type.Optional(Type.Ref("page_shield_js_integrity_score")), last_seen_at: Type.String({ format: "date-time" }), magecart_score: Type.Optional(Type.Ref("page_shield_magecart_score")), malicious_domain_categories: Type.Optional(Type.Array(Type.String())), malicious_url_categories: Type.Optional(Type.Array(Type.String())), malware_score: Type.Optional(Type.Ref("page_shield_malware_score")), obfuscation_score: Type.Optional(Type.Ref("page_shield_obfuscation_score")), page_urls: Type.Optional(Type.Array(Type.String())), url: Type.String(), url_contains_cdn_cgi_path: Type.Boolean(), url_reported_malicious: Type.Optional(Type.Boolean()) }, { additionalProperties: false }),
   page_shield_version: Type.Partial(Type.Object({ cryptomining_score: Type.Ref("page_shield_cryptomining_score"), dataflow_score: Type.Ref("page_shield_dataflow_score"), fetched_at: Type.Ref("page_shield_fetched_at"), hash: Type.Ref("page_shield_hash"), js_integrity_score: Type.Ref("page_shield_js_integrity_score"), magecart_score: Type.Ref("page_shield_magecart_score"), malware_score: Type.Ref("page_shield_malware_score"), obfuscation_score: Type.Ref("page_shield_obfuscation_score") }, { additionalProperties: false })),
-  page_shield_get_zone_script_response: Type.Intersect([Type.Ref("page_shield_api_get_response_collection"), Type.Object({ result: Type.Intersect([Type.Ref("page_shield_script"), Type.Partial(Type.Object({ versions: Type.Union([Type.Array(Type.Ref("page_shield_version")), Type.Null()]) }, { additionalProperties: false }))]) }, { additionalProperties: false })]),
+  page_shield_get_zone_script_response: Type.Intersect([Type.Ref("page_shield_api_get_response_collection"), Type.Object({ result: Type.Composite([Type.Ref("page_shield_script"), Type.Partial(Type.Object({ versions: Type.Union([Type.Array(Type.Ref("page_shield_version")), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false })]),
   page_shield_updated_at: Type.String(),
   page_shield_use_cloudflare_reporting_endpoint: Type.Boolean(),
   page_shield_use_connection_url_path: Type.Boolean(),
@@ -3885,7 +3885,7 @@ const __schemas = Type.Module({
   pages_domain: Type.Object({ certificate_authority: Type.Union([Type.Literal("google"), Type.Literal("lets_encrypt")]), created_on: Type.String(), domain_id: Type.String(), id: Type.String(), name: Type.Ref("pages_domain_name"), status: Type.Union([Type.Literal("initializing"), Type.Literal("pending"), Type.Literal("active"), Type.Literal("deactivated"), Type.Literal("blocked"), Type.Literal("error")]), validation_data: Type.Object({ error_message: Type.Optional(Type.String()), method: Type.Union([Type.Literal("http"), Type.Literal("txt")]), status: Type.Union([Type.Literal("initializing"), Type.Literal("pending"), Type.Literal("active"), Type.Literal("deactivated"), Type.Literal("error")]), txt_name: Type.Optional(Type.String()), txt_value: Type.Optional(Type.String()) }, { additionalProperties: false }), verification_data: Type.Object({ error_message: Type.Optional(Type.String()), status: Type.Union([Type.Literal("pending"), Type.Literal("active"), Type.Literal("deactivated"), Type.Literal("blocked"), Type.Literal("error")]) }, { additionalProperties: false }), zone_tag: Type.String() }, { additionalProperties: false }),
   pages_identifier: Type.String({ maxLength: 32 }),
   pages_pages_assets_check_missing_request: Type.Object({ hashes: Type.Array(Type.String()) }, { additionalProperties: false }),
-  pages_pages_assets_check_missing_response: Type.Intersect([Type.Ref("pages_api_response_common"), Type.Object({ result: Type.Array(Type.String()) }, { additionalProperties: false })]),
+  pages_pages_assets_check_missing_response: Type.Composite([Type.Ref("pages_api_response_common"), Type.Object({ result: Type.Array(Type.String()) }, { additionalProperties: false })], { additionalProperties: false }),
   pages_pages_assets_upload_request: Type.Array(Type.Object({ base64: Type.Boolean(), key: Type.String(), metadata: Type.Object({ contentType: Type.String() }, { additionalProperties: false }), value: Type.String() }, { additionalProperties: false })),
   pages_pages_assets_upsert_hashes_request: Type.Object({ hashes: Type.Array(Type.String()) }, { additionalProperties: false }),
   pages_pages_upload_token_response: Type.Object({ jwt: Type.String() }, { additionalProperties: false }),
@@ -4022,7 +4022,7 @@ const __schemas = Type.Module({
   r2_data_catalog_api_response_messages: Type.Array(Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false })),
   r2_data_catalog_api_response_success: Type.Boolean(),
   r2_data_catalog_api_response_single: Type.Object({ errors: Type.Ref("r2_data_catalog_api_response_errors"), messages: Type.Ref("r2_data_catalog_api_response_messages"), success: Type.Ref("r2_data_catalog_api_response_success") }, { additionalProperties: false }),
-  r2_data_catalog_api_response_collection: Type.Intersect([Type.Ref("r2_data_catalog_api_response_single"), Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Integer(), page: Type.Integer(), per_page: Type.Integer(), total_count: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  r2_data_catalog_api_response_collection: Type.Composite([Type.Ref("r2_data_catalog_api_response_single"), Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Integer(), page: Type.Integer(), per_page: Type.Integer(), total_count: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   r2_data_catalog_api_response_common_failure: Type.Partial(Type.Object({ errors: Type.Array(Type.Partial(Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false })), { minItems: 1 }), messages: Type.Array(Type.Record(Type.String(), Type.Unknown())), success: Type.Literal(false) }, { additionalProperties: false })),
   r2_data_catalog_bucket_name: Type.String({ minLength: 3, maxLength: 63, pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$" }),
   r2_data_catalog_credential_status: Type.Union([Type.Literal("present"), Type.Literal("absent")]),
@@ -4084,7 +4084,7 @@ const __schemas = Type.Module({
   r2_bucket: Type.Partial(Type.Object({ creation_date: Type.String(), jurisdiction: Type.Ref("r2_jurisdiction"), location: Type.Ref("r2_bucket_location"), name: Type.Ref("r2_bucket_name"), storage_class: Type.Ref("r2_storage_class") }, { additionalProperties: false })),
   r2_r2_action: Type.Union([Type.Literal("PutObject"), Type.Literal("CopyObject"), Type.Literal("DeleteObject"), Type.Literal("CompleteMultipartUpload"), Type.Literal("LifecycleDeletion")]),
   r2_rule: Type.Object({ actions: Type.Array(Type.Ref("r2_r2_action"), { uniqueItems: true }), description: Type.Optional(Type.String()), prefix: Type.Optional(Type.String()), suffix: Type.Optional(Type.String()) }, { additionalProperties: false }),
-  r2_queues_config: Type.Partial(Type.Object({ queueId: Type.String(), queueName: Type.String(), rules: Type.Array(Type.Intersect([Type.Ref("r2_rule"), Type.Partial(Type.Object({ createdAt: Type.String(), description: Type.String(), ruleId: Type.String() }, { additionalProperties: false }))])) }, { additionalProperties: false })),
+  r2_queues_config: Type.Partial(Type.Object({ queueId: Type.String(), queueName: Type.String(), rules: Type.Array(Type.Composite([Type.Ref("r2_rule"), Type.Partial(Type.Object({ createdAt: Type.String(), description: Type.String(), ruleId: Type.String() }, { additionalProperties: false }))], { additionalProperties: false })) }, { additionalProperties: false })),
   r2_bucket_config: Type.Partial(Type.Object({ bucketName: Type.String(), queues: Type.Array(Type.Ref("r2_queues_config")) }, { additionalProperties: false })),
   r2_lock_rule_age_condition: Type.Object({ maxAgeSeconds: Type.Integer(), type: Type.Literal("Age") }, { additionalProperties: false }),
   r2_lock_rule_date_condition: Type.Object({ date: Type.String({ format: "date-time" }), type: Type.Literal("Date") }, { additionalProperties: false }),
@@ -4124,7 +4124,7 @@ const __schemas = Type.Module({
   r2_temp_access_creds_response: Type.Partial(Type.Object({ accessKeyId: Type.String(), secretAccessKey: Type.String(), sessionToken: Type.String() }, { additionalProperties: false })),
   r2_v4_response: Type.Object({ errors: Type.Ref("r2_errors"), messages: Type.Ref("r2_messages"), result: Type.Record(Type.String(), Type.Unknown()), success: Type.Literal(true) }, { additionalProperties: false }),
   r2_v4_response_failure: Type.Object({ errors: Type.Ref("r2_errors"), messages: Type.Ref("r2_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
-  r2_v4_response_list: Type.Intersect([Type.Ref("r2_v4_response"), Type.Partial(Type.Object({ result_info: Type.Ref("r2_result_info") }, { additionalProperties: false }))]),
+  r2_v4_response_list: Type.Composite([Type.Ref("r2_v4_response"), Type.Partial(Type.Object({ result_info: Type.Ref("r2_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
   realtimekit_SummarizationConfig: Type.Partial(Type.Object({ summary_type: Type.Union([Type.Literal("general"), Type.Literal("team_meeting"), Type.Literal("sales_call"), Type.Literal("client_check_in"), Type.Literal("interview"), Type.Literal("daily_standup"), Type.Literal("one_on_one_meeting"), Type.Literal("lecture"), Type.Literal("code_review")]), text_format: Type.Union([Type.Literal("plain_text"), Type.Literal("markdown")]), word_limit: Type.Integer({ minimum: 150, maximum: 1000 }) }, { additionalProperties: false })),
   realtimekit_TranscriptionConfig: Type.Partial(Type.Object({ keywords: Type.Array(Type.String()), language: Type.Union([Type.Literal("en-US"), Type.Literal("en-IN"), Type.Literal("de"), Type.Literal("hi"), Type.Literal("sv"), Type.Literal("ru"), Type.Literal("pl"), Type.Literal("el"), Type.Literal("fr"), Type.Literal("nl")]), profanity_filter: Type.Boolean() }, { additionalProperties: false })),
   realtimekit_AIConfig: Type.Partial(Type.Object({ summarization: Type.Ref("realtimekit_SummarizationConfig"), transcription: Type.Ref("realtimekit_TranscriptionConfig") }, { additionalProperties: false })),
@@ -4224,7 +4224,7 @@ const __schemas = Type.Module({
   registrar_api_sandbox_domain_check_request: Type.Object({ domains: Type.Array(Type.String(), { minItems: 1, maxItems: 20 }) }, { additionalProperties: false }),
   registrar_api_sandbox_pricing: Type.Object({ currency: Type.String(), registration_cost: Type.String(), renewal_cost: Type.String() }, { additionalProperties: false }),
   registrar_api_sandbox_domain_check_result: Type.Object({ name: Type.String(), pricing: Type.Optional(Type.Ref("registrar_api_sandbox_pricing")), reason: Type.Optional(Type.Union([Type.Literal("extension_not_supported_via_api"), Type.Literal("extension_not_supported"), Type.Literal("extension_disallows_registration"), Type.Literal("domain_premium"), Type.Literal("domain_unavailable")])), registrable: Type.Boolean(), tier: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("premium")])) }, { additionalProperties: false }),
-  registrar_api_sandbox_domain_check_response: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_sandbox_domain_check_result")) }, { additionalProperties: false }) }, { additionalProperties: false })]),
+  registrar_api_sandbox_domain_check_response: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_sandbox_domain_check_result")) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }),
   registrar_api_sandbox_domain_identifier: Type.String({ maxLength: 32 }),
   registrar_api_sandbox_domain_name: Type.String(),
   registrar_api_sandbox_expires_at: Type.String({ format: "date-time" }),
@@ -4239,16 +4239,16 @@ const __schemas = Type.Module({
   registrar_api_sandbox_domain_response_collection: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("registrar_api_sandbox_domains")) }, { additionalProperties: false }))]),
   registrar_api_sandbox_domain_response_single: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_single"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
   registrar_api_sandbox_domain_search_result: Type.Object({ name: Type.String(), pricing: Type.Optional(Type.Ref("registrar_api_sandbox_pricing")), reason: Type.Optional(Type.Union([Type.Literal("extension_not_supported_via_api"), Type.Literal("extension_not_supported"), Type.Literal("extension_disallows_registration"), Type.Literal("domain_premium"), Type.Literal("domain_unavailable")])), registrable: Type.Boolean(), tier: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("premium")])) }, { additionalProperties: false }),
-  registrar_api_sandbox_domain_search_response: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_sandbox_domain_search_result")) }, { additionalProperties: false }) }, { additionalProperties: false })]),
+  registrar_api_sandbox_domain_search_response: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_sandbox_domain_search_result")) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }),
   registrar_api_sandbox_privacy: Type.Boolean(),
   registrar_api_sandbox_domain_update_properties: Type.Partial(Type.Object({ auto_renew: Type.Ref("registrar_api_sandbox_auto_renew"), locked: Type.Ref("registrar_api_sandbox_locked"), privacy: Type.Ref("registrar_api_sandbox_privacy") }, { additionalProperties: false })),
   registrar_api_sandbox_extension_item: Type.Object({ metadata: Type.Object({ name: Type.String(), tld: Type.String() }, { additionalProperties: false }), registration_schema: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }),
-  registrar_api_sandbox_extension_response_collection: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("registrar_api_sandbox_extension_item")), result_info: Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.String(), per_page: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  registrar_api_sandbox_extension_response_single: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_sandbox_extension_item") }, { additionalProperties: false }))]),
+  registrar_api_sandbox_extension_response_collection: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("registrar_api_sandbox_extension_item")), result_info: Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.String(), per_page: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
+  registrar_api_sandbox_extension_response_single: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_sandbox_extension_item") }, { additionalProperties: false }))], { additionalProperties: false }),
   registrar_api_sandbox_identifier: Type.String({ maxLength: 32 }),
   registrar_api_sandbox_registration: Type.Object({ auto_renew: Type.Boolean(), created_at: Type.String({ format: "date-time" }), domain_name: Type.Ref("registrar_api_sandbox_domain_name"), expires_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), locked: Type.Boolean(), privacy_mode: Type.Union([Type.Literal(false), Type.Literal("redaction")]), status: Type.Union([Type.Literal("active"), Type.Literal("registration_pending"), Type.Literal("expired"), Type.Literal("suspended"), Type.Literal("redemption_period"), Type.Literal("pending_delete")]) }, { additionalProperties: false }),
-  registrar_api_sandbox_registration_response_collection: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Object({ result: Type.Array(Type.Ref("registrar_api_sandbox_registration")), result_info: Type.Ref("registrar_api_sandbox_cursor_result_info") }, { additionalProperties: false })]),
-  registrar_api_sandbox_registration_response_single: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_sandbox_registration") }, { additionalProperties: false }))]),
+  registrar_api_sandbox_registration_response_collection: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Object({ result: Type.Array(Type.Ref("registrar_api_sandbox_registration")), result_info: Type.Ref("registrar_api_sandbox_cursor_result_info") }, { additionalProperties: false })], { additionalProperties: false }),
+  registrar_api_sandbox_registration_response_single: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_sandbox_registration") }, { additionalProperties: false }))], { additionalProperties: false }),
   registrar_api_sandbox_registration_contact_address: Type.Object({ city: Type.String(), country_code: Type.String(), postal_code: Type.String(), state: Type.String(), street: Type.String() }, { additionalProperties: false }),
   registrar_api_sandbox_registration_contact_postal_info: Type.Object({ address: Type.Ref("registrar_api_sandbox_registration_contact_address"), name: Type.String(), organization: Type.Optional(Type.String()) }, { additionalProperties: false }),
   registrar_api_sandbox_registration_contact: Type.Object({ email: Type.String({ format: "email" }), fax: Type.Optional(Type.String()), phone: Type.String(), postal_info: Type.Ref("registrar_api_sandbox_registration_contact_postal_info") }, { additionalProperties: false }),
@@ -4258,7 +4258,7 @@ const __schemas = Type.Module({
   registrar_api_sandbox_workflow_error: Type.Object({ code: Type.String(), message: Type.String() }, { additionalProperties: false }),
   registrar_api_sandbox_workflow_links: Type.Object({ resource: Type.Optional(Type.String()), self: Type.String() }, { additionalProperties: false }),
   registrar_api_sandbox_workflow_status: Type.Object({ completed: Type.Boolean(), context: Type.Optional(Type.Record(Type.String(), Type.Unknown())), created_at: Type.String({ format: "date-time" }), error: Type.Optional(Type.Union([Type.Ref("registrar_api_sandbox_workflow_error"), Type.Null()])), links: Type.Ref("registrar_api_sandbox_workflow_links"), state: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("action_required"), Type.Literal("blocked"), Type.Literal("succeeded"), Type.Literal("failed")]), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
-  registrar_api_sandbox_workflow_status_response_single: Type.Intersect([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_sandbox_workflow_status") }, { additionalProperties: false }))]),
+  registrar_api_sandbox_workflow_status_response_single: Type.Composite([Type.Ref("registrar_api_sandbox_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_sandbox_workflow_status") }, { additionalProperties: false }))], { additionalProperties: false }),
   registrar_api_address: Type.String(),
   registrar_api_address2: Type.String(),
   registrar_api_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
@@ -4289,7 +4289,7 @@ const __schemas = Type.Module({
   registrar_api_domain_check_request: Type.Object({ domains: Type.Array(Type.String(), { minItems: 1, maxItems: 20 }) }, { additionalProperties: false }),
   registrar_api_pricing: Type.Object({ currency: Type.String(), registration_cost: Type.String(), renewal_cost: Type.String() }, { additionalProperties: false }),
   registrar_api_domain_check_result: Type.Object({ name: Type.String(), pricing: Type.Optional(Type.Ref("registrar_api_pricing")), reason: Type.Optional(Type.Union([Type.Literal("extension_not_supported_via_api"), Type.Literal("extension_not_supported"), Type.Literal("extension_disallows_registration"), Type.Literal("domain_premium"), Type.Literal("domain_unavailable")])), registrable: Type.Boolean(), tier: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("premium")])) }, { additionalProperties: false }),
-  registrar_api_domain_check_response: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_domain_check_result")) }, { additionalProperties: false }) }, { additionalProperties: false })]),
+  registrar_api_domain_check_response: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_domain_check_result")) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }),
   registrar_api_domain_identifier: Type.String({ maxLength: 32 }),
   registrar_api_domain_name: Type.String(),
   registrar_api_expires_at: Type.String({ format: "date-time" }),
@@ -4304,16 +4304,16 @@ const __schemas = Type.Module({
   registrar_api_domain_response_collection: Type.Intersect([Type.Ref("registrar_api_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("registrar_api_domains")) }, { additionalProperties: false }))]),
   registrar_api_domain_response_single: Type.Intersect([Type.Ref("registrar_api_api_response_single"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
   registrar_api_domain_search_result: Type.Object({ name: Type.String(), pricing: Type.Optional(Type.Ref("registrar_api_pricing")), reason: Type.Optional(Type.Union([Type.Literal("extension_not_supported_via_api"), Type.Literal("extension_not_supported"), Type.Literal("extension_disallows_registration"), Type.Literal("domain_premium"), Type.Literal("domain_unavailable")])), registrable: Type.Boolean(), tier: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("premium")])) }, { additionalProperties: false }),
-  registrar_api_domain_search_response: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_domain_search_result")) }, { additionalProperties: false }) }, { additionalProperties: false })]),
+  registrar_api_domain_search_response: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Object({ result: Type.Object({ domains: Type.Array(Type.Ref("registrar_api_domain_search_result")) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }),
   registrar_api_privacy: Type.Boolean(),
   registrar_api_domain_update_properties: Type.Partial(Type.Object({ auto_renew: Type.Ref("registrar_api_auto_renew"), locked: Type.Ref("registrar_api_locked"), privacy: Type.Ref("registrar_api_privacy") }, { additionalProperties: false })),
   registrar_api_extension_item: Type.Object({ metadata: Type.Object({ name: Type.String(), tld: Type.String() }, { additionalProperties: false }), registration_schema: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }),
-  registrar_api_extension_response_collection: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("registrar_api_extension_item")), result_info: Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.String(), per_page: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  registrar_api_extension_response_single: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_extension_item") }, { additionalProperties: false }))]),
+  registrar_api_extension_response_collection: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("registrar_api_extension_item")), result_info: Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.String(), per_page: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
+  registrar_api_extension_response_single: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_extension_item") }, { additionalProperties: false }))], { additionalProperties: false }),
   registrar_api_identifier: Type.String({ maxLength: 32 }),
   registrar_api_registration: Type.Object({ auto_renew: Type.Boolean(), created_at: Type.String({ format: "date-time" }), domain_name: Type.Ref("registrar_api_domain_name"), expires_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), locked: Type.Boolean(), privacy_mode: Type.Union([Type.Literal(false), Type.Literal("redaction")]), status: Type.Union([Type.Literal("active"), Type.Literal("registration_pending"), Type.Literal("expired"), Type.Literal("suspended"), Type.Literal("redemption_period"), Type.Literal("pending_delete")]) }, { additionalProperties: false }),
-  registrar_api_registration_response_collection: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Object({ result: Type.Array(Type.Ref("registrar_api_registration")), result_info: Type.Ref("registrar_api_cursor_result_info") }, { additionalProperties: false })]),
-  registrar_api_registration_response_single: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_registration") }, { additionalProperties: false }))]),
+  registrar_api_registration_response_collection: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Object({ result: Type.Array(Type.Ref("registrar_api_registration")), result_info: Type.Ref("registrar_api_cursor_result_info") }, { additionalProperties: false })], { additionalProperties: false }),
+  registrar_api_registration_response_single: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_registration") }, { additionalProperties: false }))], { additionalProperties: false }),
   registrar_api_registration_contact_address: Type.Object({ city: Type.String(), country_code: Type.String(), postal_code: Type.String(), state: Type.String(), street: Type.String() }, { additionalProperties: false }),
   registrar_api_registration_contact_postal_info: Type.Object({ address: Type.Ref("registrar_api_registration_contact_address"), name: Type.String(), organization: Type.Optional(Type.String()) }, { additionalProperties: false }),
   registrar_api_registration_contact: Type.Object({ email: Type.String({ format: "email" }), fax: Type.Optional(Type.String()), phone: Type.String(), postal_info: Type.Ref("registrar_api_registration_contact_postal_info") }, { additionalProperties: false }),
@@ -4323,7 +4323,7 @@ const __schemas = Type.Module({
   registrar_api_workflow_error: Type.Object({ code: Type.String(), message: Type.String() }, { additionalProperties: false }),
   registrar_api_workflow_links: Type.Object({ resource: Type.Optional(Type.String()), self: Type.String() }, { additionalProperties: false }),
   registrar_api_workflow_status: Type.Object({ completed: Type.Boolean(), context: Type.Optional(Type.Record(Type.String(), Type.Unknown())), created_at: Type.String({ format: "date-time" }), error: Type.Optional(Type.Union([Type.Ref("registrar_api_workflow_error"), Type.Null()])), links: Type.Ref("registrar_api_workflow_links"), state: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("action_required"), Type.Literal("blocked"), Type.Literal("succeeded"), Type.Literal("failed")]), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }),
-  registrar_api_workflow_status_response_single: Type.Intersect([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_workflow_status") }, { additionalProperties: false }))]),
+  registrar_api_workflow_status_response_single: Type.Composite([Type.Ref("registrar_api_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("registrar_api_workflow_status") }, { additionalProperties: false }))], { additionalProperties: false }),
   request_tracer_identifier: Type.String({ maxLength: 32 }),
   request_tracer_account_identifier: Type.Ref("request_tracer_identifier"),
   request_tracer_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
@@ -4385,60 +4385,60 @@ const __schemas = Type.Module({
   resource_tagging_resource_id: Type.String(),
   resource_tagging_delete_tags_request_account_level_base: Type.Object({ resource_id: Type.Ref("resource_tagging_resource_id"), resource_type: Type.Ref("resource_tagging_account_resource_type_base_enum") }, { additionalProperties: false }),
   resource_tagging_worker_id: Type.String(),
-  resource_tagging_delete_tags_request_account_level_worker_version: Type.Intersect([Type.Ref("resource_tagging_delete_tags_request_account_level_base"), Type.Object({ resource_type: Type.Optional(Type.Ref("resource_tagging_account_resource_type_worker_version_enum")), worker_id: Type.Ref("resource_tagging_worker_id") }, { additionalProperties: false })]),
+  resource_tagging_delete_tags_request_account_level_worker_version: Type.Composite([Type.Ref("resource_tagging_delete_tags_request_account_level_base"), Type.Object({ resource_type: Type.Optional(Type.Ref("resource_tagging_account_resource_type_worker_version_enum")), worker_id: Type.Ref("resource_tagging_worker_id") }, { additionalProperties: false })], { additionalProperties: false }),
   resource_tagging_delete_tags_request_account_level: __typedOpenapiOneOf([Type.Ref("resource_tagging_delete_tags_request_account_level_worker_version"), Type.Ref("resource_tagging_delete_tags_request_account_level_base")]),
   resource_tagging_zone_resource_type_base_enum: Type.Union([Type.Literal("api_gateway_operation"), Type.Literal("custom_certificate"), Type.Literal("custom_hostname"), Type.Literal("dns_record"), Type.Literal("managed_client_certificate"), Type.Literal("zone")]),
   resource_tagging_delete_tags_request_zone_level_base: Type.Object({ resource_id: Type.Ref("resource_tagging_resource_id"), resource_type: Type.Ref("resource_tagging_zone_resource_type_base_enum") }, { additionalProperties: false }),
   resource_tagging_zone_resource_type_access_application_policy_enum: Type.Literal("access_application_policy"),
-  resource_tagging_delete_tags_request_zone_level_access_application_policy: Type.Intersect([Type.Ref("resource_tagging_delete_tags_request_zone_level_base"), Type.Object({ access_application_id: Type.Ref("resource_tagging_access_application_id"), resource_type: Type.Optional(Type.Ref("resource_tagging_zone_resource_type_access_application_policy_enum")) }, { additionalProperties: false })]),
+  resource_tagging_delete_tags_request_zone_level_access_application_policy: Type.Composite([Type.Ref("resource_tagging_delete_tags_request_zone_level_base"), Type.Object({ access_application_id: Type.Ref("resource_tagging_access_application_id"), resource_type: Type.Optional(Type.Ref("resource_tagging_zone_resource_type_access_application_policy_enum")) }, { additionalProperties: false })], { additionalProperties: false }),
   resource_tagging_delete_tags_request_zone_level: __typedOpenapiOneOf([Type.Ref("resource_tagging_delete_tags_request_zone_level_base"), Type.Ref("resource_tagging_delete_tags_request_zone_level_access_application_policy")]),
   resource_tagging_etag: Type.String(),
   resource_tagging_resource_name: Type.String(),
   resource_tagging_resource_type: Type.Union([Type.Literal("access_application"), Type.Literal("access_application_policy"), Type.Literal("access_group"), Type.Literal("account"), Type.Literal("ai_gateway"), Type.Literal("alerting_policy"), Type.Literal("alerting_webhook"), Type.Literal("api_gateway_operation"), Type.Literal("cloudflared_tunnel"), Type.Literal("custom_certificate"), Type.Literal("custom_hostname"), Type.Literal("d1_database"), Type.Literal("dns_record"), Type.Literal("durable_object_namespace"), Type.Literal("gateway_list"), Type.Literal("gateway_rule"), Type.Literal("image"), Type.Literal("kv_namespace"), Type.Literal("managed_client_certificate"), Type.Literal("queue"), Type.Literal("r2_bucket"), Type.Literal("resource_share"), Type.Literal("stream_live_input"), Type.Literal("stream_video"), Type.Literal("worker"), Type.Literal("worker_version"), Type.Literal("zone")]),
   resource_tagging_tags: Type.Record(Type.String(), Type.String({ minLength: 1 })),
   resource_tagging_set_tags_request_account_level_worker_version: Type.Intersect([Type.Ref("resource_tagging_delete_tags_request_account_level_worker_version"), Type.Partial(Type.Object({ tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }))]),
-  resource_tagging_set_tags_request_account_level_base: Type.Intersect([Type.Ref("resource_tagging_delete_tags_request_account_level_base"), Type.Partial(Type.Object({ tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }))]),
+  resource_tagging_set_tags_request_account_level_base: Type.Composite([Type.Ref("resource_tagging_delete_tags_request_account_level_base"), Type.Partial(Type.Object({ tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }))], { additionalProperties: false }),
   resource_tagging_set_tags_request_account_level: __typedOpenapiOneOf([Type.Ref("resource_tagging_set_tags_request_account_level_worker_version"), Type.Ref("resource_tagging_set_tags_request_account_level_base")]),
-  resource_tagging_set_tags_request_zone_level_base: Type.Intersect([Type.Ref("resource_tagging_delete_tags_request_zone_level_base"), Type.Partial(Type.Object({ tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }))]),
+  resource_tagging_set_tags_request_zone_level_base: Type.Composite([Type.Ref("resource_tagging_delete_tags_request_zone_level_base"), Type.Partial(Type.Object({ tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }))], { additionalProperties: false }),
   resource_tagging_set_tags_request_zone_level_access_application_policy: Type.Intersect([Type.Ref("resource_tagging_delete_tags_request_zone_level_access_application_policy"), Type.Partial(Type.Object({ tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }))]),
   resource_tagging_set_tags_request_zone_level: __typedOpenapiOneOf([Type.Ref("resource_tagging_set_tags_request_zone_level_base"), Type.Ref("resource_tagging_set_tags_request_zone_level_access_application_policy")]),
-  resource_tagging_tag_keys_response_collection: Type.Intersect([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.String()), result_info: Type.Ref("resource_tagging_cursor_result_info") }, { additionalProperties: false }))]),
-  resource_tagging_tag_values_response_collection: Type.Intersect([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.String()), result_info: Type.Ref("resource_tagging_cursor_result_info") }, { additionalProperties: false }))]),
+  resource_tagging_tag_keys_response_collection: Type.Composite([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.String()), result_info: Type.Ref("resource_tagging_cursor_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
+  resource_tagging_tag_values_response_collection: Type.Composite([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.String()), result_info: Type.Ref("resource_tagging_cursor_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
   resource_tagging_tagged_resource_object_account_level_base: Type.Object({ etag: Type.Ref("resource_tagging_etag"), id: Type.Ref("resource_tagging_resource_id"), name: Type.Ref("resource_tagging_resource_name"), tags: Type.Ref("resource_tagging_tags") }, { additionalProperties: false }),
-  resource_tagging_tagged_resource_object_access_application: Type.Intersect([Type.Object({ type: Type.Literal("access_application") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
+  resource_tagging_tagged_resource_object_access_application: Type.Composite([Type.Object({ type: Type.Literal("access_application") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
   resource_tagging_zone_id: Type.Ref("resource_tagging_identifier"),
   resource_tagging_tagged_resource_object_access_application_policy_base: Type.Object({ access_application_id: Type.Ref("resource_tagging_access_application_id"), etag: Type.Ref("resource_tagging_etag"), id: Type.Ref("resource_tagging_resource_id"), name: Type.Ref("resource_tagging_resource_name"), tags: Type.Ref("resource_tagging_tags"), zone_id: Type.Ref("resource_tagging_zone_id") }, { additionalProperties: false }),
-  resource_tagging_tagged_resource_object_access_application_policy: Type.Intersect([Type.Object({ type: Type.Literal("access_application_policy") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_access_application_policy_base")]),
-  resource_tagging_tagged_resource_object_access_group: Type.Intersect([Type.Object({ type: Type.Literal("access_group") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_account: Type.Intersect([Type.Object({ type: Type.Literal("account") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_ai_gateway: Type.Intersect([Type.Object({ type: Type.Literal("ai_gateway") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_alerting_policy: Type.Intersect([Type.Object({ type: Type.Literal("alerting_policy") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_alerting_webhook: Type.Intersect([Type.Object({ type: Type.Literal("alerting_webhook") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
+  resource_tagging_tagged_resource_object_access_application_policy: Type.Composite([Type.Object({ type: Type.Literal("access_application_policy") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_access_application_policy_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_access_group: Type.Composite([Type.Object({ type: Type.Literal("access_group") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_account: Type.Composite([Type.Object({ type: Type.Literal("account") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_ai_gateway: Type.Composite([Type.Object({ type: Type.Literal("ai_gateway") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_alerting_policy: Type.Composite([Type.Object({ type: Type.Literal("alerting_policy") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_alerting_webhook: Type.Composite([Type.Object({ type: Type.Literal("alerting_webhook") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
   resource_tagging_tagged_resource_object_zone_level_base: Type.Object({ etag: Type.Ref("resource_tagging_etag"), id: Type.Ref("resource_tagging_resource_id"), name: Type.Ref("resource_tagging_resource_name"), tags: Type.Ref("resource_tagging_tags"), zone_id: Type.Ref("resource_tagging_zone_id") }, { additionalProperties: false }),
-  resource_tagging_tagged_resource_object_api_gateway_operation: Type.Intersect([Type.Object({ type: Type.Literal("api_gateway_operation") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")]),
-  resource_tagging_tagged_resource_object_cloudflared_tunnel: Type.Intersect([Type.Object({ type: Type.Literal("cloudflared_tunnel") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_custom_certificate: Type.Intersect([Type.Object({ type: Type.Literal("custom_certificate") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")]),
-  resource_tagging_tagged_resource_object_custom_hostname: Type.Intersect([Type.Object({ type: Type.Literal("custom_hostname") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")]),
-  resource_tagging_tagged_resource_object_d1_database: Type.Intersect([Type.Object({ type: Type.Literal("d1_database") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_dns_record: Type.Intersect([Type.Object({ type: Type.Literal("dns_record") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")]),
-  resource_tagging_tagged_resource_object_durable_object_namespace: Type.Intersect([Type.Object({ type: Type.Literal("durable_object_namespace") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_gateway_list: Type.Intersect([Type.Object({ type: Type.Literal("gateway_list") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_gateway_rule: Type.Intersect([Type.Object({ type: Type.Literal("gateway_rule") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_image: Type.Intersect([Type.Object({ type: Type.Literal("image") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_kv_namespace: Type.Intersect([Type.Object({ type: Type.Literal("kv_namespace") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_managed_client_certificate: Type.Intersect([Type.Object({ type: Type.Literal("managed_client_certificate") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")]),
-  resource_tagging_tagged_resource_object_queue: Type.Intersect([Type.Object({ type: Type.Literal("queue") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_r2_bucket: Type.Intersect([Type.Object({ type: Type.Literal("r2_bucket") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_resource_share: Type.Intersect([Type.Object({ type: Type.Literal("resource_share") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_stream_live_input: Type.Intersect([Type.Object({ type: Type.Literal("stream_live_input") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_stream_video: Type.Intersect([Type.Object({ type: Type.Literal("stream_video") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
-  resource_tagging_tagged_resource_object_worker: Type.Intersect([Type.Object({ type: Type.Literal("worker") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")]),
+  resource_tagging_tagged_resource_object_api_gateway_operation: Type.Composite([Type.Object({ type: Type.Literal("api_gateway_operation") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_cloudflared_tunnel: Type.Composite([Type.Object({ type: Type.Literal("cloudflared_tunnel") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_custom_certificate: Type.Composite([Type.Object({ type: Type.Literal("custom_certificate") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_custom_hostname: Type.Composite([Type.Object({ type: Type.Literal("custom_hostname") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_d1_database: Type.Composite([Type.Object({ type: Type.Literal("d1_database") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_dns_record: Type.Composite([Type.Object({ type: Type.Literal("dns_record") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_durable_object_namespace: Type.Composite([Type.Object({ type: Type.Literal("durable_object_namespace") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_gateway_list: Type.Composite([Type.Object({ type: Type.Literal("gateway_list") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_gateway_rule: Type.Composite([Type.Object({ type: Type.Literal("gateway_rule") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_image: Type.Composite([Type.Object({ type: Type.Literal("image") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_kv_namespace: Type.Composite([Type.Object({ type: Type.Literal("kv_namespace") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_managed_client_certificate: Type.Composite([Type.Object({ type: Type.Literal("managed_client_certificate") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_queue: Type.Composite([Type.Object({ type: Type.Literal("queue") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_r2_bucket: Type.Composite([Type.Object({ type: Type.Literal("r2_bucket") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_resource_share: Type.Composite([Type.Object({ type: Type.Literal("resource_share") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_stream_live_input: Type.Composite([Type.Object({ type: Type.Literal("stream_live_input") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_stream_video: Type.Composite([Type.Object({ type: Type.Literal("stream_video") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_worker: Type.Composite([Type.Object({ type: Type.Literal("worker") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_account_level_base")], { additionalProperties: false }),
   resource_tagging_tagged_resource_object_worker_version_base: Type.Object({ etag: Type.Ref("resource_tagging_etag"), id: Type.Ref("resource_tagging_resource_id"), name: Type.Ref("resource_tagging_resource_name"), tags: Type.Ref("resource_tagging_tags"), worker_id: Type.Ref("resource_tagging_worker_id") }, { additionalProperties: false }),
-  resource_tagging_tagged_resource_object_worker_version: Type.Intersect([Type.Object({ type: Type.Literal("worker_version") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_worker_version_base")]),
-  resource_tagging_tagged_resource_object_zone: Type.Intersect([Type.Object({ type: Type.Literal("zone") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")]),
+  resource_tagging_tagged_resource_object_worker_version: Type.Composite([Type.Object({ type: Type.Literal("worker_version") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_worker_version_base")], { additionalProperties: false }),
+  resource_tagging_tagged_resource_object_zone: Type.Composite([Type.Object({ type: Type.Literal("zone") }, { additionalProperties: false }), Type.Ref("resource_tagging_tagged_resource_object_zone_level_base")], { additionalProperties: false }),
   resource_tagging_tagged_resource_object: __typedOpenapiOneOf([Type.Ref("resource_tagging_tagged_resource_object_access_application"), Type.Ref("resource_tagging_tagged_resource_object_access_application_policy"), Type.Ref("resource_tagging_tagged_resource_object_access_group"), Type.Ref("resource_tagging_tagged_resource_object_account"), Type.Ref("resource_tagging_tagged_resource_object_ai_gateway"), Type.Ref("resource_tagging_tagged_resource_object_alerting_policy"), Type.Ref("resource_tagging_tagged_resource_object_alerting_webhook"), Type.Ref("resource_tagging_tagged_resource_object_api_gateway_operation"), Type.Ref("resource_tagging_tagged_resource_object_cloudflared_tunnel"), Type.Ref("resource_tagging_tagged_resource_object_custom_certificate"), Type.Ref("resource_tagging_tagged_resource_object_custom_hostname"), Type.Ref("resource_tagging_tagged_resource_object_d1_database"), Type.Ref("resource_tagging_tagged_resource_object_dns_record"), Type.Ref("resource_tagging_tagged_resource_object_durable_object_namespace"), Type.Ref("resource_tagging_tagged_resource_object_gateway_list"), Type.Ref("resource_tagging_tagged_resource_object_gateway_rule"), Type.Ref("resource_tagging_tagged_resource_object_image"), Type.Ref("resource_tagging_tagged_resource_object_kv_namespace"), Type.Ref("resource_tagging_tagged_resource_object_managed_client_certificate"), Type.Ref("resource_tagging_tagged_resource_object_queue"), Type.Ref("resource_tagging_tagged_resource_object_r2_bucket"), Type.Ref("resource_tagging_tagged_resource_object_resource_share"), Type.Ref("resource_tagging_tagged_resource_object_stream_live_input"), Type.Ref("resource_tagging_tagged_resource_object_stream_video"), Type.Ref("resource_tagging_tagged_resource_object_worker"), Type.Ref("resource_tagging_tagged_resource_object_worker_version"), Type.Ref("resource_tagging_tagged_resource_object_zone")]),
-  resource_tagging_tagged_resource_response_collection: Type.Intersect([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("resource_tagging_tagged_resource_object")), result_info: Type.Ref("resource_tagging_cursor_result_info") }, { additionalProperties: false }))]),
-  resource_tagging_tagged_resource_response_single: Type.Intersect([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("resource_tagging_tagged_resource_object") }, { additionalProperties: false }))]),
+  resource_tagging_tagged_resource_response_collection: Type.Composite([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("resource_tagging_tagged_resource_object")), result_info: Type.Ref("resource_tagging_cursor_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
+  resource_tagging_tagged_resource_response_single: Type.Composite([Type.Ref("resource_tagging_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("resource_tagging_tagged_resource_object") }, { additionalProperties: false }))], { additionalProperties: false }),
   resource_tagging_zone_resource_type: Type.Union([Type.Literal("access_application_policy"), Type.Literal("api_gateway_operation"), Type.Literal("custom_certificate"), Type.Literal("custom_hostname"), Type.Literal("dns_record"), Type.Literal("managed_client_certificate"), Type.Literal("zone")]),
   rlanalytics_messages: Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false }),
   rlanalytics_api_response_common_failure: Type.Object({ errors: Type.Array(Type.Ref("rlanalytics_messages"), { minItems: 1 }), messages: Type.Array(Type.Ref("rlanalytics_messages")), success: Type.Literal(false) }, { additionalProperties: false }),
@@ -4457,11 +4457,11 @@ const __schemas = Type.Module({
   rulesets_RuleLogging: Type.Object({ enabled: Type.Boolean() }, { additionalProperties: false }),
   rulesets_RuleRatelimit: Type.Object({ characteristics: Type.Array(Type.String({ minLength: 1 }), { minItems: 1, uniqueItems: true }), counting_expression: Type.Optional(Type.String({ minLength: 1 })), mitigation_timeout: Type.Optional(Type.Integer()), period: Type.Integer({ minimum: 0 }), requests_per_period: Type.Optional(Type.Integer({ minimum: 1 })), requests_to_origin: Type.Optional(Type.Boolean()), score_per_period: Type.Optional(Type.Integer()), score_response_header_name: Type.Optional(Type.String({ minLength: 1 })) }, { additionalProperties: false }),
   rulesets_Rule_schemas: Type.Object({ action: Type.Optional(Type.Ref("rulesets_RuleAction")), action_parameters: Type.Optional(Type.Record(Type.String(), Type.Unknown())), categories: Type.Optional(Type.Ref("rulesets_RuleCategories")), description: Type.Optional(Type.String()), enabled: Type.Optional(Type.Ref("rulesets_RuleEnabled")), exposed_credential_check: Type.Optional(Type.Ref("rulesets_RuleExposedCredentialCheck")), expression: Type.Optional(Type.String({ minLength: 1 })), id: Type.Optional(Type.Ref("rulesets_RuleId")), last_updated: Type.String({ format: "date-time" }), logging: Type.Optional(Type.Ref("rulesets_RuleLogging")), ratelimit: Type.Optional(Type.Ref("rulesets_RuleRatelimit")), ref: Type.Optional(Type.String({ minLength: 1 })), version: Type.String({ pattern: "^[0-9]+$" }) }, { additionalProperties: false }),
-  rulesets_BlockRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("block"), action_parameters: Type.Partial(Type.Object({ response: Type.Object({ content: Type.String({ minLength: 1 }), content_type: Type.String({ minLength: 1 }), status_code: Type.Integer({ minimum: 400, maximum: 499 }) }, { additionalProperties: false }) }, { additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_ChallengeRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("challenge"), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_CompressResponseRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("compress_response"), action_parameters: Type.Object({ algorithms: Type.Array(Type.Partial(Type.Object({ name: Type.Union([Type.Literal("none"), Type.Literal("auto"), Type.Literal("default"), Type.Literal("gzip"), Type.Literal("brotli"), Type.Literal("zstd")]) }, { additionalProperties: false })), { minItems: 1, uniqueItems: true }) }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_BlockRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("block"), action_parameters: Type.Partial(Type.Object({ response: Type.Object({ content: Type.String({ minLength: 1 }), content_type: Type.String({ minLength: 1 }), status_code: Type.Integer({ minimum: 400, maximum: 499 }) }, { additionalProperties: false }) }, { additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_ChallengeRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("challenge"), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_CompressResponseRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("compress_response"), action_parameters: Type.Object({ algorithms: Type.Array(Type.Partial(Type.Object({ name: Type.Union([Type.Literal("none"), Type.Literal("auto"), Type.Literal("default"), Type.Literal("gzip"), Type.Literal("brotli"), Type.Literal("zstd")]) }, { additionalProperties: false })), { minItems: 1, uniqueItems: true }) }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_Cursor: Type.String({ minLength: 1 }),
-  rulesets_DDoSDynamicRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("ddos_dynamic"), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_DDoSDynamicRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("ddos_dynamic"), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_Message: Type.Object({ code: Type.Optional(Type.Integer()), message: Type.String({ minLength: 1 }), source: Type.Optional(Type.Object({ pointer: Type.String({ minLength: 1 }) }, { additionalProperties: false })) }, { additionalProperties: false }),
   rulesets_Errors: Type.Array(Type.Ref("rulesets_Message"), { uniqueItems: true }),
   rulesets_ExecuteSensitivityLevel: Type.Union([Type.Literal("default"), Type.Literal("medium"), Type.Literal("low"), Type.Literal("eoff")]),
@@ -4470,26 +4470,26 @@ const __schemas = Type.Module({
   rulesets_ExecuteRuleOverrides: Type.Array(Type.Object({ action: Type.Optional(Type.Ref("rulesets_RuleAction")), enabled: Type.Optional(Type.Ref("rulesets_RuleEnabled")), id: Type.Ref("rulesets_RuleId"), score_threshold: Type.Optional(Type.Integer()), sensitivity_level: Type.Optional(Type.Ref("rulesets_ExecuteSensitivityLevel")) }, { minProperties: 2, additionalProperties: false }), { minItems: 1, uniqueItems: true }),
   rulesets_ExecuteOverrides: Type.Partial(Type.Object({ action: Type.Ref("rulesets_RuleAction"), categories: Type.Ref("rulesets_ExecuteCategoryOverrides"), enabled: Type.Ref("rulesets_RuleEnabled"), rules: Type.Ref("rulesets_ExecuteRuleOverrides"), sensitivity_level: Type.Ref("rulesets_ExecuteSensitivityLevel") }, { minProperties: 1, additionalProperties: false })),
   rulesets_RulesetId: Type.String({ pattern: "^[0-9a-f]{32}$" }),
-  rulesets_ExecuteRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("execute"), action_parameters: Type.Object({ id: Type.Ref("rulesets_RulesetId"), matched_data: Type.Optional(Type.Ref("rulesets_ExecuteMatchedData")), overrides: Type.Optional(Type.Ref("rulesets_ExecuteOverrides")) }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_ForceConnectionCloseRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("force_connection_close"), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_JsChallengeRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("js_challenge"), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_ExecuteRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("execute"), action_parameters: Type.Object({ id: Type.Ref("rulesets_RulesetId"), matched_data: Type.Optional(Type.Ref("rulesets_ExecuteMatchedData")), overrides: Type.Optional(Type.Ref("rulesets_ExecuteOverrides")) }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_ForceConnectionCloseRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("force_connection_close"), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_JsChallengeRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("js_challenge"), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_LogCustomFieldCookieFields: Type.Array(Type.Object({ name: Type.String({ minLength: 1 }) }, { additionalProperties: false }), { minItems: 1 }),
   rulesets_LogCustomFieldRawResponseFields: Type.Array(Type.Object({ name: Type.String({ minLength: 1 }), preserve_duplicates: Type.Optional(Type.Boolean()) }, { additionalProperties: false }), { minItems: 1 }),
   rulesets_LogCustomFieldRequestFields: Type.Array(Type.Object({ name: Type.String({ minLength: 1 }) }, { additionalProperties: false }), { minItems: 1 }),
   rulesets_LogCustomFieldResponseFields: Type.Array(Type.Object({ name: Type.String({ minLength: 1 }), preserve_duplicates: Type.Optional(Type.Boolean()) }, { additionalProperties: false }), { minItems: 1 }),
   rulesets_LogCustomFieldTransformedRequestFields: Type.Array(Type.Object({ name: Type.String({ minLength: 1 }) }, { additionalProperties: false }), { minItems: 1 }),
-  rulesets_LogCustomFieldRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("log_custom_field"), action_parameters: Type.Partial(Type.Object({ cookie_fields: Type.Ref("rulesets_LogCustomFieldCookieFields"), raw_response_fields: Type.Ref("rulesets_LogCustomFieldRawResponseFields"), request_fields: Type.Ref("rulesets_LogCustomFieldRequestFields"), response_fields: Type.Ref("rulesets_LogCustomFieldResponseFields"), transformed_request_fields: Type.Ref("rulesets_LogCustomFieldTransformedRequestFields") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_LogRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("log"), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_ManagedChallengeRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("managed_challenge"), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_LogCustomFieldRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("log_custom_field"), action_parameters: Type.Partial(Type.Object({ cookie_fields: Type.Ref("rulesets_LogCustomFieldCookieFields"), raw_response_fields: Type.Ref("rulesets_LogCustomFieldRawResponseFields"), request_fields: Type.Ref("rulesets_LogCustomFieldRequestFields"), response_fields: Type.Ref("rulesets_LogCustomFieldResponseFields"), transformed_request_fields: Type.Ref("rulesets_LogCustomFieldTransformedRequestFields") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_LogRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("log"), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_ManagedChallengeRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("managed_challenge"), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_ManagedTransformId: Type.String({ minLength: 1 }),
   rulesets_ManagedTransform: Type.Object({ conflicts_with: Type.Optional(Type.Array(Type.Ref("rulesets_ManagedTransformId"), { minItems: 1, uniqueItems: true })), enabled: Type.Boolean(), has_conflict: Type.Boolean(), id: Type.Ref("rulesets_ManagedTransformId") }, { additionalProperties: false }),
-  rulesets_ManagedTransforms_schemas: Type.Object({ managed_request_headers: Type.Array(Type.Intersect([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))]), { uniqueItems: true }), managed_response_headers: Type.Array(Type.Intersect([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))]), { uniqueItems: true }) }, { additionalProperties: false }),
-  rulesets_ManagedTransformsPatch: Type.Partial(Type.Object({ managed_request_headers: Type.Array(Type.Intersect([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))]), { uniqueItems: true }), managed_response_headers: Type.Array(Type.Intersect([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))]), { uniqueItems: true }) }, { additionalProperties: false })),
+  rulesets_ManagedTransforms_schemas: Type.Object({ managed_request_headers: Type.Array(Type.Composite([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }), { uniqueItems: true }), managed_response_headers: Type.Array(Type.Composite([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }), { uniqueItems: true }) }, { additionalProperties: false }),
+  rulesets_ManagedTransformsPatch: Type.Partial(Type.Object({ managed_request_headers: Type.Array(Type.Composite([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }), { uniqueItems: true }), managed_response_headers: Type.Array(Type.Composite([Type.Ref("rulesets_ManagedTransform"), Type.Partial(Type.Object({ id: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }), { uniqueItems: true }) }, { additionalProperties: false })),
   rulesets_Messages: Type.Array(Type.Ref("rulesets_Message"), { uniqueItems: true }),
   rulesets_PerPage: Type.Integer({ minimum: 1, maximum: 50 }),
   rulesets_RedirectFromList: Type.Object({ key: Type.String({ minLength: 1 }), name: Type.String({ pattern: "^[a-zA-Z0-9_]+$" }) }, { additionalProperties: false }),
   rulesets_RedirectFromValue: Type.Object({ preserve_query_string: Type.Optional(Type.Boolean()), status_code: Type.Optional(Type.Union([Type.Literal(301), Type.Literal(302), Type.Literal(303), Type.Literal(307), Type.Literal(308)])), target_url: Type.Partial(Type.Object({ expression: Type.String({ minLength: 1 }), value: Type.String({ minLength: 1 }) }, { minProperties: 1, maxProperties: 1, additionalProperties: false })) }, { additionalProperties: false }),
-  rulesets_RedirectRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("redirect"), action_parameters: Type.Partial(Type.Object({ from_list: Type.Ref("rulesets_RedirectFromList"), from_value: Type.Ref("rulesets_RedirectFromValue") }, { minProperties: 1, maxProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_RedirectRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("redirect"), action_parameters: Type.Partial(Type.Object({ from_list: Type.Ref("rulesets_RedirectFromList"), from_value: Type.Ref("rulesets_RedirectFromValue") }, { minProperties: 1, maxProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_RewriteHeaderOperation: Type.String(),
   rulesets_RewriteHeaderValue: Type.String({ minLength: 1 }),
   rulesets_RewriteHeaderExpression: Type.String({ minLength: 1 }),
@@ -4497,24 +4497,24 @@ const __schemas = Type.Module({
   rulesets_RewriteUriPath: Type.Partial(Type.Object({ expression: Type.String({ minLength: 1 }), value: Type.String({ minLength: 1 }) }, { minProperties: 1, maxProperties: 1, additionalProperties: false })),
   rulesets_RewriteUriQuery: Type.Partial(Type.Object({ expression: Type.String({ minLength: 1 }), value: Type.String() }, { minProperties: 1, maxProperties: 1, additionalProperties: false })),
   rulesets_RewriteUri: Type.Intersect([Type.Union([Type.Object({ path: Type.Ref("rulesets_RewriteUriPath") }, { additionalProperties: false }), Type.Object({ query: Type.Ref("rulesets_RewriteUriQuery") }, { additionalProperties: false })]), Type.Partial(Type.Object({ origin: Type.Boolean() }, { additionalProperties: false }))]),
-  rulesets_RewriteRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("rewrite"), action_parameters: Type.Partial(Type.Object({ headers: Type.Ref("rulesets_RewriteHeaders"), uri: Type.Ref("rulesets_RewriteUri") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_RewriteRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("rewrite"), action_parameters: Type.Partial(Type.Object({ headers: Type.Ref("rulesets_RewriteHeaders"), uri: Type.Ref("rulesets_RewriteUri") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_RouteHostHeader: Type.String({ minLength: 1 }),
   rulesets_RouteOrigin: Type.Partial(Type.Object({ host: Type.String({ minLength: 1 }), port: Type.Integer({ minimum: 1, maximum: 65535 }) }, { minProperties: 1, additionalProperties: false })),
   rulesets_RouteSNI: Type.Object({ value: Type.String({ minLength: 1 }) }, { additionalProperties: false }),
-  rulesets_RouteRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("route"), action_parameters: Type.Partial(Type.Object({ host_header: Type.Ref("rulesets_RouteHostHeader"), origin: Type.Ref("rulesets_RouteOrigin"), sni: Type.Ref("rulesets_RouteSNI") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_RouteRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("route"), action_parameters: Type.Partial(Type.Object({ host_header: Type.Ref("rulesets_RouteHostHeader"), origin: Type.Ref("rulesets_RouteOrigin"), sni: Type.Ref("rulesets_RouteSNI") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_ScoreIncrement: Type.Integer(),
-  rulesets_ScoreRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("score"), action_parameters: Type.Object({ increment: Type.Ref("rulesets_ScoreIncrement") }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_ScoreRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("score"), action_parameters: Type.Object({ increment: Type.Ref("rulesets_ScoreIncrement") }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_ServeErrorContentType: Type.Union([Type.Literal("application/json"), Type.Literal("text/html"), Type.Literal("text/plain"), Type.Literal("text/xml")]),
   rulesets_ServeErrorStatusCode: Type.Integer({ minimum: 400, maximum: 999 }),
   rulesets_ServeErrorContent: Type.String({ minLength: 1 }),
   rulesets_ServeErrorAssetName: Type.String({ minLength: 1 }),
-  rulesets_ServeErrorRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("serve_error"), action_parameters: Type.Intersect([Type.Object({ content_type: Type.Ref("rulesets_ServeErrorContentType"), status_code: Type.Optional(Type.Ref("rulesets_ServeErrorStatusCode")) }, { additionalProperties: false }), __typedOpenapiOneOf([Type.Object({ content: Type.Ref("rulesets_ServeErrorContent") }, { additionalProperties: false }), Type.Object({ asset_name: Type.Ref("rulesets_ServeErrorAssetName") }, { additionalProperties: false })])]), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_ServeErrorRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("serve_error"), action_parameters: Type.Intersect([Type.Object({ content_type: Type.Ref("rulesets_ServeErrorContentType"), status_code: Type.Optional(Type.Ref("rulesets_ServeErrorStatusCode")) }, { additionalProperties: false }), __typedOpenapiOneOf([Type.Object({ content: Type.Ref("rulesets_ServeErrorContent") }, { additionalProperties: false }), Type.Object({ asset_name: Type.Ref("rulesets_ServeErrorAssetName") }, { additionalProperties: false })])]), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_SetCacheControlCloudflareOnly: Type.Boolean(),
   rulesets_SetCacheControlOperation: Type.Union([Type.Literal("set"), Type.Literal("remove")]),
   rulesets_SetCacheControlDirective: __typedOpenapiOneOf([Type.Object({ cloudflare_only: Type.Optional(Type.Ref("rulesets_SetCacheControlCloudflareOnly")), operation: Type.Intersect([Type.Ref("rulesets_SetCacheControlOperation"), Type.Literal("set")]) }, { additionalProperties: false }), Type.Object({ cloudflare_only: Type.Optional(Type.Ref("rulesets_SetCacheControlCloudflareOnly")), operation: Type.Intersect([Type.Ref("rulesets_SetCacheControlOperation"), Type.Literal("remove")]) }, { additionalProperties: false })]),
   rulesets_SetCacheControlDirectiveWithValue: __typedOpenapiOneOf([Type.Object({ cloudflare_only: Type.Optional(Type.Ref("rulesets_SetCacheControlCloudflareOnly")), operation: Type.Intersect([Type.Ref("rulesets_SetCacheControlOperation"), Type.Literal("set")]), value: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }), Type.Object({ cloudflare_only: Type.Optional(Type.Ref("rulesets_SetCacheControlCloudflareOnly")), operation: Type.Intersect([Type.Ref("rulesets_SetCacheControlOperation"), Type.Literal("remove")]) }, { additionalProperties: false })]),
   rulesets_SetCacheControlDirectiveWithQualifiers: __typedOpenapiOneOf([Type.Object({ cloudflare_only: Type.Optional(Type.Ref("rulesets_SetCacheControlCloudflareOnly")), operation: Type.Intersect([Type.Ref("rulesets_SetCacheControlOperation"), Type.Literal("set")]), qualifiers: Type.Optional(Type.Array(Type.String({ minLength: 1 }), { uniqueItems: true })) }, { additionalProperties: false }), Type.Object({ cloudflare_only: Type.Optional(Type.Ref("rulesets_SetCacheControlCloudflareOnly")), operation: Type.Intersect([Type.Ref("rulesets_SetCacheControlOperation"), Type.Literal("remove")]) }, { additionalProperties: false })]),
-  rulesets_SetCacheControlRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_cache_control"), action_parameters: Type.Partial(Type.Object({ immutable: Type.Ref("rulesets_SetCacheControlDirective"), "max-age": Type.Ref("rulesets_SetCacheControlDirectiveWithValue"), "must-revalidate": Type.Ref("rulesets_SetCacheControlDirective"), "must-understand": Type.Ref("rulesets_SetCacheControlDirective"), "no-cache": Type.Ref("rulesets_SetCacheControlDirectiveWithQualifiers"), "no-store": Type.Ref("rulesets_SetCacheControlDirective"), "no-transform": Type.Ref("rulesets_SetCacheControlDirective"), private: Type.Ref("rulesets_SetCacheControlDirectiveWithQualifiers"), "proxy-revalidate": Type.Ref("rulesets_SetCacheControlDirective"), public: Type.Ref("rulesets_SetCacheControlDirective"), "s-maxage": Type.Ref("rulesets_SetCacheControlDirectiveWithValue"), "stale-if-error": Type.Ref("rulesets_SetCacheControlDirectiveWithValue"), "stale-while-revalidate": Type.Ref("rulesets_SetCacheControlDirectiveWithValue") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_SetCacheControlRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_cache_control"), action_parameters: Type.Partial(Type.Object({ immutable: Type.Ref("rulesets_SetCacheControlDirective"), "max-age": Type.Ref("rulesets_SetCacheControlDirectiveWithValue"), "must-revalidate": Type.Ref("rulesets_SetCacheControlDirective"), "must-understand": Type.Ref("rulesets_SetCacheControlDirective"), "no-cache": Type.Ref("rulesets_SetCacheControlDirectiveWithQualifiers"), "no-store": Type.Ref("rulesets_SetCacheControlDirective"), "no-transform": Type.Ref("rulesets_SetCacheControlDirective"), private: Type.Ref("rulesets_SetCacheControlDirectiveWithQualifiers"), "proxy-revalidate": Type.Ref("rulesets_SetCacheControlDirective"), public: Type.Ref("rulesets_SetCacheControlDirective"), "s-maxage": Type.Ref("rulesets_SetCacheControlDirectiveWithValue"), "stale-if-error": Type.Ref("rulesets_SetCacheControlDirectiveWithValue"), "stale-while-revalidate": Type.Ref("rulesets_SetCacheControlDirectiveWithValue") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_SetCacheSettingsAdditionalCacheablePorts: Type.Array(Type.Integer({ minimum: 1, maximum: 65535 }), { minItems: 1, uniqueItems: true }),
   rulesets_SetCacheSettingsBrowserTTL: Type.Object({ default: Type.Optional(Type.Integer({ minimum: 0 })), mode: Type.Union([Type.Literal("respect_origin"), Type.Literal("bypass_by_default"), Type.Literal("override_origin"), Type.Literal("bypass")]) }, { additionalProperties: false }),
   rulesets_SetCacheSettingsCache: Type.Boolean(),
@@ -4540,13 +4540,13 @@ const __schemas = Type.Module({
   rulesets_SetCacheSettingsVaryDefault: Type.Object({ action: Type.Union([Type.Literal("bypass"), Type.Literal("passthrough"), Type.Literal("normalize")]) }, { additionalProperties: false }),
   rulesets_SetCacheSettingsVaryHeader: Type.Object({ action: Type.Union([Type.Literal("bypass"), Type.Literal("passthrough"), Type.Literal("normalize")]), languages: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 64, pattern: "^[ -~]+$" }), { maxItems: 20 })), media_types: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255, pattern: "^[ -~]+$" }), { maxItems: 10 })) }, { additionalProperties: false }),
   rulesets_SetCacheSettingsVary: Type.Partial(Type.Object({ default: Type.Ref("rulesets_SetCacheSettingsVaryDefault"), headers: Type.Record(Type.String(), Type.Ref("rulesets_SetCacheSettingsVaryHeader")) }, { minProperties: 1, additionalProperties: false })),
-  rulesets_SetCacheSettingsRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_cache_settings"), action_parameters: Type.Partial(Type.Object({ additional_cacheable_ports: Type.Ref("rulesets_SetCacheSettingsAdditionalCacheablePorts"), browser_ttl: Type.Ref("rulesets_SetCacheSettingsBrowserTTL"), cache: Type.Ref("rulesets_SetCacheSettingsCache"), cache_key: Type.Ref("rulesets_SetCacheSettingsCacheKey"), cache_reserve: Type.Ref("rulesets_SetCacheSettingsCacheReserve"), edge_ttl: Type.Ref("rulesets_SetCacheSettingsEdgeTTL"), origin_cache_control: Type.Ref("rulesets_SetCacheSettingsOriginCacheControl"), origin_error_page_passthru: Type.Ref("rulesets_SetCacheSettingsOriginErrorPagePassthru"), read_timeout: Type.Ref("rulesets_SetCacheSettingsReadTimeout"), respect_strong_etags: Type.Ref("rulesets_SetCacheSettingsRespectStrongEtags"), serve_stale: Type.Ref("rulesets_SetCacheSettingsServeStale"), shared_dictionary: Type.Ref("rulesets_SetCacheSettingsSharedDictionary"), strip_etags: Type.Ref("rulesets_SetCacheSettingsStripETags"), strip_last_modified: Type.Ref("rulesets_SetCacheSettingsStripLastModified"), strip_set_cookie: Type.Ref("rulesets_SetCacheSettingsStripSetCookie"), vary: Type.Ref("rulesets_SetCacheSettingsVary") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_SetCacheSettingsRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_cache_settings"), action_parameters: Type.Partial(Type.Object({ additional_cacheable_ports: Type.Ref("rulesets_SetCacheSettingsAdditionalCacheablePorts"), browser_ttl: Type.Ref("rulesets_SetCacheSettingsBrowserTTL"), cache: Type.Ref("rulesets_SetCacheSettingsCache"), cache_key: Type.Ref("rulesets_SetCacheSettingsCacheKey"), cache_reserve: Type.Ref("rulesets_SetCacheSettingsCacheReserve"), edge_ttl: Type.Ref("rulesets_SetCacheSettingsEdgeTTL"), origin_cache_control: Type.Ref("rulesets_SetCacheSettingsOriginCacheControl"), origin_error_page_passthru: Type.Ref("rulesets_SetCacheSettingsOriginErrorPagePassthru"), read_timeout: Type.Ref("rulesets_SetCacheSettingsReadTimeout"), respect_strong_etags: Type.Ref("rulesets_SetCacheSettingsRespectStrongEtags"), serve_stale: Type.Ref("rulesets_SetCacheSettingsServeStale"), shared_dictionary: Type.Ref("rulesets_SetCacheSettingsSharedDictionary"), strip_etags: Type.Ref("rulesets_SetCacheSettingsStripETags"), strip_last_modified: Type.Ref("rulesets_SetCacheSettingsStripLastModified"), strip_set_cookie: Type.Ref("rulesets_SetCacheSettingsStripSetCookie"), vary: Type.Ref("rulesets_SetCacheSettingsVary") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_SetCacheTagsOperation: Type.Union([Type.Literal("add"), Type.Literal("remove"), Type.Literal("set")]),
   rulesets_SetCacheTagsValues: Type.Array(Type.String({ minLength: 1 }), { minItems: 1, maxItems: 100 }),
   rulesets_SetCacheTagsExpression: Type.String({ minLength: 1 }),
-  rulesets_SetCacheTagsRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_cache_tags"), action_parameters: __typedOpenapiOneOf([Type.Object({ operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("add")]), values: Type.Ref("rulesets_SetCacheTagsValues") }, { additionalProperties: false }), Type.Object({ expression: Type.Ref("rulesets_SetCacheTagsExpression"), operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("add")]) }, { additionalProperties: false }), Type.Object({ operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("remove")]), values: Type.Ref("rulesets_SetCacheTagsValues") }, { additionalProperties: false }), Type.Object({ expression: Type.Ref("rulesets_SetCacheTagsExpression"), operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("remove")]) }, { additionalProperties: false }), Type.Object({ operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("set")]), values: Type.Ref("rulesets_SetCacheTagsValues") }, { additionalProperties: false }), Type.Object({ expression: Type.Ref("rulesets_SetCacheTagsExpression"), operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("set")]) }, { additionalProperties: false })]), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_SetCacheTagsRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_cache_tags"), action_parameters: __typedOpenapiOneOf([Type.Object({ operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("add")]), values: Type.Ref("rulesets_SetCacheTagsValues") }, { additionalProperties: false }), Type.Object({ expression: Type.Ref("rulesets_SetCacheTagsExpression"), operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("add")]) }, { additionalProperties: false }), Type.Object({ operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("remove")]), values: Type.Ref("rulesets_SetCacheTagsValues") }, { additionalProperties: false }), Type.Object({ expression: Type.Ref("rulesets_SetCacheTagsExpression"), operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("remove")]) }, { additionalProperties: false }), Type.Object({ operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("set")]), values: Type.Ref("rulesets_SetCacheTagsValues") }, { additionalProperties: false }), Type.Object({ expression: Type.Ref("rulesets_SetCacheTagsExpression"), operation: Type.Intersect([Type.Ref("rulesets_SetCacheTagsOperation"), Type.Literal("set")]) }, { additionalProperties: false })]), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_SetConfigAutominify: Type.Partial(Type.Object({ css: Type.Boolean(), html: Type.Boolean(), js: Type.Boolean() }, { additionalProperties: false })),
-  rulesets_SetConfigRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_config"), action_parameters: Type.Partial(Type.Object({ automatic_https_rewrites: Type.Boolean(), autominify: Type.Ref("rulesets_SetConfigAutominify"), bic: Type.Boolean(), content_converter: Type.Boolean(), disable_apps: Type.Literal(true), disable_pay_per_crawl: Type.Literal(true), disable_rum: Type.Literal(true), disable_zaraz: Type.Literal(true), email_obfuscation: Type.Boolean(), fonts: Type.Boolean(), hotlink_protection: Type.Boolean(), mirage: Type.Boolean(), opportunistic_encryption: Type.Boolean(), polish: Type.Union([Type.Literal("off"), Type.Literal("lossless"), Type.Literal("lossy"), Type.Literal("webp")]), redirects_for_ai_training: Type.Boolean(), request_body_buffering: Type.Union([Type.Literal("none"), Type.Literal("standard"), Type.Literal("full")]), response_body_buffering: Type.Union([Type.Literal("none"), Type.Literal("standard")]), rocket_loader: Type.Boolean(), security_level: Type.Union([Type.Literal("off"), Type.Literal("essentially_off"), Type.Literal("low"), Type.Literal("medium"), Type.Literal("high"), Type.Literal("under_attack")]), server_side_excludes: Type.Boolean(), ssl: Type.Union([Type.Literal("off"), Type.Literal("flexible"), Type.Literal("full"), Type.Literal("strict"), Type.Literal("origin_pull")]), sxg: Type.Boolean() }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_SetConfigRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("set_config"), action_parameters: Type.Partial(Type.Object({ automatic_https_rewrites: Type.Boolean(), autominify: Type.Ref("rulesets_SetConfigAutominify"), bic: Type.Boolean(), content_converter: Type.Boolean(), disable_apps: Type.Literal(true), disable_pay_per_crawl: Type.Literal(true), disable_rum: Type.Literal(true), disable_zaraz: Type.Literal(true), email_obfuscation: Type.Boolean(), fonts: Type.Boolean(), hotlink_protection: Type.Boolean(), mirage: Type.Boolean(), opportunistic_encryption: Type.Boolean(), polish: Type.Union([Type.Literal("off"), Type.Literal("lossless"), Type.Literal("lossy"), Type.Literal("webp")]), redirects_for_ai_training: Type.Boolean(), request_body_buffering: Type.Union([Type.Literal("none"), Type.Literal("standard"), Type.Literal("full")]), response_body_buffering: Type.Union([Type.Literal("none"), Type.Literal("standard")]), rocket_loader: Type.Boolean(), security_level: Type.Union([Type.Literal("off"), Type.Literal("essentially_off"), Type.Literal("low"), Type.Literal("medium"), Type.Literal("high"), Type.Literal("under_attack")]), server_side_excludes: Type.Boolean(), ssl: Type.Union([Type.Literal("off"), Type.Literal("flexible"), Type.Literal("full"), Type.Literal("strict"), Type.Literal("origin_pull")]), sxg: Type.Boolean() }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_SkipPhase: Type.Literal("current"),
   rulesets_RulesetPhase: Type.Union([Type.Literal("ddos_l4"), Type.Literal("ddos_l7"), Type.Literal("http_config_settings"), Type.Literal("http_custom_errors"), Type.Literal("http_log_custom_fields"), Type.Literal("http_ratelimit"), Type.Literal("http_request_cache_settings"), Type.Literal("http_request_dynamic_redirect"), Type.Literal("http_request_firewall_custom"), Type.Literal("http_request_firewall_managed"), Type.Literal("http_request_late_transform"), Type.Literal("http_request_origin"), Type.Literal("http_request_redirect"), Type.Literal("http_request_sanitize"), Type.Literal("http_request_sbfm"), Type.Literal("http_request_transform"), Type.Literal("http_response_cache_settings"), Type.Literal("http_response_compression"), Type.Literal("http_response_firewall_managed"), Type.Literal("http_response_headers_transform"), Type.Literal("magic_transit"), Type.Literal("magic_transit_ids_managed"), Type.Literal("magic_transit_managed"), Type.Literal("magic_transit_ratelimit")]),
   rulesets_SkipPhases: Type.Array(Type.Ref("rulesets_RulesetPhase"), { minItems: 1, uniqueItems: true }),
@@ -4554,8 +4554,8 @@ const __schemas = Type.Module({
   rulesets_SkipRules: Type.Record(Type.String(), Type.Array(Type.Ref("rulesets_RuleId"), { minItems: 1, uniqueItems: true })),
   rulesets_SkipRuleset: Type.Literal("current"),
   rulesets_SkipRulesets: Type.Array(Type.Ref("rulesets_RulesetId"), { minItems: 1, uniqueItems: true }),
-  rulesets_SkipRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("skip"), action_parameters: Type.Partial(Type.Object({ phase: Type.Ref("rulesets_SkipPhase"), phases: Type.Ref("rulesets_SkipPhases"), products: Type.Ref("rulesets_SkipProducts"), rules: Type.Ref("rulesets_SkipRules"), ruleset: Type.Ref("rulesets_SkipRuleset"), rulesets: Type.Ref("rulesets_SkipRulesets") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))]),
-  rulesets_TransformResponseHTMLRule: Type.Intersect([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("transform_response_html"), action_parameters: Type.Object({ link_maze: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))]),
+  rulesets_SkipRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("skip"), action_parameters: Type.Partial(Type.Object({ phase: Type.Ref("rulesets_SkipPhase"), phases: Type.Ref("rulesets_SkipPhases"), products: Type.Ref("rulesets_SkipProducts"), rules: Type.Ref("rulesets_SkipRules"), ruleset: Type.Ref("rulesets_SkipRuleset"), rulesets: Type.Ref("rulesets_SkipRulesets") }, { minProperties: 1, additionalProperties: false })), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
+  rulesets_TransformResponseHTMLRule: Type.Composite([Type.Ref("rulesets_Rule_schemas"), Type.Partial(Type.Object({ action: Type.Literal("transform_response_html"), action_parameters: Type.Object({ link_maze: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }), description: Type.Unknown() }, { additionalProperties: false }))], { additionalProperties: false }),
   rulesets_RequestRule: __typedOpenapiOneOf([Type.Ref("rulesets_BlockRule"), Type.Ref("rulesets_ChallengeRule"), Type.Ref("rulesets_CompressResponseRule"), Type.Ref("rulesets_DDoSDynamicRule"), Type.Ref("rulesets_ExecuteRule"), Type.Ref("rulesets_ForceConnectionCloseRule"), Type.Ref("rulesets_JsChallengeRule"), Type.Ref("rulesets_LogRule"), Type.Ref("rulesets_LogCustomFieldRule"), Type.Ref("rulesets_ManagedChallengeRule"), Type.Ref("rulesets_RedirectRule"), Type.Ref("rulesets_RewriteRule"), Type.Ref("rulesets_RouteRule"), Type.Ref("rulesets_ScoreRule"), Type.Ref("rulesets_ServeErrorRule"), Type.Ref("rulesets_SetCacheControlRule"), Type.Ref("rulesets_SetCacheSettingsRule"), Type.Ref("rulesets_SetCacheTagsRule"), Type.Ref("rulesets_SetConfigRule"), Type.Ref("rulesets_SkipRule"), Type.Ref("rulesets_TransformResponseHTMLRule")]),
   rulesets_RequestRules: Type.Array(Type.Ref("rulesets_RequestRule")),
   rulesets_Response: Type.Object({ errors: Type.Ref("rulesets_Errors"), messages: Type.Ref("rulesets_Messages"), result: Type.Unknown(), success: Type.Boolean() }, { additionalProperties: false }),
@@ -4580,7 +4580,7 @@ const __schemas = Type.Module({
   rum_timestamp: Type.String({ format: "date-time" }),
   rum_created: Type.Ref("rum_timestamp"),
   rum_editable: Type.Boolean(),
-  rum_empty_response: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]),
+  rum_empty_response: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))], { additionalProperties: false }),
   rum_enabled: Type.Boolean(),
   rum_id: Type.String(),
   rum_identifier: Type.String({ maxLength: 32 }),
@@ -4593,26 +4593,26 @@ const __schemas = Type.Module({
   rum_per_page: Type.Number(),
   rum_result_info: Type.Partial(Type.Object({ count: Type.Integer(), page: Type.Integer(), per_page: Type.Integer(), total_count: Type.Integer(), total_pages: Type.Union([Type.Integer(), Type.Null()]) }, { additionalProperties: false })),
   rum_rule: Type.Partial(Type.Object({ created: Type.Ref("rum_timestamp"), host: Type.String(), id: Type.Ref("rum_rule_identifier"), inclusive: Type.Boolean(), is_paused: Type.Boolean(), paths: Type.Array(Type.String()), priority: Type.Number() }, { additionalProperties: false })),
-  rum_rule_id_response_single: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.Ref("rum_rule_identifier") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  rum_rule_response_single: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("rum_rule") }, { additionalProperties: false }))]),
+  rum_rule_id_response_single: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.Ref("rum_rule_identifier") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
+  rum_rule_response_single: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("rum_rule") }, { additionalProperties: false }))], { additionalProperties: false }),
   rum_rules: Type.Array(Type.Ref("rum_rule")),
   rum_ruleset_identifier: Type.String(),
   rum_ruleset: Type.Partial(Type.Object({ enabled: Type.Boolean(), id: Type.Ref("rum_ruleset_identifier"), zone_name: Type.String(), zone_tag: Type.Ref("rum_zone_tag") }, { additionalProperties: false })),
-  rum_rules_response_collection: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ rules: Type.Ref("rum_rules"), ruleset: Type.Ref("rum_ruleset") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  rum_rules_response_collection: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ rules: Type.Ref("rum_rules"), ruleset: Type.Ref("rum_ruleset") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   rum_value: Type.String(),
   rum_rum_site: Type.Partial(Type.Object({ editable: Type.Ref("rum_editable"), id: Type.Ref("rum_id"), value: Type.Ref("rum_value") }, { additionalProperties: false })),
-  rum_rum_site_response_single: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("rum_rum_site") }, { additionalProperties: false }))]),
+  rum_rum_site_response_single: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("rum_rum_site") }, { additionalProperties: false }))], { additionalProperties: false }),
   rum_site_tag: Type.String(),
   rum_site_token: Type.String(),
   rum_snippet: Type.String(),
   rum_site: Type.Partial(Type.Object({ auto_install: Type.Ref("rum_auto_install"), created: Type.Ref("rum_timestamp"), rules: Type.Ref("rum_rules"), ruleset: Type.Ref("rum_ruleset"), site_tag: Type.Ref("rum_site_tag"), site_token: Type.Ref("rum_site_token"), snippet: Type.Ref("rum_snippet") }, { additionalProperties: false })),
-  rum_site_response_single: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("rum_site") }, { additionalProperties: false }))]),
-  rum_site_tag_list_response: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("rum_site_tag")) }, { additionalProperties: false }))]),
-  rum_site_tag_response_single: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ site_tag: Type.Ref("rum_site_tag") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
-  rum_sites_response_collection: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("rum_site")), result_info: Type.Ref("rum_result_info") }, { additionalProperties: false }))]),
+  rum_site_response_single: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("rum_site") }, { additionalProperties: false }))], { additionalProperties: false }),
+  rum_site_tag_list_response: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("rum_site_tag")) }, { additionalProperties: false }))], { additionalProperties: false }),
+  rum_site_tag_response_single: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ site_tag: Type.Ref("rum_site_tag") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
+  rum_sites_response_collection: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("rum_site")), result_info: Type.Ref("rum_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
   rum_toggle_rum_request: Type.Partial(Type.Object({ value: Type.String() }, { additionalProperties: false })),
   rum_update_site_request: Type.Partial(Type.Object({ auto_install: Type.Ref("rum_auto_install"), enabled: Type.Ref("rum_enabled"), host: Type.Ref("rum_host"), lite: Type.Ref("rum_lite"), zone_tag: Type.Ref("rum_zone_tag") }, { additionalProperties: false })),
-  rum_zone_tag_list_response: Type.Intersect([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("rum_zone_tag")) }, { additionalProperties: false }))]),
+  rum_zone_tag_list_response: Type.Composite([Type.Ref("rum_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("rum_zone_tag")) }, { additionalProperties: false }))], { additionalProperties: false }),
   secondary_dns_account_identifier: Type.String(),
   secondary_dns_identifier_3: Type.String(),
   secondary_dns_ip_range: Type.String(),
@@ -4706,7 +4706,7 @@ const __schemas = Type.Module({
   security_center_identifier: Type.String({ maxLength: 32 }),
   security_center_accountId: Type.Ref("security_center_identifier"),
   security_center_auditLog: Type.Partial(Type.Object({ changed_at: Type.String({ format: "date-time" }), changed_by: Type.String(), current_value: Type.Union([Type.String(), Type.Null()]), field_changed: Type.Union([Type.Literal("status"), Type.Literal("user_classification")]), id: Type.String({ format: "uuid" }), issue_id: Type.String(), previous_value: Type.Union([Type.String(), Type.Null()]), rationale: Type.Union([Type.String(), Type.Null()]), zone_id: Type.Integer() }, { additionalProperties: false })),
-  security_center_auditLogResponse: Type.Intersect([Type.Ref("security_center_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("security_center_auditLog")), result_info: Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.String(), per_page: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  security_center_auditLogResponse: Type.Composite([Type.Ref("security_center_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("security_center_auditLog")), result_info: Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.String(), per_page: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   security_center_count: Type.Integer(),
   security_center_dismissed: Type.Boolean(),
   security_center_issueClass: Type.String(),
@@ -4728,7 +4728,7 @@ const __schemas = Type.Module({
   security_center_severityQueryParam: Type.Array(Type.Union([Type.Literal("low"), Type.Literal("moderate"), Type.Literal("critical")])),
   security_center_subjects: Type.Array(Type.Ref("security_center_subject")),
   security_center_userClassificationUpdate: Type.Partial(Type.Object({ classification: Type.Ref("security_center_userClassification"), rationale: Type.String() }, { additionalProperties: false })),
-  security_center_valueCountsResponse: Type.Intersect([Type.Ref("security_center_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ count: Type.Integer(), value: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))]),
+  security_center_valueCountsResponse: Type.Composite([Type.Ref("security_center_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ count: Type.Integer(), value: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))], { additionalProperties: false }),
   security_center_zoneId: Type.Ref("security_center_identifier"),
   smartshield_address: Type.String(),
   smartshield_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
@@ -4830,8 +4830,8 @@ const __schemas = Type.Module({
   spectrum_config_tls: Type.Union([Type.Literal("off"), Type.Literal("flexible"), Type.Literal("full"), Type.Literal("strict")]),
   spectrum_config_traffic_type: Type.Union([Type.Literal("direct"), Type.Literal("http"), Type.Literal("https")]),
   spectrum_config_virtual_network_id: Type.String({ format: "uuid" }),
-  spectrum_config_app_config: Type.Intersect([Type.Ref("spectrum_config_base_app_config"), Type.Object({ argo_smart_routing: Type.Optional(Type.Ref("spectrum_config_argo_smart_routing")), dns: Type.Ref("spectrum_config_dns"), edge_ips: Type.Optional(Type.Ref("spectrum_config_edge_ips")), ip_firewall: Type.Optional(Type.Ref("spectrum_config_ip_firewall")), origin_direct: Type.Optional(Type.Ref("spectrum_config_origin_direct")), origin_dns: Type.Optional(Type.Ref("spectrum_config_origin_dns")), origin_port: Type.Optional(Type.Ref("spectrum_config_origin_port")), protocol: Type.Ref("spectrum_config_protocol"), proxy_protocol: Type.Optional(Type.Ref("spectrum_config_proxy_protocol")), tls: Type.Optional(Type.Ref("spectrum_config_tls")), traffic_type: Type.Ref("spectrum_config_traffic_type"), virtual_network_id: Type.Optional(Type.Ref("spectrum_config_virtual_network_id")) }, { additionalProperties: false })]),
-  spectrum_config_paygo_app_config: Type.Intersect([Type.Ref("spectrum_config_base_app_config"), Type.Object({ dns: Type.Ref("spectrum_config_dns"), origin_direct: Type.Optional(Type.Ref("spectrum_config_origin_direct")), protocol: Type.Ref("spectrum_config_protocol") }, { additionalProperties: false })]),
+  spectrum_config_app_config: Type.Composite([Type.Ref("spectrum_config_base_app_config"), Type.Object({ argo_smart_routing: Type.Optional(Type.Ref("spectrum_config_argo_smart_routing")), dns: Type.Ref("spectrum_config_dns"), edge_ips: Type.Optional(Type.Ref("spectrum_config_edge_ips")), ip_firewall: Type.Optional(Type.Ref("spectrum_config_ip_firewall")), origin_direct: Type.Optional(Type.Ref("spectrum_config_origin_direct")), origin_dns: Type.Optional(Type.Ref("spectrum_config_origin_dns")), origin_port: Type.Optional(Type.Ref("spectrum_config_origin_port")), protocol: Type.Ref("spectrum_config_protocol"), proxy_protocol: Type.Optional(Type.Ref("spectrum_config_proxy_protocol")), tls: Type.Optional(Type.Ref("spectrum_config_tls")), traffic_type: Type.Ref("spectrum_config_traffic_type"), virtual_network_id: Type.Optional(Type.Ref("spectrum_config_virtual_network_id")) }, { additionalProperties: false })], { additionalProperties: false }),
+  spectrum_config_paygo_app_config: Type.Composite([Type.Ref("spectrum_config_base_app_config"), Type.Object({ dns: Type.Ref("spectrum_config_dns"), origin_direct: Type.Optional(Type.Ref("spectrum_config_origin_direct")), protocol: Type.Ref("spectrum_config_protocol") }, { additionalProperties: false })], { additionalProperties: false }),
   spectrum_config_app_config_collection: Type.Intersect([Type.Ref("spectrum_config_api_response_collection"), Type.Partial(Type.Object({ result: __typedOpenapiOneOf([Type.Array(Type.Ref("spectrum_config_app_config")), Type.Array(Type.Ref("spectrum_config_paygo_app_config"))]) }, { additionalProperties: false }))]),
   spectrum_config_app_config_single: Type.Intersect([Type.Ref("spectrum_config_api_response_single"), Type.Partial(Type.Object({ result: __typedOpenapiOneOf([Type.Ref("spectrum_config_app_config"), Type.Ref("spectrum_config_paygo_app_config")]) }, { additionalProperties: false }))]),
   spectrum_config_update_app_config: __typedOpenapiOneOf([Type.Ref("spectrum_config_app_config"), Type.Ref("spectrum_config_paygo_app_config")]),
@@ -4843,8 +4843,8 @@ const __schemas = Type.Module({
   speed_api_response_single_id: Type.Intersect([Type.Ref("speed_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Object({ id: Type.Ref("speed_identifier") }, { additionalProperties: false }), Type.Null()]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   speed_base: Type.Partial(Type.Object({ editable: Type.Union([Type.Literal(true), Type.Literal(false)]), id: Type.String(), modified_on: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), value: Type.Union([Type.Literal("on"), Type.Literal("off")]) }, { additionalProperties: false })),
   speed_cloudflare_fonts_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  speed_cloudflare_fonts: Type.Intersect([Type.Ref("speed_base"), Type.Partial(Type.Object({ id: Type.Literal("fonts"), value: Type.Ref("speed_cloudflare_fonts_value") }, { additionalProperties: false }))]),
-  speed_cloudflare_speed_brain_response: Type.Intersect([Type.Ref("speed_base"), Type.Partial(Type.Object({ value: Type.String() }, { additionalProperties: false }))]),
+  speed_cloudflare_fonts: Type.Composite([Type.Ref("speed_base"), Type.Partial(Type.Object({ id: Type.Literal("fonts"), value: Type.Ref("speed_cloudflare_fonts_value") }, { additionalProperties: false }))], { additionalProperties: false }),
+  speed_cloudflare_speed_brain_response: Type.Composite([Type.Ref("speed_base"), Type.Partial(Type.Object({ value: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_accessRules: Type.Partial(Type.Object({ action: Type.Union([Type.Literal("allow"), Type.Literal("block")]), country: Type.Array(Type.String()), ip: Type.Array(Type.String()), type: Type.Union([Type.Literal("any"), Type.Literal("ip.src"), Type.Literal("ip.geoip.country")]) }, { additionalProperties: false })),
   stream_account_identifier: Type.String({ maxLength: 32 }),
   stream_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
@@ -4854,7 +4854,7 @@ const __schemas = Type.Module({
   stream_audio_state: Type.Union([Type.Literal("queued"), Type.Literal("ready"), Type.Literal("error")]),
   stream_identifier: Type.String({ maxLength: 32 }),
   stream_additionalAudio: Type.Partial(Type.Object({ default: Type.Ref("stream_audio_default"), label: Type.Ref("stream_audio_label"), status: Type.Ref("stream_audio_state"), uid: Type.Ref("stream_identifier") }, { additionalProperties: false })),
-  stream_addAudioTrackResponse: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("stream_additionalAudio") }, { additionalProperties: false }))]),
+  stream_addAudioTrackResponse: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("stream_additionalAudio") }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_allowedOrigins: Type.Array(Type.String()),
   stream_api_response_common_failure: Type.Object({ errors: Type.Ref("stream_messages"), messages: Type.Ref("stream_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   stream_api_response_single: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Record(Type.String(), Type.Unknown())]),
@@ -4956,11 +4956,11 @@ const __schemas = Type.Module({
   stream_signing_key_created: Type.String({ format: "date-time" }),
   stream_pem: Type.String(),
   stream_keys: Type.Partial(Type.Object({ created: Type.Ref("stream_signing_key_created"), id: Type.Ref("stream_identifier_2"), jwk: Type.Ref("stream_jwk"), pem: Type.Ref("stream_pem") }, { additionalProperties: false })),
-  stream_key_generation_response: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("stream_keys") }, { additionalProperties: false }))]),
-  stream_key_response_collection: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ created: Type.Ref("stream_signing_key_created"), id: Type.Ref("stream_identifier_2"), key_id: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))]),
-  stream_language_response_collection: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_captions")) }, { additionalProperties: false }))]),
+  stream_key_generation_response: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("stream_keys") }, { additionalProperties: false }))], { additionalProperties: false }),
+  stream_key_response_collection: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ created: Type.Ref("stream_signing_key_created"), id: Type.Ref("stream_identifier_2"), key_id: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }))], { additionalProperties: false }),
+  stream_language_response_collection: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_captions")) }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_language_response_single: Type.Intersect([Type.Ref("stream_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("stream_captions") }, { additionalProperties: false }))]),
-  stream_listAudioTrackResponse: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ audio: Type.Array(Type.Ref("stream_additionalAudio")) }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  stream_listAudioTrackResponse: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ audio: Type.Array(Type.Ref("stream_additionalAudio")) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_live_input_created: Type.String({ format: "date-time" }),
   stream_live_input_keys_rotated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
   stream_playback_rtmps_stream_key: Type.String(),
@@ -4976,12 +4976,12 @@ const __schemas = Type.Module({
   stream_playback_webrtc: Type.Partial(Type.Object({ url: Type.Ref("stream_playback_webrtc_url") }, { additionalProperties: false })),
   stream_live_input: Type.Partial(Type.Object({ created: Type.Ref("stream_live_input_created"), deleteRecordingAfterDays: Type.Ref("stream_live_input_recording_deletion"), enabled: Type.Ref("stream_live_input_enabled"), keysRotatedAt: Type.Ref("stream_live_input_keys_rotated_at"), meta: Type.Ref("stream_live_input_metadata"), modified: Type.Ref("stream_live_input_modified"), preferLowLatency: Type.Ref("stream_live_input_prefer_low_latency"), recording: Type.Ref("stream_live_input_recording_settings"), rtmps: Type.Ref("stream_input_rtmps"), rtmpsPlayback: Type.Ref("stream_playback_rtmps"), srt: Type.Ref("stream_input_srt"), srtPlayback: Type.Ref("stream_playback_srt"), status: Type.Ref("stream_live_input_status"), uid: Type.Ref("stream_live_input_identifier"), webRTC: Type.Ref("stream_input_webrtc"), webRTCPlayback: Type.Ref("stream_playback_webrtc") }, { additionalProperties: false })),
   stream_live_input_object_without_url: Type.Partial(Type.Object({ created: Type.Ref("stream_live_input_created"), deleteRecordingAfterDays: Type.Ref("stream_live_input_recording_deletion"), enabled: Type.Ref("stream_live_input_enabled"), meta: Type.Ref("stream_live_input_metadata"), modified: Type.Ref("stream_live_input_modified"), uid: Type.Ref("stream_live_input_identifier") }, { additionalProperties: false })),
-  stream_live_input_response_collection: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ liveInputs: Type.Array(Type.Ref("stream_live_input_object_without_url")), range: Type.Integer(), total: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  stream_live_input_response_collection: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ liveInputs: Type.Array(Type.Ref("stream_live_input_object_without_url")), range: Type.Integer(), total: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_live_input_response_single: Type.Intersect([Type.Ref("stream_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("stream_live_input") }, { additionalProperties: false }))]),
   stream_notificationUrl: Type.String({ format: "uri" }),
   stream_output_identifier: Type.String({ maxLength: 32 }),
   stream_output: Type.Partial(Type.Object({ enabled: Type.Ref("stream_output_enabled"), streamKey: Type.Ref("stream_output_streamKey"), uid: Type.Ref("stream_output_identifier"), url: Type.Ref("stream_output_url") }, { additionalProperties: false })),
-  stream_output_response_collection: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_output")) }, { additionalProperties: false }))]),
+  stream_output_response_collection: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_output")) }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_output_response_single: Type.Intersect([Type.Ref("stream_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("stream_output") }, { additionalProperties: false }))]),
   stream_search: Type.String(),
   stream_signed_token_request: Type.Partial(Type.Object({ accessRules: Type.Array(Type.Ref("stream_accessRules")), downloadable: Type.Boolean(), exp: Type.Integer(), flags: Type.Partial(Type.Object({ original: Type.Boolean() }, { additionalProperties: false })), id: Type.String(), nbf: Type.Integer(), pem: Type.String() }, { additionalProperties: false })),
@@ -4997,11 +4997,11 @@ const __schemas = Type.Module({
   stream_videoClipStandard: Type.Object({ allowedOrigins: Type.Optional(Type.Ref("stream_allowedOrigins")), clippedFromVideoUID: Type.Ref("stream_clipped_from_video_uid"), creator: Type.Optional(Type.Ref("stream_creator")), endTimeSeconds: Type.Ref("stream_end_time_seconds"), input: Type.Optional(Type.String({ format: "uri" })), meta: Type.Optional(Type.Ref("stream_media_metadata")), name: Type.Optional(Type.String()), requireSignedURLs: Type.Optional(Type.Ref("stream_requireSignedURLs")), scheduledDeletion: Type.Optional(Type.Ref("stream_scheduledDeletion")), startTimeSeconds: Type.Ref("stream_start_time_seconds"), thumbnailTimestampPct: Type.Optional(Type.Ref("stream_thumbnailTimestampPct")), url: Type.Optional(Type.String({ format: "uri" })), watermark: Type.Optional(Type.Ref("stream_watermarkAtUpload")) }, { additionalProperties: false }),
   stream_video_copy_request: Type.Union([Type.Unknown(), Type.Unknown()]),
   stream_video_name: Type.String(),
-  stream_video_response_collection: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_videos")) }, { additionalProperties: false })), Type.Partial(Type.Object({ range: Type.Integer(), total: Type.Integer() }, { additionalProperties: false }))]),
+  stream_video_response_collection: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_videos")) }, { additionalProperties: false })), Type.Partial(Type.Object({ range: Type.Integer(), total: Type.Integer() }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_video_response_single: Type.Intersect([Type.Ref("stream_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("stream_videos") }, { additionalProperties: false }))]),
   stream_video_update: Type.Partial(Type.Object({ allowedOrigins: Type.Ref("stream_allowedOrigins"), creator: Type.Ref("stream_creator"), maxDurationSeconds: Type.Ref("stream_maxDurationSeconds"), meta: Type.Ref("stream_media_metadata"), publicDetails: Type.Partial(Type.Object({ channel_link: Type.Union([Type.String(), Type.Null()]), logo: Type.Union([Type.String(), Type.Null()]), share_link: Type.Union([Type.String(), Type.Null()]), title: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false })), requireSignedURLs: Type.Ref("stream_requireSignedURLs"), scheduledDeletion: Type.Ref("stream_scheduledDeletion"), thumbnailTimestampPct: Type.Ref("stream_thumbnailTimestampPct"), uid: Type.String(), uploadExpiry: Type.Ref("stream_oneTimeUploadExpiry") }, { additionalProperties: false })),
   stream_watermark_basic_upload: Type.Object({ file: Type.String(), name: Type.Optional(Type.Ref("stream_name")), opacity: Type.Optional(Type.Ref("stream_opacity")), padding: Type.Optional(Type.Ref("stream_padding")), position: Type.Optional(Type.Ref("stream_position")), scale: Type.Optional(Type.Ref("stream_scale")) }, { additionalProperties: false }),
-  stream_watermark_response_collection: Type.Intersect([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_watermarks")) }, { additionalProperties: false }))]),
+  stream_watermark_response_collection: Type.Composite([Type.Ref("stream_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("stream_watermarks")) }, { additionalProperties: false }))], { additionalProperties: false }),
   stream_watermark_response_single: Type.Intersect([Type.Ref("stream_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("stream_watermarks") }, { additionalProperties: false }))]),
   stream_webhook_request: Type.Union([Type.Unknown(), Type.Unknown()]),
   stream_webhook_response_single: Type.Intersect([Type.Ref("stream_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ modified: Type.String({ format: "date-time" }), notificationUrl: Type.String({ format: "uri" }), notification_url: Type.String({ format: "uri" }), secret: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
@@ -5312,7 +5312,7 @@ const __schemas = Type.Module({
   tls_certificates_and_hostnames_certificate_response_collection_2: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_certificates")) }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_enabled_4: Type.Boolean(),
   tls_certificates_and_hostnames_private_key_2: Type.String(),
-  tls_certificates_and_hostnames_zone_authenticated_origin_pull: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_certificateObject"), Type.Partial(Type.Object({ certificate: Type.Ref("tls_certificates_and_hostnames_certificate_5"), enabled: Type.Ref("tls_certificates_and_hostnames_enabled_4"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), private_key: Type.Ref("tls_certificates_and_hostnames_private_key_2") }, { additionalProperties: false }))]),
+  tls_certificates_and_hostnames_zone_authenticated_origin_pull: Type.Composite([Type.Ref("tls_certificates_and_hostnames_certificateObject"), Type.Partial(Type.Object({ certificate: Type.Ref("tls_certificates_and_hostnames_certificate_5"), enabled: Type.Ref("tls_certificates_and_hostnames_enabled_4"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), private_key: Type.Ref("tls_certificates_and_hostnames_private_key_2") }, { additionalProperties: false }))], { additionalProperties: false }),
   tls_certificates_and_hostnames_certificate_response_collection_3: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_zone_authenticated_origin_pull")) }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_certificate_response_collection_4: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_certificateObject_2")) }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_certificate_response_collection_5: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_certificateObject_3")) }, { additionalProperties: false })), Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
@@ -5368,7 +5368,7 @@ const __schemas = Type.Module({
   tls_certificates_and_hostnames_status_3: Type.Union([Type.Literal("active"), Type.Literal("pending"), Type.Literal("active_redeploying"), Type.Literal("moved"), Type.Literal("pending_deletion"), Type.Literal("deleted"), Type.Literal("pending_blocked"), Type.Literal("pending_migration"), Type.Literal("pending_provisioned"), Type.Literal("test_pending"), Type.Literal("test_active"), Type.Literal("test_active_apex"), Type.Literal("test_blocked"), Type.Literal("test_failed"), Type.Literal("provisioned"), Type.Literal("blocked")]),
   tls_certificates_and_hostnames_verification_errors: Type.Array(Type.String()),
   tls_certificates_and_hostnames_customhostname: Type.Partial(Type.Object({ created_at: Type.Ref("tls_certificates_and_hostnames_created_at"), custom_metadata: Type.Ref("tls_certificates_and_hostnames_custom_metadata"), custom_origin_server: Type.Ref("tls_certificates_and_hostnames_custom_origin_server"), custom_origin_sni: Type.Ref("tls_certificates_and_hostnames_custom_origin_sni"), hostname: Type.Ref("tls_certificates_and_hostnames_hostname"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), ownership_verification: Type.Ref("tls_certificates_and_hostnames_ownership_verification"), ownership_verification_http: Type.Ref("tls_certificates_and_hostnames_ownership_verification_http"), ssl: Type.Ref("tls_certificates_and_hostnames_ssl"), status: Type.Ref("tls_certificates_and_hostnames_status_3"), verification_errors: Type.Ref("tls_certificates_and_hostnames_verification_errors") }, { additionalProperties: false })),
-  tls_certificates_and_hostnames_custom_hostname: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_customhostname"), Type.Object({ hostname: Type.Ref("tls_certificates_and_hostnames_hostname"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), ssl: Type.Optional(Type.Ref("tls_certificates_and_hostnames_ssl")) }, { additionalProperties: false })]),
+  tls_certificates_and_hostnames_custom_hostname: Type.Composite([Type.Ref("tls_certificates_and_hostnames_customhostname"), Type.Object({ hostname: Type.Ref("tls_certificates_and_hostnames_hostname"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), ssl: Type.Optional(Type.Ref("tls_certificates_and_hostnames_ssl")) }, { additionalProperties: false })], { additionalProperties: false }),
   tls_certificates_and_hostnames_status_7: Type.Union([Type.Literal("initializing"), Type.Literal("pending_deployment"), Type.Literal("active"), Type.Literal("pending_deletion"), Type.Literal("deleted"), Type.Literal("expired")]),
   tls_certificates_and_hostnames_updated_at_2: Type.String({ format: "date-time" }),
   tls_certificates_and_hostnames_custom_trust_store: Type.Object({ certificate: Type.Ref("tls_certificates_and_hostnames_certificate_3"), expires_on: Type.Ref("tls_certificates_and_hostnames_expires_on_2"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), issuer: Type.Ref("tls_certificates_and_hostnames_issuer"), signature: Type.Ref("tls_certificates_and_hostnames_signature"), status: Type.Ref("tls_certificates_and_hostnames_status_7"), updated_at: Type.Ref("tls_certificates_and_hostnames_updated_at_2"), uploaded_on: Type.Ref("tls_certificates_and_hostnames_uploaded_on") }, { additionalProperties: false }),
@@ -5388,10 +5388,10 @@ const __schemas = Type.Module({
   tls_certificates_and_hostnames_custom_hostname_api_response_common: Type.Object({ errors: Type.Ref("tls_certificates_and_hostnames_messages"), messages: Type.Ref("tls_certificates_and_hostnames_custom_hostname_response_messages"), success: Type.Literal(true) }, { additionalProperties: false }),
   tls_certificates_and_hostnames_custom_hostname_api_response_failure: Type.Object({ errors: Type.Ref("tls_certificates_and_hostnames_messages"), messages: Type.Ref("tls_certificates_and_hostnames_custom_hostname_response_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   tls_certificates_and_hostnames_custom_hostname_quota: Type.Object({ allocated: Type.Integer(), exceeded: Type.Boolean(), hard_cap: Type.Integer(), used: Type.Integer() }, { additionalProperties: false }),
-  tls_certificates_and_hostnames_custom_hostname_quota_response: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_custom_hostname_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tls_certificates_and_hostnames_custom_hostname_quota") }, { additionalProperties: false }))]),
+  tls_certificates_and_hostnames_custom_hostname_quota_response: Type.Composite([Type.Ref("tls_certificates_and_hostnames_custom_hostname_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tls_certificates_and_hostnames_custom_hostname_quota") }, { additionalProperties: false }))], { additionalProperties: false }),
   tls_certificates_and_hostnames_result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() }, { additionalProperties: false })),
-  tls_certificates_and_hostnames_custom_hostname_response_collection: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_custom_hostname_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_custom_hostname")), result_info: Type.Ref("tls_certificates_and_hostnames_result_info") }, { additionalProperties: false }))]),
-  tls_certificates_and_hostnames_custom_hostname_response_single: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_custom_hostname_api_response_common"), Type.Partial(Type.Object({ result: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_custom_hostname"), Type.Record(Type.String(), Type.Unknown())]) }, { additionalProperties: false }))]),
+  tls_certificates_and_hostnames_custom_hostname_response_collection: Type.Composite([Type.Ref("tls_certificates_and_hostnames_custom_hostname_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_custom_hostname")), result_info: Type.Ref("tls_certificates_and_hostnames_result_info") }, { additionalProperties: false }))], { additionalProperties: false }),
+  tls_certificates_and_hostnames_custom_hostname_response_single: Type.Composite([Type.Ref("tls_certificates_and_hostnames_custom_hostname_api_response_common"), Type.Partial(Type.Object({ result: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_custom_hostname"), Type.Record(Type.String(), Type.Unknown())]) }, { additionalProperties: false }))], { additionalProperties: false }),
   tls_certificates_and_hostnames_custom_trust_store_response_collection: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_custom_trust_store")) }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_custom_trust_store_response_id_only: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_single"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.Ref("tls_certificates_and_hostnames_identifier") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_custom_trust_store_response_single: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("tls_certificates_and_hostnames_custom_trust_store") }, { additionalProperties: false }))]),
@@ -5414,7 +5414,7 @@ const __schemas = Type.Module({
   tls_certificates_and_hostnames_updated_at_3: Type.String({ format: "date-time" }),
   tls_certificates_and_hostnames_hostname_certid_object: Type.Partial(Type.Object({ cert_id: Type.Ref("tls_certificates_and_hostnames_identifier"), cert_status: Type.Ref("tls_certificates_and_hostnames_status_9"), cert_updated_at: Type.Ref("tls_certificates_and_hostnames_updated_at_3"), cert_uploaded_on: Type.Ref("tls_certificates_and_hostnames_uploaded_on_3"), certificate: Type.Ref("tls_certificates_and_hostnames_certificate_6"), created_at: Type.Ref("tls_certificates_and_hostnames_created_at_3"), enabled: Type.Ref("tls_certificates_and_hostnames_enabled_5"), expires_on: Type.Ref("tls_certificates_and_hostnames_expires_on_5"), hostname: Type.Ref("tls_certificates_and_hostnames_hostname_2"), issuer: Type.Ref("tls_certificates_and_hostnames_issuer"), serial_number: Type.Ref("tls_certificates_and_hostnames_serial_number"), signature: Type.Ref("tls_certificates_and_hostnames_signature"), status: Type.Ref("tls_certificates_and_hostnames_status_9"), updated_at: Type.Ref("tls_certificates_and_hostnames_updated_at_3") }, { additionalProperties: false })),
   tls_certificates_and_hostnames_private_key_3: Type.String(),
-  tls_certificates_and_hostnames_hostname_authenticated_origin_pull: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_hostname_certid_object"), Type.Partial(Type.Object({ cert_id: Type.Ref("tls_certificates_and_hostnames_identifier"), certificate: Type.Ref("tls_certificates_and_hostnames_certificate_6"), enabled: Type.Ref("tls_certificates_and_hostnames_enabled_5"), hostname: Type.Ref("tls_certificates_and_hostnames_hostname_2"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), private_key: Type.Ref("tls_certificates_and_hostnames_private_key_3") }, { additionalProperties: false }))]),
+  tls_certificates_and_hostnames_hostname_authenticated_origin_pull: Type.Composite([Type.Ref("tls_certificates_and_hostnames_hostname_certid_object"), Type.Partial(Type.Object({ cert_id: Type.Ref("tls_certificates_and_hostnames_identifier"), certificate: Type.Ref("tls_certificates_and_hostnames_certificate_6"), enabled: Type.Ref("tls_certificates_and_hostnames_enabled_5"), hostname: Type.Ref("tls_certificates_and_hostnames_hostname_2"), id: Type.Ref("tls_certificates_and_hostnames_identifier"), private_key: Type.Ref("tls_certificates_and_hostnames_private_key_3") }, { additionalProperties: false }))], { additionalProperties: false }),
   tls_certificates_and_hostnames_hostname_aop_response_collection: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tls_certificates_and_hostnames_hostname_authenticated_origin_pull")) }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_hostname_aop_single_response: Type.Intersect([Type.Ref("tls_certificates_and_hostnames_api_response_single"), Type.Partial(Type.Object({ result: Type.Ref("tls_certificates_and_hostnames_hostname_certid_object") }, { additionalProperties: false }))]),
   tls_certificates_and_hostnames_hostname_assoc_object: Type.Partial(Type.Object({ cert_id: Type.Ref("tls_certificates_and_hostnames_cert_id"), created_at: Type.Ref("tls_certificates_and_hostnames_created_at_3"), enabled: Type.Ref("tls_certificates_and_hostnames_enabled_5"), hostname: Type.Ref("tls_certificates_and_hostnames_hostname_2"), status: Type.Ref("tls_certificates_and_hostnames_status_9"), updated_at: Type.Ref("tls_certificates_and_hostnames_updated_at_3") }, { additionalProperties: false })),
@@ -5492,7 +5492,7 @@ const __schemas = Type.Module({
   tunnel_tunnel_type: Type.Union([Type.Literal("cfd_tunnel"), Type.Literal("warp_connector"), Type.Literal("warp"), Type.Literal("magic"), Type.Literal("ip_sec"), Type.Literal("gre"), Type.Literal("cni")]),
   tunnel_cfd_tunnel: Type.Partial(Type.Object({ account_tag: Type.Ref("tunnel_account_id"), config_src: Type.Ref("tunnel_config_src"), connections: Type.Ref("tunnel_connections_deprecated"), conns_active_at: Type.Ref("tunnel_conns_active_at"), conns_inactive_at: Type.Ref("tunnel_conns_inactive_at"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), id: Type.Ref("tunnel_tunnel_id"), metadata: Type.Ref("tunnel_metadata"), name: Type.Ref("tunnel_tunnel_name"), remote_config: Type.Ref("tunnel_remote_config"), status: Type.Ref("tunnel_status"), tun_type: Type.Ref("tunnel_tunnel_type") }, { additionalProperties: false })),
   tunnel_cfd_tunnel_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_cfd_tunnel")) }, { additionalProperties: false }))]),
-  tunnel_cfd_tunnel_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_cfd_tunnel") }, { additionalProperties: false }))]),
+  tunnel_cfd_tunnel_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_cfd_tunnel") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_client_id_input: Type.String({ format: "uuid", maxLength: 36 }),
   tunnel_originRequest: Type.Partial(Type.Object({ access: Type.Object({ audTag: Type.Array(Type.String()), required: Type.Optional(Type.Boolean()), teamName: Type.String() }, { additionalProperties: false }), caPool: Type.String(), connectTimeout: Type.Integer(), disableChunkedEncoding: Type.Boolean(), http2Origin: Type.Boolean(), httpHostHeader: Type.String(), keepAliveConnections: Type.Integer(), keepAliveTimeout: Type.Integer(), matchSNItoHost: Type.Boolean(), noHappyEyeballs: Type.Boolean(), noTLSVerify: Type.Boolean(), originServerName: Type.String(), proxyType: Type.String(), tcpKeepAlive: Type.Integer(), tlsTimeout: Type.Integer() }, { additionalProperties: false })),
   tunnel_ingressRule: Type.Object({ hostname: Type.String(), originRequest: Type.Optional(Type.Ref("tunnel_originRequest")), path: Type.Optional(Type.String()), service: Type.String() }, { additionalProperties: false }),
@@ -5506,7 +5506,7 @@ const __schemas = Type.Module({
   tunnel_configuration: Type.Partial(Type.Object({ account_id: Type.Ref("tunnel_identifier"), config: Type.Ref("tunnel_config"), created_at: Type.Ref("tunnel_timestamp"), source: Type.Ref("tunnel_config_src_2"), tunnel_id: Type.Ref("tunnel_tunnel_id_2"), version: Type.Ref("tunnel_config_version_2") }, { additionalProperties: false })),
   tunnel_configuration_response: Type.Intersect([Type.Ref("tunnel_api_response_single_2"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_configuration") }, { additionalProperties: false }))]),
   tunnel_connections: Type.Array(Type.Ref("tunnel_schemas_connection")),
-  tunnel_empty_response: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]),
+  tunnel_empty_response: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_existed_at: Type.String({ format: "url-encoded-date-time" }),
   tunnel_features: Type.Array(Type.String()),
   tunnel_ha_status: Type.Union([Type.Literal("offline"), Type.Literal("passive"), Type.Literal("active")]),
@@ -5518,14 +5518,14 @@ const __schemas = Type.Module({
   tunnel_tunnel_name_2: Type.String(),
   tunnel_hostname_route: Type.Partial(Type.Object({ comment: Type.Ref("tunnel_hostname_comment"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), hostname: Type.Ref("tunnel_hostname"), id: Type.Ref("tunnel_hostname_route_id"), tun_type: Type.Intersect([Type.Ref("tunnel_tunnel_type"), Type.Union([Type.Literal("cfd_tunnel"), Type.Literal("warp_connector")])]), tunnel_id: Type.Ref("tunnel_tunnel_id_3"), tunnel_name: Type.Ref("tunnel_tunnel_name_2") }, { additionalProperties: false })),
   tunnel_hostname_route_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_hostname_route")) }, { additionalProperties: false }))]),
-  tunnel_hostname_route_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_hostname_route") }, { additionalProperties: false }))]),
+  tunnel_hostname_route_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_hostname_route") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_icmp_proxy_enabled: Type.Boolean(),
   tunnel_ip_network: Type.String(),
   tunnel_ip_network_encoded: Type.String(),
   tunnel_is_default_network: Type.Boolean(),
   tunnel_is_default_network_optional: Type.Boolean(),
   tunnel_legacy_tunnel_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_argo_tunnel")) }, { additionalProperties: false }))]),
-  tunnel_legacy_tunnel_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_argo_tunnel") }, { additionalProperties: false }))]),
+  tunnel_legacy_tunnel_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_argo_tunnel") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_management_resources: Type.Literal("logs"),
   tunnel_mesh_aws_config: Type.Object({ fnr_id: Type.String() }, { additionalProperties: false }),
   tunnel_mesh_vip_entry: Type.Object({ address: Type.String() }, { additionalProperties: false }),
@@ -5542,7 +5542,7 @@ const __schemas = Type.Module({
   tunnel_route_id: Type.String({ maxLength: 36 }),
   tunnel_virtual_network_id: Type.String({ format: "uuid" }),
   tunnel_route: Type.Partial(Type.Object({ comment: Type.Ref("tunnel_route_comment"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), id: Type.Ref("tunnel_route_id"), network: Type.Ref("tunnel_ip_network"), tunnel_id: Type.Ref("tunnel_tunnel_id"), virtual_network_id: Type.Ref("tunnel_virtual_network_id") }, { additionalProperties: false })),
-  tunnel_route_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_route") }, { additionalProperties: false }))]),
+  tunnel_route_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_route") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_run_at: Type.String({ format: "date-time" }),
   tunnel_schemas_warp_connector_connection: Type.Partial(Type.Object({ client_id: Type.Ref("tunnel_client_id"), client_version: Type.Ref("tunnel_version"), colo_name: Type.Ref("tunnel_colo_name"), id: Type.Ref("tunnel_connection_id"), opened_at: Type.String({ format: "date-time" }), origin_ip: Type.Ref("tunnel_ip") }, { additionalProperties: false })),
   tunnel_subnet_capacity: Type.Partial(Type.Object({ total: Type.Integer(), used: Type.Integer() }, { additionalProperties: false })),
@@ -5556,35 +5556,35 @@ const __schemas = Type.Module({
   tunnel_subnet_query_comment: Type.String(),
   tunnel_subnet_query_name: Type.String(),
   tunnel_subnet_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_subnet")) }, { additionalProperties: false }))]),
-  tunnel_subnet_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_subnet") }, { additionalProperties: false }))]),
-  tunnel_subnet_response_single_nullable: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ capacity: Type.Ref("tunnel_subnet_capacity"), comment: Type.Ref("tunnel_subnet_comment"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), id: Type.Ref("tunnel_subnet_id"), is_default_network: Type.Ref("tunnel_subnet_is_default_network"), name: Type.Ref("tunnel_subnet_name"), network: Type.Ref("tunnel_subnet_ip_network"), subnet_type: Type.Ref("tunnel_subnet_type") }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))]),
+  tunnel_subnet_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_subnet") }, { additionalProperties: false }))], { additionalProperties: false }),
+  tunnel_subnet_response_single_nullable: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Partial(Type.Object({ capacity: Type.Ref("tunnel_subnet_capacity"), comment: Type.Ref("tunnel_subnet_comment"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), id: Type.Ref("tunnel_subnet_id"), is_default_network: Type.Ref("tunnel_subnet_is_default_network"), name: Type.Ref("tunnel_subnet_name"), network: Type.Ref("tunnel_subnet_ip_network"), subnet_type: Type.Ref("tunnel_subnet_type") }, { additionalProperties: false })), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_virtual_network_id_computed_optional: Type.String({ format: "uuid" }),
   tunnel_virtual_network_name: Type.String({ maxLength: 256 }),
   tunnel_teamnet: Type.Partial(Type.Object({ comment: Type.Ref("tunnel_route_comment"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), id: Type.Ref("tunnel_route_id"), network: Type.Ref("tunnel_ip_network"), tun_type: Type.Ref("tunnel_tunnel_type"), tunnel_id: Type.Ref("tunnel_tunnel_id"), tunnel_name: Type.Ref("tunnel_tunnel_name"), virtual_network_id: Type.Ref("tunnel_virtual_network_id_computed_optional"), virtual_network_name: Type.Ref("tunnel_virtual_network_name") }, { additionalProperties: false })),
   tunnel_teamnet_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_teamnet")) }, { additionalProperties: false }))]),
-  tunnel_teamnet_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_teamnet") }, { additionalProperties: false }))]),
+  tunnel_teamnet_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_teamnet") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_warp_connector_tunnel: Type.Partial(Type.Object({ account_tag: Type.Ref("tunnel_account_id"), connections: Type.Ref("tunnel_connections_deprecated"), conns_active_at: Type.Ref("tunnel_conns_active_at"), conns_inactive_at: Type.Ref("tunnel_conns_inactive_at"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Ref("tunnel_deleted_at"), id: Type.Ref("tunnel_tunnel_id"), metadata: Type.Ref("tunnel_metadata"), name: Type.Ref("tunnel_tunnel_name"), status: Type.Ref("tunnel_status"), tun_type: Type.Ref("tunnel_tunnel_type") }, { additionalProperties: false })),
   tunnel_tunnel_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Union([Type.Ref("tunnel_cfd_tunnel"), Type.Ref("tunnel_warp_connector_tunnel")])) }, { additionalProperties: false }))]),
   tunnel_tunnel_client: Type.Partial(Type.Object({ arch: Type.Ref("tunnel_arch"), config_version: Type.Ref("tunnel_config_version"), conns: Type.Ref("tunnel_connections"), features: Type.Ref("tunnel_features"), id: Type.Ref("tunnel_connection_id"), run_at: Type.Ref("tunnel_run_at"), version: Type.Ref("tunnel_version") }, { additionalProperties: false })),
-  tunnel_tunnel_client_response: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_tunnel_client") }, { additionalProperties: false }))]),
+  tunnel_tunnel_client_response: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_tunnel_client") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_tunnel_connections_response: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_tunnel_client")) }, { additionalProperties: false }))]),
   tunnel_tunnel_link: Type.Partial(Type.Object({ created_at: Type.Ref("tunnel_created_at"), linked_tunnel_id: Type.Ref("tunnel_tunnel_id") }, { additionalProperties: false })),
   tunnel_tunnel_links_response: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_tunnel_link")) }, { additionalProperties: false }))]),
   tunnel_tunnel_token: Type.String(),
-  tunnel_tunnel_response_token: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_tunnel_token") }, { additionalProperties: false }))]),
+  tunnel_tunnel_response_token: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_tunnel_token") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_tunnel_secret: Type.String(),
   tunnel_tunnel_types: Type.Array(Type.Ref("tunnel_tunnel_type")),
   tunnel_warp_connector_connections: Type.Array(Type.Ref("tunnel_schemas_warp_connector_connection")),
   tunnel_tunnel_warp_connector_client: Type.Partial(Type.Object({ arch: Type.Ref("tunnel_arch"), conns: Type.Ref("tunnel_warp_connector_connections"), features: Type.Ref("tunnel_features"), ha_status: Type.Ref("tunnel_ha_status"), id: Type.Ref("tunnel_client_id"), run_at: Type.Ref("tunnel_run_at"), version: Type.Ref("tunnel_version") }, { additionalProperties: false })),
-  tunnel_tunnel_warp_connector_client_response: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_tunnel_warp_connector_client") }, { additionalProperties: false }))]),
+  tunnel_tunnel_warp_connector_client_response: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_tunnel_warp_connector_client") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_tunnel_warp_connector_connections_response: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_tunnel_warp_connector_client")) }, { additionalProperties: false }))]),
   tunnel_virtual_network_comment: Type.String({ maxLength: 256 }),
   tunnel_virtual_network: Type.Object({ comment: Type.Ref("tunnel_virtual_network_comment"), created_at: Type.Ref("tunnel_created_at"), deleted_at: Type.Optional(Type.Ref("tunnel_deleted_at")), id: Type.Ref("tunnel_virtual_network_id"), is_default_network: Type.Ref("tunnel_is_default_network"), name: Type.Ref("tunnel_virtual_network_name") }, { additionalProperties: false }),
   tunnel_vnet_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_virtual_network")) }, { additionalProperties: false }))]),
-  tunnel_vnet_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_virtual_network") }, { additionalProperties: false }))]),
+  tunnel_vnet_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_virtual_network") }, { additionalProperties: false }))], { additionalProperties: false }),
   tunnel_warp_connector_response_collection: Type.Intersect([Type.Ref("tunnel_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("tunnel_warp_connector_tunnel")) }, { additionalProperties: false }))]),
-  tunnel_warp_connector_response_single: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_warp_connector_tunnel") }, { additionalProperties: false }))]),
-  tunnel_zero_trust_connectivity_settings_response: Type.Intersect([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ icmp_proxy_enabled: Type.Ref("tunnel_icmp_proxy_enabled"), offramp_warp_enabled: Type.Ref("tunnel_offramp_warp_enabled") }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  tunnel_warp_connector_response_single: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("tunnel_warp_connector_tunnel") }, { additionalProperties: false }))], { additionalProperties: false }),
+  tunnel_zero_trust_connectivity_settings_response: Type.Composite([Type.Ref("tunnel_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ icmp_proxy_enabled: Type.Ref("tunnel_icmp_proxy_enabled"), offramp_warp_enabled: Type.Ref("tunnel_offramp_warp_enabled") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   turnstile_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   turnstile_api_response_common: Type.Object({ errors: Type.Ref("turnstile_messages"), messages: Type.Ref("turnstile_messages"), success: Type.Boolean() }, { additionalProperties: false }),
   turnstile_api_response_common_failure: Type.Object({ errors: Type.Ref("turnstile_messages"), messages: Type.Ref("turnstile_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() }, { additionalProperties: false }),
@@ -5694,7 +5694,7 @@ const __schemas = Type.Module({
   vuln_scanner_credential: Type.Object({ credential_set_id: Type.String({ format: "uuid" }), id: Type.String({ format: "uuid" }), location: Type.Ref("vuln_scanner_credential_location"), location_name: Type.String(), name: Type.String() }, { additionalProperties: false }),
   vuln_scanner_credential_set: Type.Object({ id: Type.String({ format: "uuid" }), name: Type.String() }, { additionalProperties: false }),
   vuln_scanner_delete_scan_response: Type.Object({ id: Type.String({ format: "uuid" }) }, { additionalProperties: false }),
-  vuln_scanner_empty_response: Type.Intersect([Type.Ref("vuln_scanner_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]),
+  vuln_scanner_empty_response: Type.Composite([Type.Ref("vuln_scanner_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   vuln_scanner_identifier: Type.String({ maxLength: 32 }),
   vuln_scanner_patch_credential_request: Type.Partial(Type.Object({ location: Type.Ref("vuln_scanner_credential_location"), location_name: Type.String(), name: Type.String(), value: Type.String() }, { additionalProperties: false })),
   vuln_scanner_patch_credential_set_request: Type.Partial(Type.Object({ name: Type.String() }, { additionalProperties: false })),
@@ -5732,8 +5732,8 @@ const __schemas = Type.Module({
   waf_managed_rules_modified_rules_count: Type.Number(),
   waf_managed_rules_rules_count: Type.Number(),
   waf_managed_rules_group: Type.Partial(Type.Object({ description: Type.Ref("waf_managed_rules_description"), id: Type.Ref("waf_managed_rules_components_schemas_identifier"), modified_rules_count: Type.Ref("waf_managed_rules_modified_rules_count"), name: Type.Ref("waf_managed_rules_name"), package_id: Type.Ref("waf_managed_rules_identifier"), rules_count: Type.Ref("waf_managed_rules_rules_count") }, { additionalProperties: false })),
-  waf_managed_rules_traditional_deny_rule: Type.Intersect([Type.Ref("waf_managed_rules_base"), Type.Partial(Type.Object({ allowed_modes: Type.Ref("waf_managed_rules_allowed_modes_deny_traditional"), default_mode: Type.Ref("waf_managed_rules_default_mode"), mode: Type.Ref("waf_managed_rules_mode_deny_traditional") }, { additionalProperties: false }))]),
-  waf_managed_rules_traditional_allow_rule: Type.Intersect([Type.Ref("waf_managed_rules_base"), Type.Partial(Type.Object({ allowed_modes: Type.Ref("waf_managed_rules_allowed_modes_allow_traditional"), mode: Type.Ref("waf_managed_rules_mode_allow_traditional") }, { additionalProperties: false }))]),
+  waf_managed_rules_traditional_deny_rule: Type.Composite([Type.Ref("waf_managed_rules_base"), Type.Partial(Type.Object({ allowed_modes: Type.Ref("waf_managed_rules_allowed_modes_deny_traditional"), default_mode: Type.Ref("waf_managed_rules_default_mode"), mode: Type.Ref("waf_managed_rules_mode_deny_traditional") }, { additionalProperties: false }))], { additionalProperties: false }),
+  waf_managed_rules_traditional_allow_rule: Type.Composite([Type.Ref("waf_managed_rules_base"), Type.Partial(Type.Object({ allowed_modes: Type.Ref("waf_managed_rules_allowed_modes_allow_traditional"), mode: Type.Ref("waf_managed_rules_mode_allow_traditional") }, { additionalProperties: false }))], { additionalProperties: false }),
   waf_managed_rules_rule: __typedOpenapiOneOf([Type.Ref("waf_managed_rules_anomaly_rule"), Type.Ref("waf_managed_rules_traditional_deny_rule"), Type.Ref("waf_managed_rules_traditional_allow_rule")]),
   waf_managed_rules_schemas_group: Type.Intersect([Type.Ref("waf_managed_rules_group"), Type.Partial(Type.Object({ allowed_modes: Type.Ref("waf_managed_rules_allowed_modes"), mode: Type.Ref("waf_managed_rules_mode") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   waf_managed_rules_rule_group_response_collection: Type.Intersect([Type.Ref("waf_managed_rules_api_response_collection"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("waf_managed_rules_schemas_group")) }, { additionalProperties: false }))]),
@@ -5897,7 +5897,7 @@ const __schemas = Type.Module({
   workers_kv_result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() }, { additionalProperties: false })),
   workers_kv_api_response_collection: Type.Intersect([Type.Ref("workers_kv_api_response_common"), Type.Partial(Type.Object({ result_info: Type.Ref("workers_kv_result_info") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   workers_kv_api_response_common_failure: Type.Object({ errors: Type.Ref("workers_kv_messages"), messages: Type.Ref("workers_kv_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
-  workers_kv_api_response_common_no_result: Type.Intersect([Type.Ref("workers_kv_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]),
+  workers_kv_api_response_common_no_result: Type.Composite([Type.Ref("workers_kv_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_kv_bulk_get_result: Type.Partial(Type.Object({ values: Type.Record(Type.String(), __typedOpenapiOneOf([Type.String(), Type.Number(), Type.Boolean(), Type.Record(Type.String(), Type.Unknown())])) }, { additionalProperties: false })),
   workers_kv_expiration: Type.Number(),
   workers_kv_bulk_get_result_with_metadata: Type.Partial(Type.Object({ values: Type.Record(Type.String(), Type.Union([Type.Object({ expiration: Type.Optional(Type.Ref("workers_kv_expiration")), metadata: Type.Ref("workers_kv_any"), value: Type.Ref("workers_kv_any") }, { additionalProperties: false }), Type.Null()])) }, { additionalProperties: false })),
@@ -5923,7 +5923,7 @@ const __schemas = Type.Module({
   workers_observability_performance_information: Type.Object({ abr_level: Type.Optional(Type.Number()), bytes_read: Type.Number(), elapsed: Type.Number(), rows_read: Type.Number() }, { additionalProperties: false }),
   workers_observability_query: Type.Object({ adhoc: Type.Boolean(), created: Type.String(), createdBy: Type.String(), description: Type.Union([Type.String({ maxLength: 1000 }), Type.Null()]), id: Type.String(), name: Type.String({ minLength: 1, maxLength: 250 }), parameters: Type.Partial(Type.Object({ calculations: Type.Array(Type.Object({ alias: Type.Optional(Type.String()), key: Type.Optional(Type.String()), keyType: Type.Optional(Type.Union([Type.Literal("string"), Type.Literal("number"), Type.Literal("boolean")])), operator: Type.Union([Type.Literal("uniq"), Type.Literal("count"), Type.Literal("max"), Type.Literal("min"), Type.Literal("sum"), Type.Literal("avg"), Type.Literal("median"), Type.Literal("p001"), Type.Literal("p01"), Type.Literal("p05"), Type.Literal("p10"), Type.Literal("p25"), Type.Literal("p75"), Type.Literal("p90"), Type.Literal("p95"), Type.Literal("p99"), Type.Literal("p999"), Type.Literal("stddev"), Type.Literal("variance"), Type.Literal("COUNT_DISTINCT"), Type.Literal("COUNT"), Type.Literal("MAX"), Type.Literal("MIN"), Type.Literal("SUM"), Type.Literal("AVG"), Type.Literal("MEDIAN"), Type.Literal("P001"), Type.Literal("P01"), Type.Literal("P05"), Type.Literal("P10"), Type.Literal("P25"), Type.Literal("P75"), Type.Literal("P90"), Type.Literal("P95"), Type.Literal("P99"), Type.Literal("P999"), Type.Literal("STDDEV"), Type.Literal("VARIANCE")]) }, { additionalProperties: false })), datasets: Type.Array(Type.String()), filterCombination: Type.Union([Type.Literal("and"), Type.Literal("or"), Type.Literal("AND"), Type.Literal("OR")]), filters: Type.Array(Type.Ref("workers_observability_filter_node")), groupBys: Type.Array(Type.Object({ type: Type.Union([Type.Literal("string"), Type.Literal("number"), Type.Literal("boolean")]), value: Type.String() }, { additionalProperties: false })), havings: Type.Array(Type.Object({ key: Type.String(), operation: Type.Union([Type.Literal("eq"), Type.Literal("neq"), Type.Literal("gt"), Type.Literal("gte"), Type.Literal("lt"), Type.Literal("lte")]), value: Type.Number() }, { additionalProperties: false })), limit: Type.Integer({ minimum: 0, maximum: 100 }), needle: Type.Object({ isRegex: Type.Optional(Type.Boolean()), matchCase: Type.Optional(Type.Boolean()), value: Type.Intersect([Type.Union([Type.String(), Type.Number(), Type.Boolean()]), Type.String({ maxLength: 1000 })]) }, { additionalProperties: false }), orderBy: Type.Object({ order: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])), value: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false })), updated: Type.String(), updatedBy: Type.String() }, { additionalProperties: false }),
   workers_observability_telemetry_event: Type.Object({ $containers: Type.Optional(Type.Record(Type.String(), Type.Unknown())), $metadata: Type.Object({ account: Type.Optional(Type.String()), cloudService: Type.Optional(Type.String()), coldStart: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), cost: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), duration: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), endTime: Type.Optional(Type.Integer({ minimum: 0 })), error: Type.Optional(Type.String()), errorTemplate: Type.Optional(Type.String()), fingerprint: Type.Optional(Type.String()), id: Type.String(), level: Type.Optional(Type.String()), message: Type.Optional(Type.String()), messageTemplate: Type.Optional(Type.String()), metricName: Type.Optional(Type.String()), origin: Type.Optional(Type.String()), parentSpanId: Type.Optional(Type.String()), provider: Type.Optional(Type.String()), region: Type.Optional(Type.String()), requestId: Type.Optional(Type.String()), service: Type.Optional(Type.String()), spanId: Type.Optional(Type.String()), spanName: Type.Optional(Type.String()), stackId: Type.Optional(Type.String()), startTime: Type.Optional(Type.Integer({ minimum: 0 })), statusCode: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), traceDuration: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), traceId: Type.Optional(Type.String()), transactionName: Type.Optional(Type.String()), trigger: Type.Optional(Type.String()), type: Type.Optional(Type.String()), url: Type.Optional(Type.String()) }, { additionalProperties: false }), $workers: Type.Optional(Type.Union([Type.Object({ durableObjectId: Type.Optional(Type.String()), entrypoint: Type.Optional(Type.String()), event: Type.Optional(Type.Record(Type.String(), Type.Unknown())), eventType: Type.Union([Type.Literal("fetch"), Type.Literal("scheduled"), Type.Literal("alarm"), Type.Literal("cron"), Type.Literal("queue"), Type.Literal("email"), Type.Literal("tail"), Type.Literal("rpc"), Type.Literal("jsrpc"), Type.Literal("websocket"), Type.Literal("workflow"), Type.Literal("unknown")]), executionModel: Type.Optional(Type.Union([Type.Literal("durableObject"), Type.Literal("stateless")])), outcome: Type.Optional(Type.String()), preview: Type.Optional(Type.Partial(Type.Object({ id: Type.String(), name: Type.String(), slug: Type.String() }, { additionalProperties: false }))), requestId: Type.String(), scriptName: Type.String(), scriptVersion: Type.Optional(Type.Partial(Type.Object({ id: Type.String(), message: Type.String(), tag: Type.String() }, { additionalProperties: false }))), spanId: Type.Optional(Type.String()), traceId: Type.Optional(Type.String()), truncated: Type.Optional(Type.Boolean()) }, { additionalProperties: false }), Type.Object({ cpuTimeMs: Type.Number(), diagnosticsChannelEvents: Type.Optional(Type.Array(Type.Object({ channel: Type.String(), message: Type.String(), timestamp: Type.Number() }, { additionalProperties: false }))), dispatchNamespace: Type.Optional(Type.String()), durableObjectId: Type.Optional(Type.String()), entrypoint: Type.Optional(Type.String()), event: Type.Optional(Type.Record(Type.String(), Type.Unknown())), eventType: Type.Union([Type.Literal("fetch"), Type.Literal("scheduled"), Type.Literal("alarm"), Type.Literal("cron"), Type.Literal("queue"), Type.Literal("email"), Type.Literal("tail"), Type.Literal("rpc"), Type.Literal("jsrpc"), Type.Literal("websocket"), Type.Literal("workflow"), Type.Literal("unknown")]), executionModel: Type.Optional(Type.Union([Type.Literal("durableObject"), Type.Literal("stateless")])), outcome: Type.String(), preview: Type.Optional(Type.Partial(Type.Object({ id: Type.String(), name: Type.String(), slug: Type.String() }, { additionalProperties: false }))), requestId: Type.String(), scriptName: Type.String(), scriptVersion: Type.Optional(Type.Partial(Type.Object({ id: Type.String(), message: Type.String(), tag: Type.String() }, { additionalProperties: false }))), spanId: Type.Optional(Type.String()), traceId: Type.Optional(Type.String()), truncated: Type.Optional(Type.Boolean()), wallTimeMs: Type.Number() }, { additionalProperties: false })])), dataset: Type.String(), source: Type.Union([Type.String(), Type.Record(Type.String(), Type.Unknown())]), timestamp: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }),
-  workers_observability_query_run: Type.Object({ accountId: Type.String(), created: Type.Optional(Type.String()), dry: Type.Boolean(), granularity: Type.Number(), id: Type.String(), query: Type.Intersect([Type.Ref("workers_observability_query"), Type.Partial(Type.Object({ created: Type.Union([Type.String(), Type.String()]), updated: Type.Union([Type.String(), Type.String()]) }, { additionalProperties: false }))]), statistics: Type.Optional(Type.Object({ abr_level: Type.Optional(Type.Number()), bytes_read: Type.Number(), elapsed: Type.Number(), rows_read: Type.Number() }, { additionalProperties: false })), status: Type.Union([Type.Literal("STARTED"), Type.Literal("COMPLETED")]), timeframe: Type.Object({ from: Type.Number(), to: Type.Number() }, { additionalProperties: false }), updated: Type.Optional(Type.String()), userId: Type.String() }, { additionalProperties: false }),
+  workers_observability_query_run: Type.Object({ accountId: Type.String(), created: Type.Optional(Type.String()), dry: Type.Boolean(), granularity: Type.Number(), id: Type.String(), query: Type.Composite([Type.Ref("workers_observability_query"), Type.Partial(Type.Object({ created: Type.Union([Type.String(), Type.String()]), updated: Type.Union([Type.String(), Type.String()]) }, { additionalProperties: false }))], { additionalProperties: false }), statistics: Type.Optional(Type.Object({ abr_level: Type.Optional(Type.Number()), bytes_read: Type.Number(), elapsed: Type.Number(), rows_read: Type.Number() }, { additionalProperties: false })), status: Type.Union([Type.Literal("STARTED"), Type.Literal("COMPLETED")]), timeframe: Type.Object({ from: Type.Number(), to: Type.Number() }, { additionalProperties: false }), updated: Type.Optional(Type.String()), userId: Type.String() }, { additionalProperties: false }),
   workers_observability_query_results: Type.Object({ agents: Type.Optional(Type.Array(Type.Object({ agentClass: Type.String(), eventTypeCounts: Type.Record(Type.String(), Type.Number()), firstEventMs: Type.Number(), hasErrors: Type.Boolean(), lastEventMs: Type.Number(), namespace: Type.String(), service: Type.String(), totalEvents: Type.Number() }, { additionalProperties: false }))), calculations: Type.Optional(Type.Array(Type.Object({ aggregates: Type.Array(Type.Object({ count: Type.Number(), groups: Type.Optional(Type.Array(Type.Object({ key: Type.String(), value: Type.Union([Type.String(), Type.Number(), Type.Boolean()]) }, { additionalProperties: false }))), interval: Type.Number(), sampleInterval: Type.Number(), value: Type.Number() }, { additionalProperties: false })), alias: Type.Optional(Type.String()), calculation: Type.String(), series: Type.Array(Type.Object({ data: Type.Array(Type.Object({ count: Type.Number(), firstSeen: Type.Optional(Type.String()), groups: Type.Optional(Type.Array(Type.Object({ key: Type.String(), value: Type.Union([Type.String(), Type.Number(), Type.Boolean()]) }, { additionalProperties: false }))), interval: Type.Number(), lastSeen: Type.Optional(Type.String()), sampleInterval: Type.Number(), value: Type.Number() }, { additionalProperties: false })), time: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))), compare: Type.Optional(Type.Array(Type.Object({ aggregates: Type.Array(Type.Object({ count: Type.Number(), groups: Type.Optional(Type.Array(Type.Object({ key: Type.String(), value: Type.Union([Type.String(), Type.Number(), Type.Boolean()]) }, { additionalProperties: false }))), interval: Type.Number(), sampleInterval: Type.Number(), value: Type.Number() }, { additionalProperties: false })), alias: Type.Optional(Type.String()), calculation: Type.String(), series: Type.Array(Type.Object({ data: Type.Array(Type.Object({ count: Type.Number(), firstSeen: Type.Optional(Type.String()), groups: Type.Optional(Type.Array(Type.Object({ key: Type.String(), value: Type.Union([Type.String(), Type.Number(), Type.Boolean()]) }, { additionalProperties: false }))), interval: Type.Number(), lastSeen: Type.Optional(Type.String()), sampleInterval: Type.Number(), value: Type.Number() }, { additionalProperties: false })), time: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))), events: Type.Optional(Type.Partial(Type.Object({ count: Type.Number(), events: Type.Array(Type.Ref("workers_observability_telemetry_event")), fields: Type.Array(Type.Object({ key: Type.String(), type: Type.String() }, { additionalProperties: false })), series: Type.Array(Type.Object({ data: Type.Array(Type.Object({ aggregates: Type.Object({ _count: Type.Integer({ exclusiveMinimum: 0 }), _firstSeen: Type.Optional(Type.String()), _interval: Type.Number({ exclusiveMinimum: 0 }), _lastSeen: Type.Optional(Type.String()), bin: Type.Optional(Type.Record(Type.String(), Type.Unknown())) }, { additionalProperties: false }), count: Type.Number(), errors: Type.Optional(Type.Number()), groups: Type.Optional(Type.Record(Type.String(), Type.Union([Type.String(), Type.Number(), Type.Boolean()]))), interval: Type.Number(), sampleInterval: Type.Number() }, { additionalProperties: false })), time: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))), invocations: Type.Optional(Type.Record(Type.String(), Type.Array(Type.Ref("workers_observability_telemetry_event")))), run: Type.Ref("workers_observability_query_run"), statistics: Type.Ref("workers_observability_performance_information"), traces: Type.Optional(Type.Array(Type.Object({ errors: Type.Optional(Type.Array(Type.String())), rootSpanName: Type.String(), rootTransactionName: Type.String(), service: Type.Array(Type.String()), spans: Type.Number(), traceDurationMs: Type.Number(), traceEndMs: Type.Number(), traceId: Type.String(), traceStartMs: Type.Number() }, { additionalProperties: false }))) }, { additionalProperties: false }),
   workers_Domain: Type.Object({ cert_id: Type.String({ format: "uuid" }), environment: Type.Optional(Type.String()), hostname: Type.String(), id: Type.String(), service: Type.String(), zone_id: Type.String(), zone_name: Type.String() }, { additionalProperties: false }),
   workers_ErrorAuth_schemas: Type.Object({ code: Type.Literal(10023), message: Type.String() }, { additionalProperties: false }),
@@ -6005,8 +6005,8 @@ const __schemas = Type.Module({
   workers_exports_reconciliation_result: Type.Object({ created: Type.Array(Type.String()), deleted: Type.Array(Type.String()), info: Type.Array(Type.Ref("workers_exports_reconciliation_info")), removable_entries: Type.Array(Type.String()), renamed: Type.Array(Type.Ref("workers_exports_reconciliation_rename")), transfer_pending: Type.Array(Type.Ref("workers_exports_reconciliation_transfer_pending")), transferred: Type.Array(Type.Ref("workers_exports_reconciliation_transfer")), updated: Type.Array(Type.String()), warnings: Type.Array(Type.Ref("workers_exports_reconciliation_warning")) }, { additionalProperties: false }),
   workers_migration_tag_conditions: Type.Partial(Type.Object({ new_tag: Type.String(), old_tag: Type.String() }, { additionalProperties: false })),
   workers_migration_step: Type.Partial(Type.Object({ deleted_classes: Type.Array(Type.String()), new_classes: Type.Array(Type.String()), new_sqlite_classes: Type.Array(Type.String()), renamed_classes: Type.Array(Type.Partial(Type.Object({ from: Type.String(), to: Type.String() }, { additionalProperties: false }))), transferred_classes: Type.Array(Type.Partial(Type.Object({ from: Type.String(), from_script: Type.String(), to: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
-  workers_single_step_migrations: Type.Intersect([Type.Ref("workers_migration_tag_conditions"), Type.Ref("workers_migration_step")]),
-  workers_multiple_step_migrations: Type.Intersect([Type.Ref("workers_migration_tag_conditions"), Type.Partial(Type.Object({ steps: Type.Array(Type.Ref("workers_migration_step")) }, { additionalProperties: false }))]),
+  workers_single_step_migrations: Type.Composite([Type.Ref("workers_migration_tag_conditions"), Type.Ref("workers_migration_step")], { additionalProperties: false }),
+  workers_multiple_step_migrations: Type.Composite([Type.Ref("workers_migration_tag_conditions"), Type.Partial(Type.Object({ steps: Type.Array(Type.Ref("workers_migration_step")) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_placement_target: __typedOpenapiOneOf([Type.Object({ region: Type.String() }, { additionalProperties: false }), Type.Object({ hostname: Type.String() }, { additionalProperties: false }), Type.Object({ host: Type.String() }, { additionalProperties: false })]),
   workers_placement_info_no_status: __typedOpenapiOneOf([Type.Object({ mode: Type.Literal("smart") }, { additionalProperties: false }), Type.Object({ region: Type.String() }, { additionalProperties: false }), Type.Object({ hostname: Type.String() }, { additionalProperties: false }), Type.Object({ host: Type.String() }, { additionalProperties: false }), Type.Object({ mode: Type.Literal("targeted"), region: Type.String() }, { additionalProperties: false }), Type.Object({ hostname: Type.String(), mode: Type.Literal("targeted") }, { additionalProperties: false }), Type.Object({ host: Type.String(), mode: Type.Literal("targeted") }, { additionalProperties: false }), Type.Object({ mode: Type.Literal("targeted"), target: Type.Array(Type.Ref("workers_placement_target"), { minItems: 1, maxItems: 1 }) }, { additionalProperties: false })]),
   workers_Version: Type.Object({ annotations: Type.Optional(Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }), "workers/triggered_by": Type.String() }, { additionalProperties: false }))), assets: Type.Optional(Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ html_handling: Type.Union([Type.Literal("auto-trailing-slash"), Type.Literal("force-trailing-slash"), Type.Literal("drop-trailing-slash"), Type.Literal("none")]), not_found_handling: Type.Union([Type.Literal("none"), Type.Literal("404-page"), Type.Literal("single-page-application")]), run_worker_first: __typedOpenapiOneOf([Type.Array(Type.String()), Type.Boolean()]) }, { additionalProperties: false })), jwt: Type.String() }, { additionalProperties: false }))), bindings: Type.Optional(Type.Ref("workers_bindings")), cache_options: Type.Optional(Type.Ref("workers_cache_options")), compatibility_date: Type.Optional(Type.Ref("workers_compatibility_date")), compatibility_flags: Type.Optional(Type.Ref("workers_compatibility_flags")), containers: Type.Optional(Type.Ref("workers_containers")), created_on: Type.String({ format: "date-time" }), exports: Type.Optional(Type.Ref("workers_exports_config_map")), exports_reconciliation: Type.Optional(Type.Ref("workers_exports_reconciliation_result")), id: Type.String({ format: "uuid" }), limits: Type.Optional(Type.Partial(Type.Object({ cpu_ms: Type.Integer(), subrequests: Type.Integer() }, { additionalProperties: false }))), main_module: Type.Optional(Type.String()), migration_tag: Type.Optional(Type.String()), migrations: Type.Optional(__typedOpenapiOneOf([Type.Ref("workers_single_step_migrations"), Type.Ref("workers_multiple_step_migrations")])), modules: Type.Optional(Type.Array(Type.Object({ content_base64: Type.Unsafe<Blob>({ type: "string", format: "binary" }), content_type: Type.String(), name: Type.String() }, { additionalProperties: false }))), number: Type.Integer(), package_dependencies: Type.Optional(Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() }, { additionalProperties: false }))), placement: Type.Optional(Type.Ref("workers_placement_info_no_status")), source: Type.Optional(Type.String()), startup_time_ms: Type.Optional(Type.Integer()), urls: Type.Array(Type.String({ format: "uri" })), usage_model: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("bundled"), Type.Literal("unbound")])) }, { additionalProperties: false }),
@@ -6016,13 +6016,13 @@ const __schemas = Type.Module({
   workers_api_response_common: Type.Object({ errors: Type.Ref("workers_messages"), messages: Type.Ref("workers_messages"), success: Type.Literal(true) }, { additionalProperties: false }),
   workers_api_response_collection: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   workers_api_response_common_failure: Type.Object({ errors: Type.Ref("workers_messages"), messages: Type.Ref("workers_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
-  workers_api_response_null_result: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]),
+  workers_api_response_null_result: Type.Composite([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_api_response_single: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Record(Type.String(), Type.Unknown())]),
   workers_assets: Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ _headers: Type.String(), _redirects: Type.String(), html_handling: Type.Union([Type.Literal("auto-trailing-slash"), Type.Literal("force-trailing-slash"), Type.Literal("drop-trailing-slash"), Type.Literal("none")]), not_found_handling: Type.Union([Type.Literal("none"), Type.Literal("404-page"), Type.Literal("single-page-application")]), run_worker_first: __typedOpenapiOneOf([Type.Array(Type.String()), Type.Boolean()]), serve_directly: Type.Boolean() }, { additionalProperties: false })), jwt: Type.String() }, { additionalProperties: false })),
-  workers_completed_upload_assets_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ jwt: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  workers_completed_upload_assets_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ jwt: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_manifest_value: Type.Object({ hash: Type.String(), size: Type.Integer() }, { additionalProperties: false }),
   workers_create_assets_upload_session_object: Type.Object({ manifest: Type.Record(Type.String(), Type.Ref("workers_manifest_value")) }, { additionalProperties: false }),
-  workers_create_assets_upload_session_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ buckets: Type.Array(Type.Array(Type.String())), jwt: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))]),
+  workers_create_assets_upload_session_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ buckets: Type.Array(Type.Array(Type.String())), jwt: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_created_on: Type.String({ format: "date-time" }),
   workers_cursor: Type.String(),
   workers_deployment: Type.Object({ annotations: Type.Optional(Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/triggered_by": Type.String() }, { additionalProperties: false }))), author_email: Type.Optional(Type.String({ format: "email" })), created_on: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), source: Type.String(), strategy: Type.Literal("percentage"), versions: Type.Array(Type.Object({ percentage: Type.Number({ minimum: 0.01, maximum: 100 }), version_id: Type.String({ format: "uuid" }) }, { additionalProperties: false })) }, { additionalProperties: false }),
@@ -6049,7 +6049,7 @@ const __schemas = Type.Module({
   workers_script_count: Type.Integer(),
   workers_trusted_workers: Type.Boolean(),
   workers_namespace_response: Type.Partial(Type.Object({ created_by: Type.Ref("workers_identifier"), created_on: Type.Ref("workers_created_on"), modified_by: Type.Ref("workers_identifier"), modified_on: Type.Ref("workers_modified_on"), namespace_id: Type.Ref("workers_uuid"), namespace_name: Type.Ref("workers_dispatch_namespace_name"), script_count: Type.Ref("workers_script_count"), trusted_workers: Type.Ref("workers_trusted_workers") }, { additionalProperties: false })),
-  workers_namespace_list_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("workers_namespace_response")) }, { additionalProperties: false }))]),
+  workers_namespace_list_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Ref("workers_namespace_response")) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_tag: Type.String({ maxLength: 1024, pattern: "^[^,&]*$" }),
   workers_tags: Type.Union([Type.Array(Type.Ref("workers_tag"), { maxItems: 10 }), Type.Null()]),
   workers_namespace_script_and_version_settings_item: Type.Partial(Type.Object({ bindings: Type.Intersect([Type.Ref("workers_bindings"), Type.Array(Type.Ref("workers_binding_item"))]), cache_options: Type.Ref("workers_cache_options"), compatibility_date: Type.Intersect([Type.Ref("workers_compatibility_date"), Type.String()]), compatibility_flags: Type.Intersect([Type.Ref("workers_compatibility_flags"), Type.Array(Type.String())]), exports: Type.Ref("workers_exports_config_map"), exports_reconciliation: Type.Ref("workers_exports_reconciliation_result"), limits: Type.Ref("workers_limits"), logpush: Type.Ref("workers_logpush"), migrations: __typedOpenapiOneOf([Type.Ref("workers_single_step_migrations"), Type.Ref("workers_multiple_step_migrations")]), observability: Type.Ref("workers_observability"), placement: Type.Intersect([Type.Ref("workers_placement_info_no_status"), Type.Record(Type.String(), Type.Unknown())]), tags: Type.Intersect([Type.Ref("workers_tags"), Type.Array(Type.String())]), tail_consumers: Type.Intersect([Type.Ref("workers_tail_consumers"), Type.Array(Type.Ref("workers_tail_consumers_script"))]), usage_model: Type.Ref("workers_usage_model") }, { additionalProperties: false })),
@@ -6057,8 +6057,8 @@ const __schemas = Type.Module({
   workers_placement_mode: Type.Union([Type.Literal("smart"), Type.Literal("targeted")]),
   workers_script_response: Type.Partial(Type.Object({ cache_options: Type.Ref("workers_cache_options"), compatibility_date: Type.Ref("workers_compatibility_date"), compatibility_flags: Type.Ref("workers_compatibility_flags"), created_on: Type.Ref("workers_created_on"), etag: Type.Ref("workers_etag"), exports: Type.Ref("workers_exports_config_map"), handlers: Type.Array(Type.String()), has_assets: Type.Ref("workers_has_assets"), has_modules: Type.Ref("workers_has_modules"), id: Type.String(), last_deployed_from: Type.String(), logpush: Type.Ref("workers_logpush"), migration_tag: Type.String(), modified_on: Type.Ref("workers_modified_on"), named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }, { additionalProperties: false }))), observability: Type.Ref("workers_observability"), placement: Type.Ref("workers_placement_info"), placement_mode: Type.Intersect([Type.Ref("workers_placement_mode"), Type.String()]), placement_status: Type.Intersect([Type.Ref("workers_placement_status"), Type.String()]), tag: Type.String(), tags: Type.Ref("workers_tags"), tail_consumers: Type.Ref("workers_tail_consumers"), usage_model: Type.Ref("workers_usage_model") }, { additionalProperties: false })),
   workers_namespace_script_response: Type.Partial(Type.Object({ created_on: Type.Ref("workers_created_on"), dispatch_namespace: Type.Ref("workers_dispatch_namespace_name"), modified_on: Type.Ref("workers_modified_on"), script: Type.Ref("workers_script_response") }, { additionalProperties: false })),
-  workers_namespace_script_response_single: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_namespace_script_response") }, { additionalProperties: false })]),
-  workers_namespace_single_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("workers_namespace_response") }, { additionalProperties: false }))]),
+  workers_namespace_script_response_single: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_namespace_script_response") }, { additionalProperties: false })], { additionalProperties: false }),
+  workers_namespace_single_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("workers_namespace_response") }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_object: Type.Partial(Type.Object({ hasStoredData: Type.Boolean(), id: Type.String() }, { additionalProperties: false })),
   workers_placement_region: Type.Object({ id: Type.String() }, { additionalProperties: false }),
   workers_placement_provider: Type.Object({ id: Type.String(), regions: Type.Array(Type.Ref("workers_placement_region")) }, { additionalProperties: false }),
@@ -6067,13 +6067,13 @@ const __schemas = Type.Module({
   workers_schedule: Type.Object({ created_on: Type.Optional(Type.String()), cron: Type.String(), modified_on: Type.Optional(Type.String()) }, { additionalProperties: false }),
   workers_schemas_id: Type.String(),
   workers_script_and_version_settings_item: Type.Partial(Type.Object({ annotations: Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }), "workers/triggered_by": Type.String() }, { additionalProperties: false })), bindings: Type.Intersect([Type.Ref("workers_bindings"), Type.Array(Type.Ref("workers_binding_item"))]), cache_options: Type.Ref("workers_cache_options"), compatibility_date: Type.Intersect([Type.Ref("workers_compatibility_date"), Type.String()]), compatibility_flags: Type.Intersect([Type.Ref("workers_compatibility_flags"), Type.Array(Type.String())]), exports: Type.Ref("workers_exports_config_map"), exports_reconciliation: Type.Ref("workers_exports_reconciliation_result"), limits: Type.Ref("workers_limits"), logpush: Type.Ref("workers_logpush"), migrations: __typedOpenapiOneOf([Type.Ref("workers_single_step_migrations"), Type.Ref("workers_multiple_step_migrations")]), observability: Type.Ref("workers_observability"), placement: Type.Intersect([Type.Ref("workers_placement_info_no_status"), Type.Record(Type.String(), Type.Unknown())]), tags: Type.Intersect([Type.Ref("workers_tags"), Type.Array(Type.String())]), tail_consumers: Type.Intersect([Type.Ref("workers_tail_consumers"), Type.Array(Type.Ref("workers_tail_consumers_script"))]), usage_model: Type.Ref("workers_usage_model") }, { additionalProperties: false })),
-  workers_script_and_version_settings_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_script_and_version_settings_item") }, { additionalProperties: false })]),
-  workers_script_response_collection: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Array(Type.Intersect([Type.Ref("workers_script_response"), Type.Partial(Type.Object({ routes: Type.Union([Type.Array(Type.Ref("workers_route")), Type.Null()]) }, { additionalProperties: false }))])) }, { additionalProperties: false })]),
+  workers_script_and_version_settings_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_script_and_version_settings_item") }, { additionalProperties: false })], { additionalProperties: false }),
+  workers_script_response_collection: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Array(Type.Composite([Type.Ref("workers_script_response"), Type.Partial(Type.Object({ routes: Type.Union([Type.Array(Type.Ref("workers_route")), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }),
   workers_script_response_single: Type.Intersect([Type.Ref("workers_api_response_single"), Type.Object({ result: Type.Ref("workers_script_response") }, { additionalProperties: false })]),
-  workers_script_response_upload: Type.Intersect([Type.Ref("workers_script_response"), Type.Object({ entry_point: Type.Optional(Type.String()), startup_time_ms: Type.Integer() }, { additionalProperties: false })]),
-  workers_script_response_upload_single: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_script_response_upload") }, { additionalProperties: false })]),
+  workers_script_response_upload: Type.Composite([Type.Ref("workers_script_response"), Type.Object({ entry_point: Type.Optional(Type.String()), startup_time_ms: Type.Integer() }, { additionalProperties: false })], { additionalProperties: false }),
+  workers_script_response_upload_single: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_script_response_upload") }, { additionalProperties: false })], { additionalProperties: false }),
   workers_script_settings_item: Type.Partial(Type.Object({ logpush: Type.Ref("workers_logpush"), observability: Type.Intersect([Type.Ref("workers_observability"), Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), tags: Type.Intersect([Type.Ref("workers_tags"), Type.Union([Type.Array(Type.Ref("workers_tag")), Type.Null()])]), tail_consumers: Type.Union([Type.Array(Type.Ref("workers_tail_consumers_script")), Type.Null()]) }, { additionalProperties: false })),
-  workers_script_settings_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_script_settings_item") }, { additionalProperties: false })]),
+  workers_script_settings_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_script_settings_item") }, { additionalProperties: false })], { additionalProperties: false }),
   workers_script_name: Type.String({ pattern: "^[a-z0-9_][a-z0-9-_]*$" }),
   workers_script_name_2: Type.String({ pattern: "^[a-z0-9_][a-z0-9-_]*$" }),
   workers_secret: __typedOpenapiOneOf([Type.Ref("workers_binding_kind_secret_text"), Type.Ref("workers_binding_kind_secret_key")]),
@@ -6085,21 +6085,21 @@ const __schemas = Type.Module({
   workers_subdomain: Type.Object({ enabled: Type.Boolean(), previews_enabled: Type.Boolean() }, { additionalProperties: false }),
   workers_subdomain_2: Type.Object({ subdomain: Type.String() }, { additionalProperties: false }),
   workers_tail: Type.Object({ expires_at: Type.String(), id: Type.Ref("workers_identifier"), url: Type.String() }, { additionalProperties: false }),
-  workers_upload_assets_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Object({  }, { maxProperties: 0, additionalProperties: false }) }, { additionalProperties: false }))]),
+  workers_upload_assets_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Partial(Type.Object({ result: Type.Object({  }, { maxProperties: 0, additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }),
   workers_user_limits: Type.Union([Type.Partial(Type.Object({ cpu_ms: Type.Union([Type.Integer(), Type.Null()]) }, { additionalProperties: false })), Type.Null()]),
-  workers_usage_model_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ usage_model: Type.Ref("workers_usage_model"), user_limits: Type.Ref("workers_user_limits") }, { additionalProperties: false })) }, { additionalProperties: false })]),
+  workers_usage_model_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ usage_model: Type.Ref("workers_usage_model"), user_limits: Type.Ref("workers_user_limits") }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }),
   workers_version_item_short: Type.Partial(Type.Object({ id: Type.String(), metadata: Type.Partial(Type.Object({ author_email: Type.String(), author_id: Type.String(), created_on: Type.String(), hasPreview: Type.Boolean(), modified_on: Type.String(), source: Type.Union([Type.Literal("unknown"), Type.Literal("api"), Type.Literal("wrangler"), Type.Literal("terraform"), Type.Literal("dash"), Type.Literal("cf_cli"), Type.Literal("dash_template"), Type.Literal("integration"), Type.Literal("quick_editor"), Type.Literal("playground"), Type.Literal("workersci")]) }, { additionalProperties: false })), number: Type.Number() }, { additionalProperties: false })),
-  workers_version_item_full: Type.Intersect([Type.Ref("workers_version_item_short"), Type.Object({ resources: Type.Partial(Type.Object({ bindings: Type.Ref("workers_bindings"), script: Type.Partial(Type.Object({ etag: Type.String(), handlers: Type.Array(Type.String()), last_deployed_from: Type.String(), named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })), script_runtime: Type.Partial(Type.Object({ compatibility_date: Type.String(), compatibility_flags: Type.Array(Type.String()), exports: Type.Ref("workers_exports_config_map"), limits: Type.Partial(Type.Object({ cpu_ms: Type.Integer() }, { additionalProperties: false })), migration_tag: Type.String(), usage_model: Type.Union([Type.Literal("bundled"), Type.Literal("unbound"), Type.Literal("standard")]) }, { additionalProperties: false })) }, { additionalProperties: false })) }, { additionalProperties: false })]),
+  workers_version_item_full: Type.Composite([Type.Ref("workers_version_item_short"), Type.Object({ resources: Type.Partial(Type.Object({ bindings: Type.Ref("workers_bindings"), script: Type.Partial(Type.Object({ etag: Type.String(), handlers: Type.Array(Type.String()), last_deployed_from: Type.String(), named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })), script_runtime: Type.Partial(Type.Object({ compatibility_date: Type.String(), compatibility_flags: Type.Array(Type.String()), exports: Type.Ref("workers_exports_config_map"), limits: Type.Partial(Type.Object({ cpu_ms: Type.Integer() }, { additionalProperties: false })), migration_tag: Type.String(), usage_model: Type.Union([Type.Literal("bundled"), Type.Literal("unbound"), Type.Literal("standard")]) }, { additionalProperties: false })) }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }),
   workers_version_item_uploaded: Type.Intersect([Type.Ref("workers_version_item_full"), Type.Object({ exports_reconciliation: Type.Optional(Type.Ref("workers_exports_reconciliation_result")), startup_time_ms: Type.Optional(Type.Integer()) }, { additionalProperties: false })]),
   workers_version_identifier: Type.String({ maxLength: 36 }),
-  workers_versions_list_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ items: Type.Array(Type.Ref("workers_version_item_short")) }, { additionalProperties: false })) }, { additionalProperties: false })]),
-  workers_versions_single_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_version_item_full") }, { additionalProperties: false })]),
-  workers_versions_upload_response: Type.Intersect([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_version_item_uploaded") }, { additionalProperties: false })]),
+  workers_versions_list_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Partial(Type.Object({ items: Type.Array(Type.Ref("workers_version_item_short")) }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }),
+  workers_versions_single_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_version_item_full") }, { additionalProperties: false })], { additionalProperties: false }),
+  workers_versions_upload_response: Type.Composite([Type.Ref("workers_api_response_common"), Type.Object({ result: Type.Ref("workers_version_item_uploaded") }, { additionalProperties: false })], { additionalProperties: false }),
   zaraz_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
   zaraz_api_response_common: Type.Object({ errors: Type.Ref("zaraz_messages"), messages: Type.Ref("zaraz_messages"), success: Type.Boolean() }, { additionalProperties: false }),
   zaraz_api_response_common_failure: Type.Object({ errors: Type.Ref("zaraz_messages"), messages: Type.Ref("zaraz_messages"), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }),
   zaraz_base_tool: Type.Object({ blockingTriggers: Type.Array(Type.String()), defaultFields: Type.Record(Type.String(), Type.Union([Type.String(), Type.Boolean()])), defaultPurpose: Type.Optional(Type.String()), enabled: Type.Boolean(), name: Type.String(), vendorName: Type.Optional(Type.String()), vendorPolicyUrl: Type.Optional(Type.String()) }, { additionalProperties: false }),
-  zaraz_base_mc: Type.Intersect([Type.Ref("zaraz_base_tool"), Type.Object({ actions: Type.Optional(Type.Record(Type.String(), Type.Object({ actionType: Type.String(), blockingTriggers: Type.Array(Type.String()), data: Type.Record(Type.String(), Type.Unknown()), firingTriggers: Type.Array(Type.String(), { minItems: 1 }) }, { additionalProperties: false }))), component: Type.String(), neoEvents: Type.Optional(Type.Array(Type.Object({ actionType: Type.String(), blockingTriggers: Type.Array(Type.String()), data: Type.Record(Type.String(), Type.Unknown()), firingTriggers: Type.Array(Type.String(), { minItems: 1 }) }, { additionalProperties: false }))), permissions: Type.Array(Type.String()), settings: Type.Record(Type.String(), Type.Union([Type.String(), Type.Boolean()])) }, { additionalProperties: false })]),
+  zaraz_base_mc: Type.Composite([Type.Ref("zaraz_base_tool"), Type.Object({ actions: Type.Optional(Type.Record(Type.String(), Type.Object({ actionType: Type.String(), blockingTriggers: Type.Array(Type.String()), data: Type.Record(Type.String(), Type.Unknown()), firingTriggers: Type.Array(Type.String(), { minItems: 1 }) }, { additionalProperties: false }))), component: Type.String(), neoEvents: Type.Optional(Type.Array(Type.Object({ actionType: Type.String(), blockingTriggers: Type.Array(Type.String()), data: Type.Record(Type.String(), Type.Unknown()), firingTriggers: Type.Array(Type.String(), { minItems: 1 }) }, { additionalProperties: false }))), permissions: Type.Array(Type.String()), settings: Type.Record(Type.String(), Type.Union([Type.String(), Type.Boolean()])) }, { additionalProperties: false })], { additionalProperties: false }),
   zaraz_click_listener_rule: Type.Object({ action: Type.Literal("clickListener"), id: Type.String(), settings: Type.Object({ selector: Type.String(), type: Type.Union([Type.Literal("xpath"), Type.Literal("css")]), waitForTags: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }) }, { additionalProperties: false }),
   zaraz_custom_managed_component: Type.Intersect([Type.Ref("zaraz_base_mc"), Type.Object({ type: Type.Literal("custom-mc"), worker: Type.Object({ escapedWorkerName: Type.String(), workerTag: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false })]),
   zaraz_element_visibility_rule: Type.Object({ action: Type.Literal("elementVisibility"), id: Type.String(), settings: Type.Object({ selector: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false }),
@@ -6114,14 +6114,14 @@ const __schemas = Type.Module({
   zaraz_variable_match_rule: Type.Object({ action: Type.Literal("variableMatch"), id: Type.String(), settings: Type.Object({ match: Type.String(), variable: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false }),
   zaraz_worker_variable: Type.Object({ name: Type.String(), type: Type.Literal("worker"), value: Type.Object({ escapedWorkerName: Type.String(), workerTag: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false }),
   zaraz_zaraz_config_base: Type.Object({ analytics: Type.Optional(Type.Partial(Type.Object({ defaultPurpose: Type.String(), enabled: Type.Boolean(), sessionExpTime: Type.Integer({ minimum: 60, maximum: 86400 }) }, { additionalProperties: false }))), consent: Type.Optional(Type.Object({ buttonTextTranslations: Type.Optional(Type.Object({ accept_all: Type.Record(Type.String(), Type.String()), confirm_my_choices: Type.Record(Type.String(), Type.String()), reject_all: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })), companyEmail: Type.Optional(Type.String()), companyName: Type.Optional(Type.String()), companyStreetAddress: Type.Optional(Type.String()), consentModalIntroHTML: Type.Optional(Type.String()), consentModalIntroHTMLWithTranslations: Type.Optional(Type.Record(Type.String(), Type.String())), cookieName: Type.Optional(Type.String()), customCSS: Type.Optional(Type.String()), customIntroDisclaimerDismissed: Type.Optional(Type.Boolean()), defaultLanguage: Type.Optional(Type.String()), enabled: Type.Boolean(), hideModal: Type.Optional(Type.Boolean()), purposes: Type.Optional(Type.Record(Type.String(), Type.Object({ description: Type.String(), name: Type.String() }, { additionalProperties: false }))), purposesWithTranslations: Type.Optional(Type.Record(Type.String(), Type.Object({ description: Type.Record(Type.String(), Type.String()), name: Type.Record(Type.String(), Type.String()), order: Type.Integer() }, { additionalProperties: false }))), tcfCompliant: Type.Optional(Type.Boolean()) }, { additionalProperties: false })), dataLayer: Type.Boolean(), debugKey: Type.String(), historyChange: Type.Optional(Type.Boolean()), settings: Type.Object({ autoInjectScript: Type.Boolean(), contextEnricher: Type.Optional(Type.Object({ escapedWorkerName: Type.String(), workerTag: Type.String() }, { additionalProperties: false })), cookieDomain: Type.Optional(Type.String()), ecommerce: Type.Optional(Type.Boolean()), eventsApiPath: Type.Optional(Type.String()), hideExternalReferer: Type.Optional(Type.Boolean()), hideIPAddress: Type.Optional(Type.Boolean()), hideQueryParams: Type.Optional(Type.Boolean()), hideUserAgent: Type.Optional(Type.Boolean()), initPath: Type.Optional(Type.String()), injectIframes: Type.Optional(Type.Boolean()), mcRootPath: Type.Optional(Type.String()), scriptPath: Type.Optional(Type.String()), trackPath: Type.Optional(Type.String()) }, { additionalProperties: false }), triggers: Type.Record(Type.String(), Type.Object({ description: Type.Optional(Type.String()), excludeRules: Type.Array(Type.Union([Type.Ref("zaraz_load_rule"), Type.Ref("zaraz_click_listener_rule"), Type.Ref("zaraz_timer_rule"), Type.Ref("zaraz_form_submission_rule"), Type.Ref("zaraz_variable_match_rule"), Type.Ref("zaraz_scroll_depth_rule"), Type.Ref("zaraz_element_visibility_rule")])), loadRules: Type.Array(Type.Union([Type.Ref("zaraz_load_rule"), Type.Ref("zaraz_click_listener_rule"), Type.Ref("zaraz_timer_rule"), Type.Ref("zaraz_form_submission_rule"), Type.Ref("zaraz_variable_match_rule"), Type.Ref("zaraz_scroll_depth_rule"), Type.Ref("zaraz_element_visibility_rule")])), name: Type.String(), system: Type.Optional(Type.Literal("pageload")) }, { additionalProperties: false })), variables: Type.Record(Type.String(), Type.Union([Type.Ref("zaraz_string_variable"), Type.Ref("zaraz_secret_variable"), Type.Ref("zaraz_worker_variable")])), zarazVersion: Type.Integer() }, { additionalProperties: false }),
-  zaraz_zaraz_config_body: Type.Intersect([Type.Ref("zaraz_zaraz_config_base"), Type.Partial(Type.Object({ tools: Type.Record(Type.String(), Type.Union([Type.Ref("zaraz_managed_component"), Type.Ref("zaraz_custom_managed_component")])) }, { additionalProperties: false }))]),
+  zaraz_zaraz_config_body: Type.Composite([Type.Ref("zaraz_zaraz_config_base"), Type.Partial(Type.Object({ tools: Type.Record(Type.String(), Type.Union([Type.Ref("zaraz_managed_component"), Type.Ref("zaraz_custom_managed_component")])) }, { additionalProperties: false }))], { additionalProperties: false }),
   zaraz_zaraz_config_row_base: Type.Object({ createdAt: Type.String({ format: "date-time" }), id: Type.Integer(), updatedAt: Type.String({ format: "date-time" }), userId: Type.String() }, { additionalProperties: false }),
-  zaraz_zaraz_config_return: Type.Intersect([Type.Ref("zaraz_zaraz_config_base"), Type.Partial(Type.Object({ tools: Type.Record(Type.String(), Type.Union([Type.Ref("zaraz_managed_component"), Type.Ref("zaraz_custom_managed_component")])) }, { additionalProperties: false }))]),
-  zaraz_zaraz_config_history_response: Type.Intersect([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Intersect([Type.Ref("zaraz_zaraz_config_row_base"), Type.Union([Type.Object({ config: Type.Ref("zaraz_zaraz_config_return") }, { additionalProperties: false }), Type.Null()])])) }, { additionalProperties: false }))]),
-  zaraz_zaraz_config_response: Type.Intersect([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("zaraz_zaraz_config_return") }, { additionalProperties: false }))]),
-  zaraz_zaraz_history_response: Type.Intersect([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Intersect([Type.Ref("zaraz_zaraz_config_row_base"), Type.Object({ description: Type.String() }, { additionalProperties: false })])) }, { additionalProperties: false }))]),
+  zaraz_zaraz_config_return: Type.Composite([Type.Ref("zaraz_zaraz_config_base"), Type.Partial(Type.Object({ tools: Type.Record(Type.String(), Type.Union([Type.Ref("zaraz_managed_component"), Type.Ref("zaraz_custom_managed_component")])) }, { additionalProperties: false }))], { additionalProperties: false }),
+  zaraz_zaraz_config_history_response: Type.Composite([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Composite([Type.Ref("zaraz_zaraz_config_row_base"), Type.Union([Type.Object({ config: Type.Ref("zaraz_zaraz_config_return") }, { additionalProperties: false }), Type.Null()])], { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
+  zaraz_zaraz_config_response: Type.Composite([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("zaraz_zaraz_config_return") }, { additionalProperties: false }))], { additionalProperties: false }),
+  zaraz_zaraz_history_response: Type.Composite([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Array(Type.Composite([Type.Ref("zaraz_zaraz_config_row_base"), Type.Object({ description: Type.String() }, { additionalProperties: false })], { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }),
   zaraz_zaraz_workflow: Type.Union([Type.Literal("realtime"), Type.Literal("preview")]),
-  zaraz_zaraz_workflow_response: Type.Intersect([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("zaraz_zaraz_workflow") }, { additionalProperties: false }))]),
+  zaraz_zaraz_workflow_response: Type.Composite([Type.Ref("zaraz_api_response_common"), Type.Partial(Type.Object({ result: Type.Ref("zaraz_zaraz_workflow") }, { additionalProperties: false }))], { additionalProperties: false }),
   zaraz_zone_identifier: Type.Ref("zaraz_identifier"),
   zero_trust_gateway_account_log_options: Type.Partial(Type.Object({ log_all: Type.Boolean(), log_blocks: Type.Boolean() }, { additionalProperties: false })),
   zero_trust_gateway_action: Type.Union([Type.Literal("on"), Type.Literal("off"), Type.Literal("allow"), Type.Literal("block"), Type.Literal("scan"), Type.Literal("noscan"), Type.Literal("safesearch"), Type.Literal("ytrestricted"), Type.Literal("isolate"), Type.Literal("noisolate"), Type.Literal("override"), Type.Literal("l4_override"), Type.Literal("egress"), Type.Literal("resolve"), Type.Literal("quarantine"), Type.Literal("redirect")]),
@@ -6316,10 +6316,10 @@ const __schemas = Type.Module({
   zone_analytics_api_user_period_requests: Type.Partial(Type.Object({ all: Type.Integer() }, { additionalProperties: false })),
   zone_analytics_api_user_period: Type.Partial(Type.Object({ bandwidth: Type.Ref("zone_analytics_api_user_period_bandwidth"), requests: Type.Ref("zone_analytics_api_user_period_requests"), since: Type.Ref("zone_analytics_api_since"), until: Type.Ref("zone_analytics_api_until") }, { additionalProperties: false })),
   zone_analytics_api_user_zone: Type.Partial(Type.Object({ timeseries: Type.Array(Type.Ref("zone_analytics_api_user_period")), totals: Type.Ref("zone_analytics_api_user_period"), zone_id: Type.String({ maxLength: 32 }) }, { additionalProperties: false })),
-  zone_analytics_api_user_dashboard_response: Type.Intersect([Type.Ref("zone_analytics_api_api_response_common"), Type.Partial(Type.Object({ query: Type.Ref("zone_analytics_api_query_response"), result: Type.Array(Type.Ref("zone_analytics_api_user_zone")) }, { additionalProperties: false }))]),
+  zone_analytics_api_user_dashboard_response: Type.Composite([Type.Ref("zone_analytics_api_api_response_common"), Type.Partial(Type.Object({ query: Type.Ref("zone_analytics_api_query_response"), result: Type.Array(Type.Ref("zone_analytics_api_user_zone")) }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_base: Type.Object({ editable: Type.Optional(Type.Union([Type.Literal(true), Type.Literal(false)])), id: Type.String(), modified_on: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), value: Type.Unknown() }, { additionalProperties: false }),
   zones_0rtt_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_0rtt: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("0rtt"), value: Type.Ref("zones_0rtt_value") }, { additionalProperties: false }))]),
+  zones_0rtt: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("0rtt"), value: Type.Ref("zones_0rtt_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_always_use_https: Type.Partial(Type.Object({ id: Type.Literal("always_use_https") }, { additionalProperties: false })),
   zones_automatic_https_rewrites: Type.Partial(Type.Object({ id: Type.Literal("automatic_https_rewrites"), value: Type.Union([Type.Literal("on"), Type.Literal("off")]) }, { additionalProperties: false })),
   zones_browser_cache_ttl: Type.Partial(Type.Object({ id: Type.Literal("browser_cache_ttl"), value: Type.Integer({ minimum: 0, maximum: 31536000 }) }, { additionalProperties: false })),
@@ -6356,11 +6356,11 @@ const __schemas = Type.Module({
   zones_waf: Type.Partial(Type.Object({ id: Type.Literal("waf"), value: Type.Union([Type.Literal("on"), Type.Literal("off")]) }, { additionalProperties: false })),
   zones_actions: Type.Array(__typedOpenapiOneOf([Type.Ref("zones_always_use_https"), Type.Ref("zones_automatic_https_rewrites"), Type.Ref("zones_browser_cache_ttl"), Type.Ref("zones_browser_check"), Type.Ref("zones_bypass_cache_on_cookie"), Type.Ref("zones_cache_by_device_type"), Type.Ref("zones_cache_deception_armor"), Type.Ref("zones_cache_key_fields"), Type.Ref("zones_cache_level"), Type.Ref("zones_cache_on_cookie"), Type.Ref("zones_cache_ttl_by_status"), Type.Ref("zones_disable_apps"), Type.Ref("zones_disable_performance"), Type.Ref("zones_disable_security"), Type.Ref("zones_disable_zaraz"), Type.Ref("zones_edge_cache_ttl"), Type.Ref("zones_email_obfuscation"), Type.Ref("zones_explicit_cache_control"), Type.Ref("zones_forwarding_url"), Type.Ref("zones_host_header_override"), Type.Ref("zones_ip_geolocation"), Type.Ref("zones_mirage"), Type.Ref("zones_opportunistic_encryption"), Type.Ref("zones_origin_error_page_pass_thru"), Type.Ref("zones_polish"), Type.Ref("zones_resolve_override"), Type.Ref("zones_respect_strong_etag"), Type.Ref("zones_response_buffering"), Type.Ref("zones_rocket_loader"), Type.Ref("zones_security_level"), Type.Ref("zones_sort_query_string_for_cache"), Type.Ref("zones_ssl"), Type.Ref("zones_true_client_ip_header"), Type.Ref("zones_waf")])),
   zones_advanced_ddos_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_advanced_ddos: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("advanced_ddos"), value: Type.Ref("zones_advanced_ddos_value") }, { additionalProperties: false }))]),
+  zones_advanced_ddos: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("advanced_ddos"), value: Type.Ref("zones_advanced_ddos_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_always_online_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_always_online: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("always_online"), value: Type.Ref("zones_always_online_value") }, { additionalProperties: false }))]),
+  zones_always_online: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("always_online"), value: Type.Ref("zones_always_online_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_always_use_https_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_always_use_https_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("always_use_https"), value: Type.Ref("zones_always_use_https_value") }, { additionalProperties: false }))]),
+  zones_always_use_https_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("always_use_https"), value: Type.Ref("zones_always_use_https_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_messages: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }, { additionalProperties: false })),
   zones_api_response_common: Type.Object({ errors: Type.Ref("zones_messages"), messages: Type.Ref("zones_messages"), success: Type.Boolean() }, { additionalProperties: false }),
   zones_messages_2: Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })),
@@ -6377,15 +6377,15 @@ const __schemas = Type.Module({
   zones_identifier_2: Type.String({ maxLength: 32 }),
   zones_api_response_single_id_2: Type.Intersect([Type.Ref("zones_api_response_common_2"), Type.Partial(Type.Object({ result: Type.Union([Type.Object({ id: Type.Ref("zones_identifier_2") }, { additionalProperties: false }), Type.Null()]) }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   zones_automatic_https_rewrites_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_automatic_https_rewrites_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("automatic_https_rewrites"), value: Type.Ref("zones_automatic_https_rewrites_value") }, { additionalProperties: false }))]),
+  zones_automatic_https_rewrites_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("automatic_https_rewrites"), value: Type.Ref("zones_automatic_https_rewrites_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_automatic_platform_optimization: Type.Object({ cache_by_device_type: Type.Boolean(), cf: Type.Boolean(), enabled: Type.Boolean(), hostnames: Type.Array(Type.String({ format: "hostname" })), wordpress: Type.Boolean(), wp_plugin: Type.Boolean() }, { additionalProperties: false }),
   zones_base_2: Type.Object({ editable: Type.Optional(Type.Union([Type.Literal(true), Type.Literal(false)])), id: Type.String(), modified_on: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), value: Type.Unknown() }, { additionalProperties: false }),
   zones_brotli_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_brotli: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("brotli"), value: Type.Ref("zones_brotli_value") }, { additionalProperties: false }))]),
+  zones_brotli: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("brotli"), value: Type.Ref("zones_brotli_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_browser_cache_ttl_value: Type.Integer({ minimum: 0, maximum: 31536000 }),
-  zones_browser_cache_ttl_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("browser_cache_ttl"), value: Type.Ref("zones_browser_cache_ttl_value") }, { additionalProperties: false }))]),
+  zones_browser_cache_ttl_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("browser_cache_ttl"), value: Type.Ref("zones_browser_cache_ttl_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_browser_check_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_browser_check_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("browser_check"), value: Type.Ref("zones_browser_check_value") }, { additionalProperties: false }))]),
+  zones_browser_check_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("browser_check"), value: Type.Ref("zones_browser_check_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_cache_rules_base: Type.Object({ id: Type.String(), modified_on: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])) }, { additionalProperties: false }),
   zones_cache_rules_aegis_value: Type.Partial(Type.Object({ enabled: Type.Boolean(), pool_id: Type.String() }, { additionalProperties: false })),
   zones_cache_rules_aegis: Type.Intersect([Type.Ref("zones_cache_rules_base"), Type.Partial(Type.Object({ id: Type.Literal("aegis"), value: Type.Ref("zones_cache_rules_aegis_value") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
@@ -6394,106 +6394,106 @@ const __schemas = Type.Module({
   zones_cache_rules_origin_max_http_version_value: Type.Union([Type.Literal("2"), Type.Literal("1")]),
   zones_cache_rules_origin_max_http_version: Type.Intersect([Type.Ref("zones_cache_rules_base"), Type.Partial(Type.Object({ id: Type.Literal("origin_max_http_version"), value: Type.Ref("zones_cache_rules_origin_max_http_version_value") }, { additionalProperties: false })), Type.Record(Type.String(), Type.Unknown())]),
   zones_cache_level_value: Type.Union([Type.Literal("aggressive"), Type.Literal("basic"), Type.Literal("simplified")]),
-  zones_cache_level_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("cache_level"), value: Type.Ref("zones_cache_level_value") }, { additionalProperties: false }))]),
+  zones_cache_level_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("cache_level"), value: Type.Ref("zones_cache_level_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_challenge_ttl_value: Type.Union([Type.Literal(300), Type.Literal(900), Type.Literal(1800), Type.Literal(2700), Type.Literal(3600), Type.Literal(7200), Type.Literal(10800), Type.Literal(14400), Type.Literal(28800), Type.Literal(57600), Type.Literal(86400), Type.Literal(604800), Type.Literal(2592000), Type.Literal(31536000)]),
-  zones_challenge_ttl: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("challenge_ttl"), value: Type.Ref("zones_challenge_ttl_value") }, { additionalProperties: false }))]),
+  zones_challenge_ttl: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("challenge_ttl"), value: Type.Ref("zones_challenge_ttl_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_china_network_enabled_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_china_network_enabled: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("china_network_enabled"), value: Type.Ref("zones_china_network_enabled_value") }, { additionalProperties: false }))]),
+  zones_china_network_enabled: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("china_network_enabled"), value: Type.Ref("zones_china_network_enabled_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_ciphers_value: Type.Array(Type.String(), { uniqueItems: true }),
-  zones_ciphers: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ciphers"), value: Type.Ref("zones_ciphers_value") }, { additionalProperties: false }))]),
+  zones_ciphers: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ciphers"), value: Type.Ref("zones_ciphers_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_cname_flattening_value: Type.Union([Type.Literal("flatten_at_root"), Type.Literal("flatten_all")]),
-  zones_cname_flattening: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("cname_flattening"), value: Type.Ref("zones_cname_flattening_value") }, { additionalProperties: false }))]),
+  zones_cname_flattening: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("cname_flattening"), value: Type.Ref("zones_cname_flattening_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_content_converter_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_content_converter: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("content_converter"), value: Type.Ref("zones_content_converter_value") }, { additionalProperties: false }))]),
+  zones_content_converter: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("content_converter"), value: Type.Ref("zones_content_converter_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_created_on: Type.String({ format: "date-time" }),
   zones_development_mode_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_development_mode: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("development_mode"), time_remaining: Type.Number(), value: Type.Ref("zones_development_mode_value") }, { additionalProperties: false }))]),
+  zones_development_mode: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("development_mode"), time_remaining: Type.Number(), value: Type.Ref("zones_development_mode_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_early_hints_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_early_hints: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("early_hints"), value: Type.Ref("zones_early_hints_value") }, { additionalProperties: false }))]),
+  zones_early_hints: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("early_hints"), value: Type.Ref("zones_early_hints_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_edge_cache_ttl_value: Type.Union([Type.Literal(30), Type.Literal(60), Type.Literal(300), Type.Literal(1200), Type.Literal(1800), Type.Literal(3600), Type.Literal(7200), Type.Literal(10800), Type.Literal(14400), Type.Literal(18000), Type.Literal(28800), Type.Literal(43200), Type.Literal(57600), Type.Literal(72000), Type.Literal(86400), Type.Literal(172800), Type.Literal(259200), Type.Literal(345600), Type.Literal(432000), Type.Literal(518400), Type.Literal(604800)]),
-  zones_edge_cache_ttl_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("edge_cache_ttl"), value: Type.Ref("zones_edge_cache_ttl_value") }, { additionalProperties: false }))]),
+  zones_edge_cache_ttl_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("edge_cache_ttl"), value: Type.Ref("zones_edge_cache_ttl_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_email_obfuscation_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_email_obfuscation_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("email_obfuscation"), value: Type.Ref("zones_email_obfuscation_value") }, { additionalProperties: false }))]),
+  zones_email_obfuscation_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("email_obfuscation"), value: Type.Ref("zones_email_obfuscation_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_h2_prioritization_value: Type.Union([Type.Literal("on"), Type.Literal("off"), Type.Literal("custom")]),
-  zones_h2_prioritization: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("h2_prioritization"), value: Type.Ref("zones_h2_prioritization_value") }, { additionalProperties: false }))]),
+  zones_h2_prioritization: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("h2_prioritization"), value: Type.Ref("zones_h2_prioritization_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_hotlink_protection_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_hotlink_protection: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("hotlink_protection"), value: Type.Ref("zones_hotlink_protection_value") }, { additionalProperties: false }))]),
+  zones_hotlink_protection: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("hotlink_protection"), value: Type.Ref("zones_hotlink_protection_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_http2_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_http2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("http2"), value: Type.Ref("zones_http2_value") }, { additionalProperties: false }))]),
+  zones_http2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("http2"), value: Type.Ref("zones_http2_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_http3_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_http3: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("http3"), value: Type.Ref("zones_http3_value") }, { additionalProperties: false }))]),
+  zones_http3: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("http3"), value: Type.Ref("zones_http3_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_image_resizing_value: Type.Union([Type.Literal("on"), Type.Literal("off"), Type.Literal("open")]),
-  zones_image_resizing: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("image_resizing"), value: Type.Ref("zones_image_resizing_value") }, { additionalProperties: false }))]),
+  zones_image_resizing: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("image_resizing"), value: Type.Ref("zones_image_resizing_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_ip_geolocation_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_ip_geolocation_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ip_geolocation"), value: Type.Ref("zones_ip_geolocation_value") }, { additionalProperties: false }))]),
+  zones_ip_geolocation_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ip_geolocation"), value: Type.Ref("zones_ip_geolocation_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_ipv6_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_ipv6: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ipv6"), value: Type.Ref("zones_ipv6_value") }, { additionalProperties: false }))]),
+  zones_ipv6: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ipv6"), value: Type.Ref("zones_ipv6_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_max_upload_value: Type.Union([Type.Literal(100), Type.Literal(125), Type.Literal(150), Type.Literal(175), Type.Literal(200), Type.Literal(225), Type.Literal(250), Type.Literal(275), Type.Literal(300), Type.Literal(325), Type.Literal(350), Type.Literal(375), Type.Literal(400), Type.Literal(425), Type.Literal(450), Type.Literal(475), Type.Literal(500), Type.Literal(1000)]),
-  zones_max_upload: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("max_upload"), value: Type.Ref("zones_max_upload_value") }, { additionalProperties: false }))]),
+  zones_max_upload: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("max_upload"), value: Type.Ref("zones_max_upload_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_min_tls_version_value: Type.Union([Type.Literal("1.0"), Type.Literal("1.1"), Type.Literal("1.2"), Type.Literal("1.3")]),
-  zones_min_tls_version: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("min_tls_version"), value: Type.Ref("zones_min_tls_version_value") }, { additionalProperties: false }))]),
+  zones_min_tls_version: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("min_tls_version"), value: Type.Ref("zones_min_tls_version_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_mirage_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_mirage_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("mirage"), value: Type.Ref("zones_mirage_value") }, { additionalProperties: false }))]),
+  zones_mirage_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("mirage"), value: Type.Ref("zones_mirage_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_modified_on: Type.String({ format: "date-time" }),
   zones_nel_value: Type.Partial(Type.Object({ enabled: Type.Boolean() }, { additionalProperties: false })),
-  zones_nel: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("nel"), value: Type.Ref("zones_nel_value") }, { additionalProperties: false }))]),
+  zones_nel: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("nel"), value: Type.Ref("zones_nel_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_opportunistic_encryption_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_opportunistic_encryption_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("opportunistic_encryption"), value: Type.Ref("zones_opportunistic_encryption_value") }, { additionalProperties: false }))]),
+  zones_opportunistic_encryption_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("opportunistic_encryption"), value: Type.Ref("zones_opportunistic_encryption_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_opportunistic_onion_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_opportunistic_onion: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("opportunistic_onion"), value: Type.Ref("zones_opportunistic_onion_value") }, { additionalProperties: false }))]),
+  zones_opportunistic_onion: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("opportunistic_onion"), value: Type.Ref("zones_opportunistic_onion_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_orange_to_orange_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_orange_to_orange: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("orange_to_orange"), value: Type.Ref("zones_orange_to_orange_value") }, { additionalProperties: false }))]),
+  zones_orange_to_orange: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("orange_to_orange"), value: Type.Ref("zones_orange_to_orange_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_origin_error_page_pass_thru_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_origin_error_page_pass_thru_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("origin_error_page_pass_thru"), value: Type.Ref("zones_origin_error_page_pass_thru_value") }, { additionalProperties: false }))]),
+  zones_origin_error_page_pass_thru_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("origin_error_page_pass_thru"), value: Type.Ref("zones_origin_error_page_pass_thru_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_polish_value: Type.Union([Type.Literal("off"), Type.Literal("lossless"), Type.Literal("lossy")]),
-  zones_polish_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("polish"), value: Type.Ref("zones_polish_value") }, { additionalProperties: false }))]),
+  zones_polish_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("polish"), value: Type.Ref("zones_polish_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_prefetch_preload_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_prefetch_preload: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("prefetch_preload"), value: Type.Ref("zones_prefetch_preload_value") }, { additionalProperties: false }))]),
+  zones_prefetch_preload: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("prefetch_preload"), value: Type.Ref("zones_prefetch_preload_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_privacy_pass_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_privacy_pass: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("privacy_pass"), value: Type.Ref("zones_privacy_pass_value") }, { additionalProperties: false }))]),
+  zones_privacy_pass: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("privacy_pass"), value: Type.Ref("zones_privacy_pass_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_proxy_read_timeout_value: Type.Number(),
-  zones_proxy_read_timeout: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("proxy_read_timeout"), value: Type.Ref("zones_proxy_read_timeout_value") }, { additionalProperties: false }))]),
+  zones_proxy_read_timeout: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("proxy_read_timeout"), value: Type.Ref("zones_proxy_read_timeout_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_pseudo_ipv4_value: Type.Union([Type.Literal("off"), Type.Literal("add_header"), Type.Literal("overwrite_header")]),
-  zones_pseudo_ipv4: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("pseudo_ipv4"), value: Type.Ref("zones_pseudo_ipv4_value") }, { additionalProperties: false }))]),
+  zones_pseudo_ipv4: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("pseudo_ipv4"), value: Type.Ref("zones_pseudo_ipv4_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_redirects_for_ai_training_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_redirects_for_ai_training: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("redirects_for_ai_training"), value: Type.Ref("zones_redirects_for_ai_training_value") }, { additionalProperties: false }))]),
+  zones_redirects_for_ai_training: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("redirects_for_ai_training"), value: Type.Ref("zones_redirects_for_ai_training_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_replace_insecure_js_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_replace_insecure_js: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("replace_insecure_js"), value: Type.Ref("zones_replace_insecure_js_value") }, { additionalProperties: false }))]),
+  zones_replace_insecure_js: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("replace_insecure_js"), value: Type.Ref("zones_replace_insecure_js_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_response_buffering_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_response_buffering_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("response_buffering"), value: Type.Ref("zones_response_buffering_value") }, { additionalProperties: false }))]),
+  zones_response_buffering_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("response_buffering"), value: Type.Ref("zones_response_buffering_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_rocket_loader_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_rocket_loader_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("rocket_loader"), value: Type.Ref("zones_rocket_loader_value") }, { additionalProperties: false }))]),
-  zones_schemas_automatic_platform_optimization: Type.Intersect([Type.Ref("zones_base_2"), Type.Partial(Type.Object({ id: Type.Literal("automatic_platform_optimization"), value: Type.Ref("zones_automatic_platform_optimization") }, { additionalProperties: false }))]),
+  zones_rocket_loader_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("rocket_loader"), value: Type.Ref("zones_rocket_loader_value") }, { additionalProperties: false }))], { additionalProperties: false }),
+  zones_schemas_automatic_platform_optimization: Type.Composite([Type.Ref("zones_base_2"), Type.Partial(Type.Object({ id: Type.Literal("automatic_platform_optimization"), value: Type.Ref("zones_automatic_platform_optimization") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_search_for_agents_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_search_for_agents: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("search_for_agents"), value: Type.Ref("zones_search_for_agents_value") }, { additionalProperties: false }))]),
+  zones_search_for_agents: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("search_for_agents"), value: Type.Ref("zones_search_for_agents_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_security_header_value: Type.Partial(Type.Object({ strict_transport_security: Type.Partial(Type.Object({ enabled: Type.Boolean(), include_subdomains: Type.Boolean(), max_age: Type.Number(), nosniff: Type.Boolean(), preload: Type.Boolean() }, { additionalProperties: false })) }, { additionalProperties: false })),
-  zones_security_header: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("security_header"), value: Type.Ref("zones_security_header_value") }, { additionalProperties: false }))]),
+  zones_security_header: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("security_header"), value: Type.Ref("zones_security_header_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_security_level_value: Type.Union([Type.Literal("off"), Type.Literal("essentially_off"), Type.Literal("low"), Type.Literal("medium"), Type.Literal("high"), Type.Literal("under_attack")]),
-  zones_security_level_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("security_level"), value: Type.Ref("zones_security_level_value") }, { additionalProperties: false }))]),
+  zones_security_level_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("security_level"), value: Type.Ref("zones_security_level_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_server_side_exclude_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_server_side_exclude: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("server_side_exclude"), value: Type.Ref("zones_server_side_exclude_value") }, { additionalProperties: false }))]),
+  zones_server_side_exclude: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("server_side_exclude"), value: Type.Ref("zones_server_side_exclude_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_sha1_support_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_sha1_support: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("sha1_support"), value: Type.Ref("zones_sha1_support_value") }, { additionalProperties: false }))]),
+  zones_sha1_support: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("sha1_support"), value: Type.Ref("zones_sha1_support_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_sort_query_string_for_cache_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_sort_query_string_for_cache_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("sort_query_string_for_cache"), value: Type.Ref("zones_sort_query_string_for_cache_value") }, { additionalProperties: false }))]),
+  zones_sort_query_string_for_cache_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("sort_query_string_for_cache"), value: Type.Ref("zones_sort_query_string_for_cache_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_ssl_value: Type.Union([Type.Literal("off"), Type.Literal("flexible"), Type.Literal("full"), Type.Literal("strict")]),
-  zones_ssl_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ssl"), value: Type.Ref("zones_ssl_value") }, { additionalProperties: false }))]),
+  zones_ssl_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("ssl"), value: Type.Ref("zones_ssl_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_ssl_recommender_enabled: Type.Boolean(),
   zones_ssl_recommender: Type.Partial(Type.Object({ enabled: Type.Ref("zones_ssl_recommender_enabled"), id: Type.Literal("ssl_recommender") }, { additionalProperties: false })),
   zones_tls_1_2_only_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_tls_1_2_only: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("tls_1_2_only"), value: Type.Ref("zones_tls_1_2_only_value") }, { additionalProperties: false }))]),
+  zones_tls_1_2_only: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("tls_1_2_only"), value: Type.Ref("zones_tls_1_2_only_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_tls_1_3_value: Type.Union([Type.Literal("on"), Type.Literal("off"), Type.Literal("zrt")]),
-  zones_tls_1_3: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("tls_1_3"), value: Type.Ref("zones_tls_1_3_value") }, { additionalProperties: false }))]),
+  zones_tls_1_3: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("tls_1_3"), value: Type.Ref("zones_tls_1_3_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_tls_client_auth_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_tls_client_auth: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("tls_client_auth"), value: Type.Ref("zones_tls_client_auth_value") }, { additionalProperties: false }))]),
+  zones_tls_client_auth: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("tls_client_auth"), value: Type.Ref("zones_tls_client_auth_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_true_client_ip_header_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_true_client_ip_header_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("true_client_ip_header"), value: Type.Ref("zones_true_client_ip_header_value") }, { additionalProperties: false }))]),
+  zones_true_client_ip_header_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("true_client_ip_header"), value: Type.Ref("zones_true_client_ip_header_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_waf_value: Type.Union([Type.Literal("on"), Type.Literal("off")]),
-  zones_waf_2: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("waf"), value: Type.Ref("zones_waf_value") }, { additionalProperties: false }))]),
+  zones_waf_2: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("waf"), value: Type.Ref("zones_waf_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_webp_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_webp: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("webp"), value: Type.Ref("zones_webp_value") }, { additionalProperties: false }))]),
+  zones_webp: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("webp"), value: Type.Ref("zones_webp_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_websockets_value: Type.Union([Type.Literal("off"), Type.Literal("on")]),
-  zones_websockets: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("websockets"), value: Type.Ref("zones_websockets_value") }, { additionalProperties: false }))]),
+  zones_websockets: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("websockets"), value: Type.Ref("zones_websockets_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_multiple_settings: Type.Array(Type.Union([Type.Ref("zones_0rtt"), Type.Ref("zones_advanced_ddos"), Type.Ref("zones_cache_rules_aegis"), Type.Ref("zones_always_online"), Type.Ref("zones_always_use_https_2"), Type.Ref("zones_automatic_https_rewrites_2"), Type.Ref("zones_brotli"), Type.Ref("zones_browser_cache_ttl_2"), Type.Ref("zones_browser_check_2"), Type.Ref("zones_cache_level_2"), Type.Ref("zones_challenge_ttl"), Type.Ref("zones_china_network_enabled"), Type.Ref("zones_content_converter"), Type.Ref("zones_ciphers"), Type.Ref("zones_cname_flattening"), Type.Ref("zones_development_mode"), Type.Ref("zones_early_hints"), Type.Ref("zones_edge_cache_ttl_2"), Type.Ref("zones_email_obfuscation_2"), Type.Ref("zones_h2_prioritization"), Type.Ref("zones_hotlink_protection"), Type.Ref("zones_http2"), Type.Ref("zones_http3"), Type.Ref("zones_ip_geolocation_2"), Type.Ref("zones_ipv6"), Type.Ref("zones_max_upload"), Type.Ref("zones_min_tls_version"), Type.Ref("zones_mirage_2"), Type.Ref("zones_nel"), Type.Ref("zones_opportunistic_encryption_2"), Type.Ref("zones_opportunistic_onion"), Type.Ref("zones_orange_to_orange"), Type.Ref("zones_origin_error_page_pass_thru_2"), Type.Ref("zones_cache_rules_origin_h2_max_streams"), Type.Ref("zones_cache_rules_origin_max_http_version"), Type.Ref("zones_polish_2"), Type.Ref("zones_prefetch_preload"), Type.Ref("zones_privacy_pass"), Type.Ref("zones_proxy_read_timeout"), Type.Ref("zones_pseudo_ipv4"), Type.Ref("zones_redirects_for_ai_training"), Type.Ref("zones_replace_insecure_js"), Type.Ref("zones_response_buffering_2"), Type.Ref("zones_rocket_loader_2"), Type.Ref("zones_schemas_automatic_platform_optimization"), Type.Ref("zones_search_for_agents"), Type.Ref("zones_security_header"), Type.Ref("zones_security_level_2"), Type.Ref("zones_server_side_exclude"), Type.Ref("zones_sha1_support"), Type.Ref("zones_sort_query_string_for_cache_2"), Type.Ref("zones_ssl_2"), Type.Ref("zones_ssl_recommender"), Type.Ref("zones_tls_1_2_only"), Type.Ref("zones_tls_1_3"), Type.Ref("zones_tls_client_auth"), Type.Ref("zones_true_client_ip_header_2"), Type.Ref("zones_waf_2"), Type.Ref("zones_webp"), Type.Ref("zones_websockets")])),
   zones_name: Type.String({ maxLength: 253, pattern: "^([a-zA-Z0-9][\\-a-zA-Z0-9]*\\.)+[\\-a-zA-Z0-9]{2,20}$" }),
   zones_priority: Type.Integer(),
@@ -6505,9 +6505,9 @@ const __schemas = Type.Module({
   zones_page_rule: Type.Object({ actions: Type.Ref("zones_actions"), created_on: Type.Ref("zones_created_on"), id: Type.Ref("zones_identifier_2"), modified_on: Type.Ref("zones_modified_on"), priority: Type.Ref("zones_priority"), status: Type.Ref("zones_status"), targets: Type.Ref("zones_targets") }, { additionalProperties: false }),
   zones_paused: Type.Boolean(),
   zones_result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() }, { additionalProperties: false })),
-  zones_transformations: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("transformations"), value: Type.Ref("zones_image_resizing_value") }, { additionalProperties: false }))]),
+  zones_transformations: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("transformations"), value: Type.Ref("zones_image_resizing_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_transformations_allowed_origins_value: Type.String(),
-  zones_transformations_allowed_origins: Type.Intersect([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("transformations_allowed_origins"), value: Type.Ref("zones_transformations_allowed_origins_value") }, { additionalProperties: false }))]),
+  zones_transformations_allowed_origins: Type.Composite([Type.Ref("zones_base"), Type.Partial(Type.Object({ id: Type.Literal("transformations_allowed_origins"), value: Type.Ref("zones_transformations_allowed_origins_value") }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_setting: __typedOpenapiOneOf([Type.Ref("zones_0rtt"), Type.Ref("zones_advanced_ddos"), Type.Ref("zones_cache_rules_aegis"), Type.Ref("zones_always_online"), Type.Ref("zones_always_use_https_2"), Type.Ref("zones_automatic_https_rewrites_2"), Type.Ref("zones_brotli"), Type.Ref("zones_browser_cache_ttl_2"), Type.Ref("zones_browser_check_2"), Type.Ref("zones_cache_level_2"), Type.Ref("zones_challenge_ttl"), Type.Ref("zones_china_network_enabled"), Type.Ref("zones_content_converter"), Type.Ref("zones_ciphers"), Type.Ref("zones_cname_flattening"), Type.Ref("zones_development_mode"), Type.Ref("zones_early_hints"), Type.Ref("zones_edge_cache_ttl_2"), Type.Ref("zones_email_obfuscation_2"), Type.Ref("zones_h2_prioritization"), Type.Ref("zones_hotlink_protection"), Type.Ref("zones_http2"), Type.Ref("zones_http3"), Type.Ref("zones_image_resizing"), Type.Ref("zones_ip_geolocation_2"), Type.Ref("zones_ipv6"), Type.Ref("zones_max_upload"), Type.Ref("zones_min_tls_version"), Type.Ref("zones_mirage_2"), Type.Ref("zones_nel"), Type.Ref("zones_opportunistic_encryption_2"), Type.Ref("zones_opportunistic_onion"), Type.Ref("zones_orange_to_orange"), Type.Ref("zones_origin_error_page_pass_thru_2"), Type.Ref("zones_cache_rules_origin_h2_max_streams"), Type.Ref("zones_cache_rules_origin_max_http_version"), Type.Ref("zones_polish_2"), Type.Ref("zones_prefetch_preload"), Type.Ref("zones_privacy_pass"), Type.Ref("zones_proxy_read_timeout"), Type.Ref("zones_pseudo_ipv4"), Type.Ref("zones_redirects_for_ai_training"), Type.Ref("zones_replace_insecure_js"), Type.Ref("zones_response_buffering_2"), Type.Ref("zones_rocket_loader_2"), Type.Ref("zones_schemas_automatic_platform_optimization"), Type.Ref("zones_search_for_agents"), Type.Ref("zones_security_header"), Type.Ref("zones_security_level_2"), Type.Ref("zones_server_side_exclude"), Type.Ref("zones_sha1_support"), Type.Ref("zones_sort_query_string_for_cache_2"), Type.Ref("zones_ssl_2"), Type.Ref("zones_ssl_recommender"), Type.Ref("zones_tls_1_2_only"), Type.Ref("zones_tls_1_3"), Type.Ref("zones_tls_client_auth"), Type.Ref("zones_transformations"), Type.Ref("zones_transformations_allowed_origins"), Type.Ref("zones_true_client_ip_header_2"), Type.Ref("zones_waf_2"), Type.Ref("zones_webp"), Type.Ref("zones_websockets")]),
   zones_setting_name: Type.String(),
   zones_setting_readonly: Type.Literal(false),
@@ -6518,7 +6518,7 @@ const __schemas = Type.Module({
   zones_type: Type.Union([Type.Literal("full"), Type.Literal("partial"), Type.Literal("secondary"), Type.Literal("internal")]),
   zones_vanity_name_servers: Type.Array(Type.String({ format: "hostname", maxLength: 253 })),
   zones_zone: Type.Object({ account: Type.Partial(Type.Object({ id: Type.Ref("zones_identifier"), name: Type.String() }, { additionalProperties: false })), activated_on: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), cname_suffix: Type.Optional(Type.String()), created_on: Type.String({ format: "date-time" }), development_mode: Type.Number(), id: Type.Ref("zones_identifier"), meta: Type.Partial(Type.Object({ cdn_only: Type.Boolean(), custom_certificate_quota: Type.Integer(), dns_only: Type.Boolean(), foundation_dns: Type.Boolean(), page_rule_quota: Type.Integer(), phishing_detected: Type.Boolean(), step: Type.Integer() }, { additionalProperties: false })), modified_on: Type.String({ format: "date-time" }), name: Type.String({ maxLength: 253, pattern: "^([a-zA-Z0-9][\\-a-zA-Z0-9]*\\.)+[\\-a-zA-Z0-9]{2,20}$" }), name_servers: Type.Array(Type.String({ format: "hostname" })), original_dnshost: Type.Union([Type.String({ maxLength: 50 }), Type.Null()]), original_name_servers: Type.Union([Type.Array(Type.String({ format: "hostname" })), Type.Null()]), original_registrar: Type.Union([Type.String(), Type.Null()]), owner: Type.Partial(Type.Object({ id: Type.Ref("zones_identifier"), name: Type.String(), type: Type.String() }, { additionalProperties: false })), paused: Type.Optional(Type.Ref("zones_paused")), permissions: Type.Optional(Type.Array(Type.String())), plan: Type.Partial(Type.Object({ can_subscribe: Type.Boolean(), currency: Type.String(), externally_managed: Type.Boolean(), frequency: Type.String(), id: Type.Ref("zones_identifier"), is_subscribed: Type.Boolean(), legacy_discount: Type.Boolean(), legacy_id: Type.String(), name: Type.String(), price: Type.Number() }, { additionalProperties: false })), status: Type.Optional(Type.Union([Type.Literal("initializing"), Type.Literal("pending"), Type.Literal("active"), Type.Literal("moved")])), tenant: Type.Optional(Type.Partial(Type.Object({ id: Type.Ref("zones_identifier"), name: Type.String() }, { additionalProperties: false }))), tenant_unit: Type.Optional(Type.Partial(Type.Object({ id: Type.Ref("zones_identifier") }, { additionalProperties: false }))), type: Type.Optional(Type.Ref("zones_type")), vanity_name_servers: Type.Optional(Type.Array(Type.String({ format: "hostname", maxLength: 253 }))), verification_key: Type.Optional(Type.String()) }, { additionalProperties: false }),
-  zones_zone_settings_response_collection: Type.Intersect([Type.Ref("zones_api_response_common_4"), Type.Partial(Type.Object({ result: Type.Array(Type.Union([Type.Ref("zones_0rtt"), Type.Ref("zones_advanced_ddos"), Type.Ref("zones_cache_rules_aegis"), Type.Ref("zones_always_online"), Type.Ref("zones_always_use_https_2"), Type.Ref("zones_automatic_https_rewrites_2"), Type.Ref("zones_brotli"), Type.Ref("zones_browser_cache_ttl_2"), Type.Ref("zones_browser_check_2"), Type.Ref("zones_cache_level_2"), Type.Ref("zones_challenge_ttl"), Type.Ref("zones_ciphers"), Type.Ref("zones_content_converter"), Type.Ref("zones_cname_flattening"), Type.Ref("zones_development_mode"), Type.Ref("zones_early_hints"), Type.Ref("zones_edge_cache_ttl_2"), Type.Ref("zones_email_obfuscation_2"), Type.Ref("zones_h2_prioritization"), Type.Ref("zones_hotlink_protection"), Type.Ref("zones_http2"), Type.Ref("zones_http3"), Type.Ref("zones_image_resizing"), Type.Ref("zones_ip_geolocation_2"), Type.Ref("zones_ipv6"), Type.Ref("zones_max_upload"), Type.Ref("zones_min_tls_version"), Type.Ref("zones_mirage_2"), Type.Ref("zones_nel"), Type.Ref("zones_opportunistic_encryption_2"), Type.Ref("zones_opportunistic_onion"), Type.Ref("zones_orange_to_orange"), Type.Ref("zones_origin_error_page_pass_thru_2"), Type.Ref("zones_cache_rules_origin_h2_max_streams"), Type.Ref("zones_cache_rules_origin_max_http_version"), Type.Ref("zones_polish_2"), Type.Ref("zones_prefetch_preload"), Type.Ref("zones_privacy_pass"), Type.Ref("zones_proxy_read_timeout"), Type.Ref("zones_pseudo_ipv4"), Type.Ref("zones_redirects_for_ai_training"), Type.Ref("zones_replace_insecure_js"), Type.Ref("zones_response_buffering_2"), Type.Ref("zones_rocket_loader_2"), Type.Ref("zones_schemas_automatic_platform_optimization"), Type.Ref("zones_search_for_agents"), Type.Ref("zones_security_header"), Type.Ref("zones_security_level_2"), Type.Ref("zones_server_side_exclude"), Type.Ref("zones_sha1_support"), Type.Ref("zones_sort_query_string_for_cache_2"), Type.Ref("zones_ssl_2"), Type.Ref("zones_ssl_recommender"), Type.Ref("zones_tls_1_2_only"), Type.Ref("zones_tls_1_3"), Type.Ref("zones_tls_client_auth"), Type.Ref("zones_transformations"), Type.Ref("zones_transformations_allowed_origins"), Type.Ref("zones_true_client_ip_header_2"), Type.Ref("zones_waf_2"), Type.Ref("zones_webp"), Type.Ref("zones_websockets")])) }, { additionalProperties: false }))]),
+  zones_zone_settings_response_collection: Type.Composite([Type.Ref("zones_api_response_common_4"), Type.Partial(Type.Object({ result: Type.Array(Type.Union([Type.Ref("zones_0rtt"), Type.Ref("zones_advanced_ddos"), Type.Ref("zones_cache_rules_aegis"), Type.Ref("zones_always_online"), Type.Ref("zones_always_use_https_2"), Type.Ref("zones_automatic_https_rewrites_2"), Type.Ref("zones_brotli"), Type.Ref("zones_browser_cache_ttl_2"), Type.Ref("zones_browser_check_2"), Type.Ref("zones_cache_level_2"), Type.Ref("zones_challenge_ttl"), Type.Ref("zones_ciphers"), Type.Ref("zones_content_converter"), Type.Ref("zones_cname_flattening"), Type.Ref("zones_development_mode"), Type.Ref("zones_early_hints"), Type.Ref("zones_edge_cache_ttl_2"), Type.Ref("zones_email_obfuscation_2"), Type.Ref("zones_h2_prioritization"), Type.Ref("zones_hotlink_protection"), Type.Ref("zones_http2"), Type.Ref("zones_http3"), Type.Ref("zones_image_resizing"), Type.Ref("zones_ip_geolocation_2"), Type.Ref("zones_ipv6"), Type.Ref("zones_max_upload"), Type.Ref("zones_min_tls_version"), Type.Ref("zones_mirage_2"), Type.Ref("zones_nel"), Type.Ref("zones_opportunistic_encryption_2"), Type.Ref("zones_opportunistic_onion"), Type.Ref("zones_orange_to_orange"), Type.Ref("zones_origin_error_page_pass_thru_2"), Type.Ref("zones_cache_rules_origin_h2_max_streams"), Type.Ref("zones_cache_rules_origin_max_http_version"), Type.Ref("zones_polish_2"), Type.Ref("zones_prefetch_preload"), Type.Ref("zones_privacy_pass"), Type.Ref("zones_proxy_read_timeout"), Type.Ref("zones_pseudo_ipv4"), Type.Ref("zones_redirects_for_ai_training"), Type.Ref("zones_replace_insecure_js"), Type.Ref("zones_response_buffering_2"), Type.Ref("zones_rocket_loader_2"), Type.Ref("zones_schemas_automatic_platform_optimization"), Type.Ref("zones_search_for_agents"), Type.Ref("zones_security_header"), Type.Ref("zones_security_level_2"), Type.Ref("zones_server_side_exclude"), Type.Ref("zones_sha1_support"), Type.Ref("zones_sort_query_string_for_cache_2"), Type.Ref("zones_ssl_2"), Type.Ref("zones_ssl_recommender"), Type.Ref("zones_tls_1_2_only"), Type.Ref("zones_tls_1_3"), Type.Ref("zones_tls_client_auth"), Type.Ref("zones_transformations"), Type.Ref("zones_transformations_allowed_origins"), Type.Ref("zones_true_client_ip_header_2"), Type.Ref("zones_waf_2"), Type.Ref("zones_webp"), Type.Ref("zones_websockets")])) }, { additionalProperties: false }))], { additionalProperties: false }),
   zones_zone_settings_single_request: __typedOpenapiOneOf([Type.Partial(Type.Object({ enabled: Type.Ref("zones_ssl_recommender_enabled") }, { additionalProperties: false })), Type.Partial(Type.Object({ value: Type.Ref("zones_setting_value") }, { additionalProperties: false }))]),
 });
 
@@ -18987,7 +18987,7 @@ export const realtimekit_PeerParticipantDetails = __schemas.Import("realtimekit_
 export interface realtimekit_Poll { anonymous?: boolean, created_by?: string, hide_votes?: boolean, id: string, options: Array<{ count: number, text: string, votes: Array<{ id: string, name: string }> }>, question: string, voted?: Array<string> }
 export const realtimekit_Poll = __schemas.Import("realtimekit_Poll");
 
-export interface realtimekit_PresetPluginConfig { [key: string]: Partial<{ access_control: ("FULL_ACCESS" | "VIEW_ONLY"), handles_view_only: boolean }> }
+export interface realtimekit_PresetPluginConfig { [key: string]: (Partial<{ access_control: ("FULL_ACCESS" | "VIEW_ONLY"), handles_view_only: boolean }> & Record<string, unknown>) }
 export const realtimekit_PresetPluginConfig = __schemas.Import("realtimekit_PresetPluginConfig");
 
 export interface realtimekit_Preset { config: { livestream_viewer_qualities?: (Array<number> | null), max_screenshare_count: number, max_video_streams: { desktop: number, mobile: number }, media: { audio?: Partial<{ enable_high_bitrate: boolean, enable_stereo: boolean }>, screenshare: { frame_rate: number, quality: ("hd" | "vga" | "qvga" | "fhd" | "uhd") }, video: { frame_rate: number, quality: ("hd" | "vga" | "qvga" | "fhd" | "uhd"), simulcast?: boolean } }, view_type: ("GROUP_CALL" | "WEBINAR" | "AUDIO_ROOM" | "LIVESTREAM") }, name: string, permissions: { accept_stage_requests?: boolean, accept_waiting_requests: boolean, can_accept_production_requests: boolean, can_change_participant_permissions: boolean, can_edit_display_name: boolean, can_livestream: boolean, can_record: boolean, can_spotlight: boolean, chat: { private: { can_receive: boolean, can_send: boolean, files: boolean, text: boolean }, public: { can_send: boolean, files: boolean, text: boolean } }, connected_meetings: { can_alter_connected_meetings: boolean, can_switch_connected_meetings: boolean, can_switch_to_parent_meeting: boolean }, disable_participant_audio: boolean, disable_participant_screensharing: boolean, disable_participant_video: boolean, hidden_participant: boolean, is_recorder?: boolean, kick_participant: boolean, media: { audio: { can_produce: ("ALLOWED" | "NOT_ALLOWED" | "CAN_REQUEST") }, screenshare: { can_produce: ("ALLOWED" | "NOT_ALLOWED" | "CAN_REQUEST") }, video: { can_produce: ("ALLOWED" | "NOT_ALLOWED" | "CAN_REQUEST") } }, pin_participant: boolean, plugins: { can_close: boolean, can_edit_config: boolean, can_start: boolean, config: realtimekit_PresetPluginConfig }, polls: { can_create: boolean, can_view: boolean, can_vote: boolean }, recorder_type: ("RECORDER" | "LIVESTREAMER" | "NONE"), show_participant_list: boolean, stage_access?: ("ALLOWED" | "NOT_ALLOWED" | "CAN_REQUEST"), stage_enabled?: boolean, transcription_enabled?: boolean, waiting_room_type: ("SKIP" | "ON_PRIVILEGED_USER_ENTRY" | "SKIP_ON_ACCEPT") }, ui: { design_tokens: { border_radius: ("sharp" | "rounded" | "extra-rounded" | "circular"), border_width: ("none" | "thin" | "fat"), colors: { background: { 600: string, 700: string, 800: string, 900: string, 1000: string }, brand: { 300: string, 400: string, 500: string, 600: string, 700: string }, danger: string, success: string, text: string, text_on_brand: string, video_bg: string, warning: string }, font_family?: string, google_font?: string, logo?: string, spacing_base: number, theme: ("darkest" | "dark" | "light") } } }
@@ -27617,7 +27617,7 @@ export const get_Ip__address__management__service__bindings__list__service__bind
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: addressing_account_identifier, prefix_id: addressing_prefix_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([addressing_api_response_common, Type.Partial(Type.Object({ result: Type.Array(addressing_service_binding) }, { additionalProperties: false }))]), "4XX": addressing_api_response_common_failure },
+  responses: { 200: Type.Composite([addressing_api_response_common, Type.Partial(Type.Object({ result: Type.Array(addressing_service_binding) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": addressing_api_response_common_failure },
 };
 
 export type post_Ip__address__management__service__bindings__create__service__binding = typeof post_Ip__address__management__service__bindings__create__service__binding;
@@ -27627,7 +27627,7 @@ export const post_Ip__address__management__service__bindings__create__service__b
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: addressing_account_identifier, prefix_id: addressing_prefix_identifier }, { additionalProperties: false }), body: addressing_create_binding_request },
-  responses: { 201: Type.Intersect([addressing_api_response_common, Type.Partial(Type.Object({ result: addressing_service_binding }, { additionalProperties: false }))]), "4XX": addressing_api_response_common_failure },
+  responses: { 201: Type.Composite([addressing_api_response_common, Type.Partial(Type.Object({ result: addressing_service_binding }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": addressing_api_response_common_failure },
 };
 
 export type delete_Ip__address__management__service__bindings__delete__service__binding = typeof delete_Ip__address__management__service__bindings__delete__service__binding;
@@ -27647,7 +27647,7 @@ export const get_Ip__address__management__service__bindings__get__service__bindi
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: addressing_account_identifier, prefix_id: addressing_prefix_identifier, binding_id: addressing_service_binding_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([addressing_api_response_common, Type.Partial(Type.Object({ result: addressing_service_binding }, { additionalProperties: false }))]), "4XX": addressing_api_response_common_failure },
+  responses: { 200: Type.Composite([addressing_api_response_common, Type.Partial(Type.Object({ result: addressing_service_binding }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": addressing_api_response_common_failure },
 };
 
 export type get_Ip__address__management__prefix__delegation__list__prefix__delegations = typeof get_Ip__address__management__prefix__delegation__list__prefix__delegations;
@@ -27707,7 +27707,7 @@ export const get_Ip__address__management__service__bindings__list__services = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: addressing_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([addressing_api_response_common, Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ id: addressing_service_identifier, name: addressing_service_name }, { additionalProperties: false }))) }, { additionalProperties: false }))]), "4XX": addressing_api_response_common_failure },
+  responses: { 200: Type.Composite([addressing_api_response_common, Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ id: addressing_service_identifier, name: addressing_service_name }, { additionalProperties: false }))) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": addressing_api_response_common_failure },
 };
 
 export type get_Agent__memory__namespace__list = typeof get_Agent__memory__namespace__list;
@@ -30345,7 +30345,7 @@ export const get_GetAccountLimits = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_GetAccountLimitResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_GetAccountLimitResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetBuildsByVersionIds = typeof get_GetBuildsByVersionIds;
@@ -30355,7 +30355,7 @@ export const get_GetBuildsByVersionIds = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ version_ids: builds_version_ids }, { additionalProperties: false }), path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_BuildsByVersionResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_BuildsByVersionResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetLatestBuildsByScripts = typeof get_GetLatestBuildsByScripts;
@@ -30365,7 +30365,7 @@ export const get_GetLatestBuildsByScripts = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ external_script_ids: builds_external_script_ids }, { additionalProperties: false }), path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_LatestBuildsResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_LatestBuildsResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetBuildByUuid = typeof get_GetBuildByUuid;
@@ -30375,7 +30375,7 @@ export const get_GetBuildByUuid = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, build_uuid: builds_build_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_BuildResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_BuildResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type put_CancelBuildByUuid = typeof put_CancelBuildByUuid;
@@ -30385,7 +30385,7 @@ export const put_CancelBuildByUuid = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, build_uuid: builds_build_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_CanceledBuildResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_CanceledBuildResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type get_GetBuildLogs = typeof get_GetBuildLogs;
@@ -30395,7 +30395,7 @@ export const get_GetBuildLogs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ cursor: builds_cursor }, { additionalProperties: false }))), path: Type.Object({ account_id: builds_account_id, build_uuid: builds_build_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_BuildLogsResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_BuildLogsResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type put_UpsertRepoConnection = typeof put_UpsertRepoConnection;
@@ -30405,7 +30405,7 @@ export const put_UpsertRepoConnection = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }), body: builds_UpsertRepoConnectionRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_UpsertRepoConnectionResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_UpsertRepoConnectionResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteRepoConnection = typeof delete_DeleteRepoConnection;
@@ -30425,7 +30425,7 @@ export const get_GetWorkerConfigAutofill = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ branch: builds_branch, root_directory: Type.Optional(builds_root_directory) }, { additionalProperties: false }), path: Type.Object({ account_id: builds_account_id, provider_type: builds_SCMProviderType, provider_account_id: builds_provider_account_id, repo_id: builds_repo_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_ConfigAutofillResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_ConfigAutofillResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListBuildTokens = typeof get_ListBuildTokens;
@@ -30435,7 +30435,7 @@ export const get_ListBuildTokens = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 200 }) }, { additionalProperties: false }))), path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_ListTokensResponse), result_info: builds_PaginationInfo }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_ListTokensResponse), result_info: builds_PaginationInfo }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_CreateBuildToken = typeof post_CreateBuildToken;
@@ -30445,7 +30445,7 @@ export const post_CreateBuildToken = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }), body: builds_CreateBuildTokenRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_CreateBuildTokenResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_CreateBuildTokenResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteBuildToken = typeof delete_DeleteBuildToken;
@@ -30465,7 +30465,7 @@ export const post_CreateTrigger = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }), body: builds_CreateTriggerRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_TriggerResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_TriggerResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteTrigger = typeof delete_DeleteTrigger;
@@ -30485,7 +30485,7 @@ export const patch_UpdateTrigger = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, trigger_uuid: builds_trigger_uuid }, { additionalProperties: false }), body: builds_UpdateTriggerRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_TriggerResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_TriggerResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type post_CreateManualBuild = typeof post_CreateManualBuild;
@@ -30495,7 +30495,7 @@ export const post_CreateManualBuild = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, trigger_uuid: builds_trigger_uuid }, { additionalProperties: false }), body: builds_CreateBuildRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_InsertBuildResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_InsertBuildResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListEnvironmentVariables = typeof get_ListEnvironmentVariables;
@@ -30505,7 +30505,7 @@ export const get_ListEnvironmentVariables = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, trigger_uuid: builds_trigger_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_EnvironmentVariablesResponse }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_EnvironmentVariablesResponse }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type patch_UpsertEnvironmentVariables = typeof patch_UpsertEnvironmentVariables;
@@ -30515,7 +30515,7 @@ export const patch_UpsertEnvironmentVariables = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, trigger_uuid: builds_trigger_uuid }, { additionalProperties: false }), body: builds_EnvironmentVariablesRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_EnvironmentVariablesResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_EnvironmentVariablesResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type delete_DeleteEnvironmentVariable = typeof delete_DeleteEnvironmentVariable;
@@ -30545,7 +30545,7 @@ export const post_CreateWorkerBuild = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id }, { additionalProperties: false }), body: builds_CreateWorkerRequest },
-  responses: { 201: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_WorkerResponse }, { additionalProperties: false }))]), 400: builds_ErrorResponse, 401: builds_ErrorResponse, 404: builds_ErrorResponse, 409: builds_ErrorResponse },
+  responses: { 201: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_WorkerResponse }, { additionalProperties: false }))], { additionalProperties: false }), 400: builds_ErrorResponse, 401: builds_ErrorResponse, 404: builds_ErrorResponse, 409: builds_ErrorResponse },
 };
 
 export type get_ListBuildsByScript = typeof get_ListBuildsByScript;
@@ -30555,7 +30555,7 @@ export const get_ListBuildsByScript = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 200 }) }, { additionalProperties: false }))), path: Type.Object({ account_id: builds_account_id, external_script_id: builds_external_script_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_BuildResponse), result_info: builds_PaginationInfo }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_BuildResponse), result_info: builds_PaginationInfo }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListTriggersByScript = typeof get_ListTriggersByScript;
@@ -30565,7 +30565,7 @@ export const get_ListTriggersByScript = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, external_script_id: builds_external_script_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_TriggerResponse) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_TriggerResponse) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListDeployHooks = typeof get_ListDeployHooks;
@@ -30575,7 +30575,7 @@ export const get_ListDeployHooks = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_name: builds_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_DetailedDeployHookResponse) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: Type.Array(builds_DetailedDeployHookResponse) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_CreateDeployHook = typeof post_CreateDeployHook;
@@ -30585,7 +30585,7 @@ export const post_CreateDeployHook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_name: builds_script_name }, { additionalProperties: false }), body: builds_CreateDeployHookRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))]), 400: builds_ErrorResponse, 404: builds_ErrorResponse, 409: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 400: builds_ErrorResponse, 404: builds_ErrorResponse, 409: builds_ErrorResponse },
 };
 
 export type delete_DeleteDeployHook = typeof delete_DeleteDeployHook;
@@ -30595,7 +30595,7 @@ export const delete_DeleteDeployHook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_name: builds_script_name, deploy_hook_uuid: builds_deploy_hook_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type get_GetDeployHook = typeof get_GetDeployHook;
@@ -30605,7 +30605,7 @@ export const get_GetDeployHook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_name: builds_script_name, deploy_hook_uuid: builds_deploy_hook_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse },
 };
 
 export type put_UpdateDeployHook = typeof put_UpdateDeployHook;
@@ -30615,7 +30615,7 @@ export const put_UpdateDeployHook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_name: builds_script_name, deploy_hook_uuid: builds_deploy_hook_uuid }, { additionalProperties: false }), body: builds_CreateDeployHookRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))]), 400: builds_ErrorResponse, 404: builds_ErrorResponse, 409: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_DeployHookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 400: builds_ErrorResponse, 404: builds_ErrorResponse, 409: builds_ErrorResponse },
 };
 
 export type delete_DeleteWorkerBuild = typeof delete_DeleteWorkerBuild;
@@ -30625,7 +30625,7 @@ export const delete_DeleteWorkerBuild = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_tag: builds_external_script_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: Type.String() }, { additionalProperties: false }))]), 401: builds_ErrorResponse, 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }), 401: builds_ErrorResponse, 404: builds_ErrorResponse },
 };
 
 export type get_GetWorkerBuild = typeof get_GetWorkerBuild;
@@ -30635,7 +30635,7 @@ export const get_GetWorkerBuild = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_tag: builds_external_script_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_WorkerResponse }, { additionalProperties: false }))]), 401: builds_ErrorResponse, 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_WorkerResponse }, { additionalProperties: false }))], { additionalProperties: false }), 401: builds_ErrorResponse, 404: builds_ErrorResponse },
 };
 
 export type patch_UpdateWorkerBuild = typeof patch_UpdateWorkerBuild;
@@ -30645,7 +30645,7 @@ export const patch_UpdateWorkerBuild = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: builds_account_id, script_tag: builds_external_script_id }, { additionalProperties: false }), body: builds_UpdateWorkerRequest },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_WorkerResponse }, { additionalProperties: false }))]), 400: builds_ErrorResponse, 401: builds_ErrorResponse, 404: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_WorkerResponse }, { additionalProperties: false }))], { additionalProperties: false }), 400: builds_ErrorResponse, 401: builds_ErrorResponse, 404: builds_ErrorResponse },
 };
 
 export type post_Account__subscriptions__bulk__create__subscription = typeof post_Account__subscriptions__bulk__create__subscription;
@@ -31755,7 +31755,7 @@ export const post_Cloudforce__one__request__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }), body: cloudforce_one_requests_request_list },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_list_item) }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_list_item) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__request__constants = typeof get_Cloudforce__one__request__constants;
@@ -31765,7 +31765,7 @@ export const get_Cloudforce__one__request__constants = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_constants }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_constants }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__request__new = typeof post_Cloudforce__one__request__new;
@@ -31775,7 +31775,7 @@ export const post_Cloudforce__one__request__new = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }), body: cloudforce_one_requests_request_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__priority__list = typeof post_Cloudforce__one__priority__list;
@@ -31785,7 +31785,7 @@ export const post_Cloudforce__one__priority__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }), body: cloudforce_one_requests_priority_list },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_priority_item) }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_priority_item) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__priority__new = typeof post_Cloudforce__one__priority__new;
@@ -31795,7 +31795,7 @@ export const post_Cloudforce__one__priority__new = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }), body: cloudforce_one_requests_priority_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_priority_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_priority_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__priority__quota = typeof get_Cloudforce__one__priority__quota;
@@ -31805,7 +31805,7 @@ export const get_Cloudforce__one__priority__quota = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_quota }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_quota }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__priority__delete = typeof delete_Cloudforce__one__priority__delete;
@@ -31825,7 +31825,7 @@ export const get_Cloudforce__one__priority__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type put_Cloudforce__one__priority__update = typeof put_Cloudforce__one__priority__update;
@@ -31835,7 +31835,7 @@ export const put_Cloudforce__one__priority__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_priority_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__request__quota = typeof get_Cloudforce__one__request__quota;
@@ -31845,7 +31845,7 @@ export const get_Cloudforce__one__request__quota = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_quota }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_quota }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__request__types = typeof get_Cloudforce__one__request__types;
@@ -31855,7 +31855,7 @@ export const get_Cloudforce__one__request__types = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_types }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_types }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__request__delete = typeof delete_Cloudforce__one__request__delete;
@@ -31875,7 +31875,7 @@ export const get_Cloudforce__one__request__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type put_Cloudforce__one__request__update = typeof put_Cloudforce__one__request__update;
@@ -31885,7 +31885,7 @@ export const put_Cloudforce__one__request__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_request_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__request__asset__list = typeof post_Cloudforce__one__request__asset__list;
@@ -31895,7 +31895,7 @@ export const post_Cloudforce__one__request__asset__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_request_asset_list },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_asset_item) }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_asset_item) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__request__asset__new = typeof post_Cloudforce__one__request__asset__new;
@@ -31905,7 +31905,7 @@ export const post_Cloudforce__one__request__asset__new = {
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_request_asset_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_asset_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_asset_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__request__asset__delete = typeof delete_Cloudforce__one__request__asset__delete;
@@ -31925,7 +31925,7 @@ export const get_Cloudforce__one__request__asset__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid, asset_id: cloudforce_one_requests_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_asset_item) }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_asset_item) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type put_Cloudforce__one__request__asset__update = typeof put_Cloudforce__one__request__asset__update;
@@ -31935,7 +31935,7 @@ export const put_Cloudforce__one__request__asset__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid, asset_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_request_asset_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_asset_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_asset_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__request__message__list = typeof post_Cloudforce__one__request__message__list;
@@ -31945,7 +31945,7 @@ export const post_Cloudforce__one__request__message__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_request_message_list },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_message_item) }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_requests_request_message_item) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type post_Cloudforce__one__request__message__new = typeof post_Cloudforce__one__request__message__new;
@@ -31955,7 +31955,7 @@ export const post_Cloudforce__one__request__message__new = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid }, { additionalProperties: false }), body: cloudforce_one_requests_request_message_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_message_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_message_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__request__message__delete = typeof delete_Cloudforce__one__request__message__delete;
@@ -31975,7 +31975,7 @@ export const put_Cloudforce__one__request__message__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, request_id: cloudforce_one_requests_uuid, message_id: Type.Integer() }, { additionalProperties: false }), body: cloudforce_one_requests_request_message_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_message_item }, { additionalProperties: false }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_message_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__delete__all__rules = typeof delete_Cloudforce__one__delete__all__rules;
@@ -32135,7 +32135,7 @@ export const get_Get_ConfigFetch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_port_scan_api_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_port_scan_api_scan_config) }, { additionalProperties: false }))]), "4XX": cloudforce_one_port_scan_api_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_port_scan_api_api_response_common, Type.Partial(Type.Object({ result: Type.Array(cloudforce_one_port_scan_api_scan_config) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_port_scan_api_api_response_common_failure },
 };
 
 export type post_Post_ConfigCreate = typeof post_Post_ConfigCreate;
@@ -32145,7 +32145,7 @@ export const post_Post_ConfigCreate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }), body: Type.Object({ frequency: Type.Optional(cloudforce_one_port_scan_api_frequency), ips: cloudforce_one_port_scan_api_ips, ports: Type.Optional(cloudforce_one_port_scan_api_ports) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cloudforce_one_port_scan_api_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_port_scan_api_scan_config }, { additionalProperties: false }))]), "4XX": cloudforce_one_port_scan_api_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_port_scan_api_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_port_scan_api_scan_config }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_port_scan_api_api_response_common_failure },
 };
 
 export type delete_Delete_DeleteScans = typeof delete_Delete_DeleteScans;
@@ -32165,7 +32165,7 @@ export const patch_Post_ConfigUpdate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), config_id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ frequency: cloudforce_one_port_scan_api_frequency, ips: cloudforce_one_port_scan_api_ips, ports: cloudforce_one_port_scan_api_ports }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([cloudforce_one_port_scan_api_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_port_scan_api_scan_config }, { additionalProperties: false }))]), "4XX": cloudforce_one_port_scan_api_api_response_common_failure },
+  responses: { 200: Type.Composite([cloudforce_one_port_scan_api_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_port_scan_api_scan_config }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cloudforce_one_port_scan_api_api_response_common_failure },
 };
 
 export type get_Get_GetOpenPorts = typeof get_Get_GetOpenPorts;
@@ -32835,7 +32835,7 @@ export const get_ListApplications = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: cc_ApplicationName, image: cc_Image, label: Type.Array(Type.String()) }, { additionalProperties: false }))), path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_ListApplications }, { additionalProperties: false })]), 401: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_ListApplications }, { additionalProperties: false })], { additionalProperties: false }), 401: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type post_CreateApplication = typeof post_CreateApplication;
@@ -32845,7 +32845,7 @@ export const post_CreateApplication = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }), body: cc_CreateApplicationRequest },
-  responses: { 201: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_Application }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 201: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_Application }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type delete_DeleteApplication = typeof delete_DeleteApplication;
@@ -32855,7 +32855,7 @@ export const delete_DeleteApplication = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_EmptyResponse }, { additionalProperties: false })]), 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_EmptyResponse }, { additionalProperties: false })], { additionalProperties: false }), 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type get_GetApplication = typeof get_GetApplication;
@@ -32865,7 +32865,7 @@ export const get_GetApplication = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_Application }, { additionalProperties: false })]), 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_Application }, { additionalProperties: false })], { additionalProperties: false }), 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type patch_ModifyApplication = typeof patch_ModifyApplication;
@@ -32875,7 +32875,7 @@ export const patch_ModifyApplication = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID }, { additionalProperties: false }), body: cc_ModifyApplicationRequestBody },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_Application }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_Application }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type get_ListContainerInstances = typeof get_ListContainerInstances;
@@ -32895,7 +32895,7 @@ export const post_CreateContainerInstance = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID }, { additionalProperties: false }), body: cc_CreateContainerInstanceRequestBody },
-  responses: { 201: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstance }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 201: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstance }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type delete_DeleteContainerInstance = typeof delete_DeleteContainerInstance;
@@ -32905,7 +32905,7 @@ export const delete_DeleteContainerInstance = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID, instance_id: cc_ContainerInstanceID }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_EmptyResponse }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_EmptyResponse }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type get_GetContainerInstance = typeof get_GetContainerInstance;
@@ -32915,7 +32915,7 @@ export const get_GetContainerInstance = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID, instance_id: cc_ContainerInstanceID }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstance }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstance }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type post_ContainerInstanceExec = typeof post_ContainerInstanceExec;
@@ -32925,7 +32925,7 @@ export const post_ContainerInstanceExec = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID, instance_id: cc_ContainerInstanceID }, { additionalProperties: false }), body: cc_ContainerInstanceExecRequestBody },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstanceExecResult }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse, 503: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstanceExecResult }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse, 503: cc_V4BaseErrorResponse },
 };
 
 export type post_ContainerInstanceFetch = typeof post_ContainerInstanceFetch;
@@ -32935,7 +32935,7 @@ export const post_ContainerInstanceFetch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID, instance_id: cc_ContainerInstanceID }, { additionalProperties: false }), body: cc_ContainerInstanceFetchRequestBody },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstanceFetchResult }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_ContainerInstanceFetchResult }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type post_CreateApplicationRollout = typeof post_CreateApplicationRollout;
@@ -32945,7 +32945,7 @@ export const post_CreateApplicationRollout = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID }, { additionalProperties: false }), body: cc_CreateApplicationRolloutRequest },
-  responses: { 201: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_ApplicationRollout }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 201: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_ApplicationRollout }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type get_ListApplicationVersions = typeof get_ListApplicationVersions;
@@ -32955,7 +32955,7 @@ export const get_ListApplicationVersions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), application_id: cc_ApplicationID }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: Type.Array(cc_ApplicationVersion) }, { additionalProperties: false })]), 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: Type.Array(cc_ApplicationVersion) }, { additionalProperties: false })], { additionalProperties: false }), 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type get_ContainerWranglerSsh = typeof get_ContainerWranglerSsh;
@@ -32965,7 +32965,7 @@ export const get_ContainerWranglerSsh = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), instance_id: cc_InstanceID }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_WranglerSSHResponse }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse, 503: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_WranglerSSHResponse }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 401: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse, 503: cc_V4BaseErrorResponse },
 };
 
 export type get_ListImageRegistries = typeof get_ListImageRegistries;
@@ -32975,7 +32975,7 @@ export const get_ListImageRegistries = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: Type.Array(cc_CustomerImageRegistry) }, { additionalProperties: false })]), 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: Type.Array(cc_CustomerImageRegistry) }, { additionalProperties: false })], { additionalProperties: false }), 500: cc_V4BaseErrorResponse },
 };
 
 export type post_CreateImageRegistry = typeof post_CreateImageRegistry;
@@ -32985,7 +32985,7 @@ export const post_CreateImageRegistry = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }), body: cc_CreateImageRegistryRequestBody },
-  responses: { 201: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_CustomerImageRegistry }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 403: cc_V4BaseErrorResponse, 409: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 201: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_CustomerImageRegistry }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 403: cc_V4BaseErrorResponse, 409: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type delete_DeleteImageRegistry = typeof delete_DeleteImageRegistry;
@@ -32995,7 +32995,7 @@ export const delete_DeleteImageRegistry = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), domain: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_DeleteRegistryResponseBody }, { additionalProperties: false })]), 403: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 409: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 200: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_DeleteRegistryResponseBody }, { additionalProperties: false })], { additionalProperties: false }), 403: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 409: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type post_GenerateImageRegistryCredentials = typeof post_GenerateImageRegistryCredentials;
@@ -33005,7 +33005,7 @@ export const post_GenerateImageRegistryCredentials = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), domain: Type.String() }, { additionalProperties: false }), body: cc_ImageRegistryCredentialsConfiguration },
-  responses: { 201: Type.Intersect([cc_V4BaseResponse, Type.Object({ result: cc_AccountRegistryToken }, { additionalProperties: false })]), 400: cc_V4BaseErrorResponse, 403: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 409: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
+  responses: { 201: Type.Composite([cc_V4BaseResponse, Type.Object({ result: cc_AccountRegistryToken }, { additionalProperties: false })], { additionalProperties: false }), 400: cc_V4BaseErrorResponse, 403: cc_V4BaseErrorResponse, 404: cc_V4BaseErrorResponse, 409: cc_V4BaseErrorResponse, 500: cc_V4BaseErrorResponse },
 };
 
 export type get_Custom__csrs__for__an__account__list__custom__csrs = typeof get_Custom__csrs__for__an__account__list__custom__csrs;
@@ -33085,7 +33085,7 @@ export const get_D1__list__databases = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: Type.String(), page: Type.Number({ minimum: 1 }), per_page: Type.Number({ minimum: 10, maximum: 10000 }) }, { additionalProperties: false }))), path: Type.Object({ account_id: d1_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Array(d1_database_response), result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Array(d1_database_response), result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type post_D1__create__database = typeof post_D1__create__database;
@@ -33095,7 +33095,7 @@ export const post_D1__create__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier }, { additionalProperties: false }), body: Type.Object({ jurisdiction: Type.Optional(d1_jurisdiction), name: d1_database_name, primary_location_hint: Type.Optional(d1_primary_location_hint), read_replication: Type.Optional(d1_read_replication_details_for_request) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type delete_D1__delete__database = typeof delete_D1__delete__database;
@@ -33105,7 +33105,7 @@ export const delete_D1__delete__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type get_D1__get__database = typeof get_D1__get__database;
@@ -33115,7 +33115,7 @@ export const get_D1__get__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ fields: Type.Array(Type.Union([Type.Literal("uuid"), Type.Literal("name"), Type.Literal("created_at"), Type.Literal("version"), Type.Literal("jurisdiction"), Type.Literal("num_tables"), Type.Literal("file_size"), Type.Literal("running_in_region"), Type.Literal("read_replication")])) }, { additionalProperties: false }))), path: Type.Object({ account_id: d1_account_identifier, database_id: __typedOpenapiOneOf([d1_database_identifier, d1_database_name]) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type patch_D1__update__partial__database = typeof patch_D1__update__partial__database;
@@ -33125,7 +33125,7 @@ export const patch_D1__update__partial__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }), body: d1_database_update_partial_request_body },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type put_D1__update__database = typeof put_D1__update__database;
@@ -33135,7 +33135,7 @@ export const put_D1__update__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }), body: d1_database_update_request_body },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: d1_database_details_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type post_D1__export__database = typeof post_D1__export__database;
@@ -33145,7 +33145,7 @@ export const post_D1__export__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }), body: Type.Object({ current_bookmark: Type.Optional(Type.String()), dump_options: Type.Optional(Type.Partial(Type.Object({ no_data: Type.Boolean(), no_schema: Type.Boolean(), tables: Type.Array(Type.String()) }, { additionalProperties: false }))), output_format: Type.Literal("polling") }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), error: Type.String(), messages: Type.Array(Type.String()), result: Type.Partial(Type.Object({ filename: Type.String(), signed_url: Type.String() }, { additionalProperties: false })), status: Type.Union([Type.Literal("complete"), Type.Literal("error")]), success: Type.Boolean(), type: Type.Literal("export") }, { additionalProperties: false })) }, { additionalProperties: false }))]), 202: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), messages: Type.Array(Type.String()), status: Type.Literal("active"), success: Type.Boolean(), type: Type.Literal("export") }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), error: Type.String(), messages: Type.Array(Type.String()), result: Type.Partial(Type.Object({ filename: Type.String(), signed_url: Type.String() }, { additionalProperties: false })), status: Type.Union([Type.Literal("complete"), Type.Literal("error")]), success: Type.Boolean(), type: Type.Literal("export") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), 202: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), messages: Type.Array(Type.String()), status: Type.Literal("active"), success: Type.Boolean(), type: Type.Literal("export") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type post_D1__import__database = typeof post_D1__import__database;
@@ -33155,7 +33155,7 @@ export const post_D1__import__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }), body: __typedOpenapiOneOf([Type.Object({ action: Type.Literal("init"), etag: Type.String() }, { additionalProperties: false }), Type.Object({ action: Type.Literal("ingest"), etag: Type.String(), filename: Type.String() }, { additionalProperties: false }), Type.Object({ action: Type.Literal("poll"), current_bookmark: Type.String() }, { additionalProperties: false })]) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), error: Type.String(), filename: Type.String(), messages: Type.Array(Type.String()), result: Type.Partial(Type.Object({ final_bookmark: Type.String(), meta: d1_query_meta, num_queries: Type.Number() }, { additionalProperties: false })), status: Type.Union([Type.Literal("complete"), Type.Literal("error")]), success: Type.Boolean(), type: Type.Literal("import"), upload_url: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))]), 202: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), messages: Type.Array(Type.String()), status: Type.Literal("active"), success: Type.Boolean(), type: Type.Literal("import") }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), error: Type.String(), filename: Type.String(), messages: Type.Array(Type.String()), result: Type.Partial(Type.Object({ final_bookmark: Type.String(), meta: d1_query_meta, num_queries: Type.Number() }, { additionalProperties: false })), status: Type.Union([Type.Literal("complete"), Type.Literal("error")]), success: Type.Boolean(), type: Type.Literal("import"), upload_url: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), 202: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ at_bookmark: Type.String(), messages: Type.Array(Type.String()), status: Type.Literal("active"), success: Type.Boolean(), type: Type.Literal("import") }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type post_D1__query__database = typeof post_D1__query__database;
@@ -33165,7 +33165,7 @@ export const post_D1__query__database = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }), body: d1_batch_query },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Array(d1_query_result_response) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Array(d1_query_result_response) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type post_D1__raw__database__query = typeof post_D1__raw__database__query;
@@ -33175,7 +33175,7 @@ export const post_D1__raw__database__query = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }), body: d1_batch_query },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Array(d1_raw_result_response) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Array(d1_raw_result_response) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type get_D1__time__travel__get__bookmark = typeof get_D1__time__travel__get__bookmark;
@@ -33185,7 +33185,7 @@ export const get_D1__time__travel__get__bookmark = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ timestamp: d1_time_travel_timestamp }, { additionalProperties: false }))), path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ bookmark: d1_time_travel_bookmark }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ bookmark: d1_time_travel_bookmark }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type post_D1__time__travel__restore = typeof post_D1__time__travel__restore;
@@ -33195,7 +33195,7 @@ export const post_D1__time__travel__restore = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ bookmark: d1_time_travel_bookmark, timestamp: d1_time_travel_timestamp }, { additionalProperties: false }))), path: Type.Object({ account_id: d1_account_identifier, database_id: d1_database_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([d1_api_response_common, Type.Partial(Type.Object({ result: d1_time_travel_restore_response }, { additionalProperties: false }))]), "4XX": d1_api_response_common_failure },
+  responses: { 200: Type.Composite([d1_api_response_common, Type.Partial(Type.Object({ result: d1_time_travel_restore_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": d1_api_response_common_failure },
 };
 
 export type get_ListContentAssets = typeof get_ListContentAssets;
@@ -33446,7 +33446,7 @@ export const post_EvaluateNewWebhook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String() }, { additionalProperties: false }), body: posture_api_EvaluateNewWebhookRequest },
-  responses: { 200: Type.Intersect([posture_api_api_response_common, Type.Partial(Type.Object({ result: posture_api_EvaluateNewWebhookResponse }, { additionalProperties: false }))]), 400: posture_api_error_response, 401: posture_api_error_response, 403: posture_api_error_response },
+  responses: { 200: Type.Composite([posture_api_api_response_common, Type.Partial(Type.Object({ result: posture_api_EvaluateNewWebhookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 400: posture_api_error_response, 401: posture_api_error_response, 403: posture_api_error_response },
 };
 
 export type post_CreateWebhookJobs = typeof post_CreateWebhookJobs;
@@ -33496,7 +33496,7 @@ export const post_EvaluateExistingWebhook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: Type.String(), webhook_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([posture_api_api_response_common, Type.Partial(Type.Object({ result: posture_api_EvaluateNewWebhookResponse }, { additionalProperties: false }))]), 400: posture_api_error_response, 401: posture_api_error_response, 403: posture_api_error_response, 404: posture_api_error_response },
+  responses: { 200: Type.Composite([posture_api_api_response_common, Type.Partial(Type.Object({ result: posture_api_EvaluateNewWebhookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 400: posture_api_error_response, 401: posture_api_error_response, 403: posture_api_error_response, 404: posture_api_error_response },
 };
 
 export type get_List__client__versions = typeof get_List__client__versions;
@@ -34136,7 +34136,7 @@ export const get_Dex__endpoints__list__colos = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ from: Type.String(), to: Type.String(), sortBy: Type.Optional(Type.Union([Type.Literal("fleet-status-usage"), Type.Literal("application-tests-usage")])) }, { additionalProperties: false }), path: Type.Object({ account_id: digital_experience_monitoring_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([digital_experience_monitoring_api_response_common, Type.Partial(Type.Object({ result: digital_experience_monitoring_colos_response }, { additionalProperties: false }))]), "4XX": digital_experience_monitoring_api_response_common_failure },
+  responses: { 200: Type.Composite([digital_experience_monitoring_api_response_common, Type.Partial(Type.Object({ result: digital_experience_monitoring_colos_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": digital_experience_monitoring_api_response_common_failure },
 };
 
 export type get_Get__commands = typeof get_Get__commands;
@@ -35677,7 +35677,7 @@ export const get_Email_security_investigate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ start: Type.String({ format: "date-time" }), end: Type.String({ format: "date-time" }), query: Type.String(), detections_only: Type.Boolean(), final_disposition: Type.Union([Type.Literal("MALICIOUS"), Type.Literal("SUSPICIOUS"), Type.Literal("SPOOF"), Type.Literal("SPAM"), Type.Literal("BULK"), Type.Literal("NONE")]), metric: Type.String(), message_action: Type.Union([Type.Literal("PREVIEW"), Type.Literal("QUARANTINE_RELEASED"), Type.Literal("MOVED")]), recipient: Type.String(), sender: Type.String(), alert_id: Type.String(), domain: Type.String(), message_id: Type.String(), subject: Type.String(), delivery_status: email_security_MessageDeliveryStatus, cursor: Type.String(), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), page: Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]) }, { additionalProperties: false }))), path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_MessageDetails), result_info: email_security_CursorResultInfo }, { additionalProperties: false })]), 202: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(Type.Unknown(), { maxItems: 0 }), result_info: email_security_CursorResultInfo }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_MessageDetails), result_info: email_security_CursorResultInfo }, { additionalProperties: false })], { additionalProperties: false }), 202: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(Type.Unknown(), { maxItems: 0 }), result_info: email_security_CursorResultInfo }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
   responseHeaders: { 202: Type.Object({ Location: Type.String() }, { additionalProperties: false }) },
 };
 
@@ -35688,7 +35688,7 @@ export const get_Email_security_get_bulk_jobs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), action_type: Type.Union([Type.Literal("MOVE"), Type.Literal("RELEASE")]), status: Type.Union([Type.Literal("PENDING"), Type.Literal("DISCOVERING"), Type.Literal("PROCESSING"), Type.Literal("COMPLETED"), Type.Literal("FAILED"), Type.Literal("CANCELLED"), Type.Literal("SKIPPED")]) }, { additionalProperties: false }))), path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_BulkJobDetail), result_info: email_security_CursorResultInfo }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_BulkJobDetail), result_info: email_security_CursorResultInfo }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type post_Email_security_create_bulk_job = typeof post_Email_security_create_bulk_job;
@@ -35738,7 +35738,7 @@ export const get_Email_security_get_bulk_job_messages = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), status: Type.Union([Type.Literal("PENDING"), Type.Literal("DISCOVERING"), Type.Literal("PROCESSING"), Type.Literal("COMPLETED"), Type.Literal("FAILED"), Type.Literal("CANCELLED"), Type.Literal("SKIPPED")]) }, { additionalProperties: false }))), path: Type.Object({ account_id: email_security_identifier, job_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_BulkActionMessageDetail), result_info: email_security_CursorResultInfo }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_BulkActionMessageDetail), result_info: email_security_CursorResultInfo }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type post_Email_security_post_bulk_move = typeof post_Email_security_post_bulk_move;
@@ -35748,7 +35748,7 @@ export const post_Email_security_post_bulk_move = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ destination: email_security_MailboxDestination, expected_disposition: Type.Optional(email_security_DispositionLabel), ids: Type.Optional(Type.Array(email_security_InvestigateId)), postfix_ids: Type.Optional(Type.Array(email_security_PostfixId)) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_MoveResponseItem) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_MoveResponseItem) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type post_Email_security_post_preview = typeof post_Email_security_post_preview;
@@ -35758,7 +35758,7 @@ export const post_Email_security_post_preview = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ postfix_id: email_security_PostfixId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: email_security_MessagePreview }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: email_security_MessagePreview }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type post_Email_security_post_release = typeof post_Email_security_post_release;
@@ -35768,7 +35768,7 @@ export const post_Email_security_post_release = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Array(email_security_InvestigateId) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_ReleaseResponse) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_ReleaseResponse) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_message = typeof get_Email_security_get_message;
@@ -35778,7 +35778,7 @@ export const get_Email_security_get_message = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ submission: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: email_security_MessageDetails }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: email_security_MessageDetails }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_message_action_log = typeof get_Email_security_get_message_action_log;
@@ -35788,7 +35788,7 @@ export const get_Email_security_get_message_action_log = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_ActionEntry) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_ActionEntry) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_message_detections = typeof get_Email_security_get_message_detections;
@@ -35798,7 +35798,7 @@ export const get_Email_security_get_message_detections = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: email_security_MessageDetectionDetails }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: email_security_MessageDetectionDetails }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type post_Email_security_post_message_move = typeof post_Email_security_post_message_move;
@@ -35808,7 +35808,7 @@ export const post_Email_security_post_message_move = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }), body: Type.Object({ destination: email_security_MailboxDestination, expected_disposition: Type.Optional(email_security_DispositionLabel) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_MoveResponseItem) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_MoveResponseItem) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_message_preview = typeof get_Email_security_get_message_preview;
@@ -35818,7 +35818,7 @@ export const get_Email_security_get_message_preview = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: email_security_MessagePreview }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: email_security_MessagePreview }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_message_raw = typeof get_Email_security_get_message_raw;
@@ -35828,7 +35828,7 @@ export const get_Email_security_get_message_raw = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: email_security_MessageRaw }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: email_security_MessageRaw }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type post_Email_security_post_reclassify = typeof post_Email_security_post_reclassify;
@@ -35838,7 +35838,7 @@ export const post_Email_security_post_reclassify = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }), body: email_security_ReclassifyRequest },
-  responses: { 202: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 202: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_message_trace = typeof get_Email_security_get_message_trace;
@@ -35848,7 +35848,7 @@ export const get_Email_security_get_message_trace = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: email_security_identifier, investigate_id: email_security_InvestigateId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: email_security_MessageTrace }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: email_security_MessageTrace }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_get_phishguard_reports = typeof get_Email_security_get_phishguard_reports;
@@ -35858,7 +35858,7 @@ export const get_Email_security_get_phishguard_reports = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ start: Type.String({ format: "date-time" }), end: Type.String({ format: "date-time" }), from_date: Type.String({ format: "date" }), to_date: Type.String({ format: "date" }) }, { additionalProperties: false }))), path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_PhishGuardReport) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Array(email_security_PhishGuardReport) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type get_Email_security_list_allow_policies = typeof get_Email_security_list_allow_policies;
@@ -35887,7 +35887,7 @@ export const post_Email_security_batch_allow_policies = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/allow_policies/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_AllowPolicyId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateAllowPolicy, Type.Object({ id: email_security_AllowPolicyId }, { additionalProperties: false })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateAllowPolicy, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_AllowPolicy, Type.Object({ id: email_security_AllowPolicyId }, { additionalProperties: false })]), { maxItems: 1000 }) }, { additionalProperties: false }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_AllowPolicyId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Composite([email_security_UpdateAllowPolicy, Type.Object({ id: email_security_AllowPolicyId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }), posts: Type.Array(email_security_CreateAllowPolicy, { maxItems: 1000 }), puts: Type.Array(Type.Composite([email_security_AllowPolicy, Type.Object({ id: email_security_AllowPolicyId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }) }, { additionalProperties: false }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deletes: Type.Array(email_security_DeletedAllowPolicy), patches: email_security_AllowPolicyList, posts: email_security_AllowPolicyList, puts: email_security_AllowPolicyList }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -35947,7 +35947,7 @@ export const post_Email_security_batch_blocked_senders = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/block_senders/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_BlockedSenderId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateBlockedSender, Type.Object({ id: email_security_BlockedSenderId }, { additionalProperties: false })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateBlockedSender, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_BlockedSender, Type.Object({ id: email_security_BlockedSenderId }, { additionalProperties: false })]), { maxItems: 1000 }) }, { additionalProperties: false }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_BlockedSenderId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Composite([email_security_UpdateBlockedSender, Type.Object({ id: email_security_BlockedSenderId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }), posts: Type.Array(email_security_CreateBlockedSender, { maxItems: 1000 }), puts: Type.Array(Type.Composite([email_security_BlockedSender, Type.Object({ id: email_security_BlockedSenderId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }) }, { additionalProperties: false }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deletes: Type.Array(email_security_DeletedBlockedSender), patches: email_security_BlockedSenderList, posts: email_security_BlockedSenderList, puts: email_security_BlockedSenderList }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -36007,7 +36007,7 @@ export const post_Email_security_batch_domains = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/domains/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_DomainId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateDomain, Type.Object({ id: email_security_DomainId }, { additionalProperties: false })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateDomain, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_ReplaceDomain, Type.Object({ id: email_security_DomainId }, { additionalProperties: false })]), { maxItems: 1000 }) }, { additionalProperties: false }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_DomainId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Composite([email_security_UpdateDomain, Type.Object({ id: email_security_DomainId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }), posts: Type.Array(email_security_CreateDomain, { maxItems: 1000 }), puts: Type.Array(Type.Composite([email_security_ReplaceDomain, Type.Object({ id: email_security_DomainId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }) }, { additionalProperties: false }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Object({ deletes: Type.Array(email_security_DeletedDomain), patches: email_security_DomainList, posts: email_security_DomainList, puts: email_security_DomainList }, { additionalProperties: false }) }, { additionalProperties: false }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -36197,7 +36197,7 @@ export const post_Email_security_batch_trusted_domains = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/trusted_domains/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_TrustedDomainId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateTrustedDomain, Type.Object({ id: email_security_TrustedDomainId }, { additionalProperties: false })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateTrustedDomain, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_TrustedDomain, Type.Object({ id: email_security_TrustedDomainId }, { additionalProperties: false })]), { maxItems: 1000 }) }, { additionalProperties: false }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_TrustedDomainId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Composite([email_security_UpdateTrustedDomain, Type.Object({ id: email_security_TrustedDomainId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }), posts: Type.Array(email_security_CreateTrustedDomain, { maxItems: 1000 }), puts: Type.Array(Type.Composite([email_security_TrustedDomain, Type.Object({ id: email_security_TrustedDomainId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }) }, { additionalProperties: false }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deletes: Type.Array(email_security_DeletedTrustedDomain), patches: email_security_TrustedDomainList, posts: email_security_TrustedDomainList, puts: email_security_TrustedDomainList }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -36257,8 +36257,8 @@ export const post_Email_security_batch_url_ignore_patterns = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/url_ignore_patterns/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_UrlIgnorePatternId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateUrlIgnorePattern, Type.Object({ id: email_security_UrlIgnorePatternId }, { additionalProperties: false })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateUrlIgnorePattern, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_CreateUrlIgnorePattern, Type.Object({ id: email_security_UrlIgnorePatternId }, { additionalProperties: false })]), { maxItems: 1000 }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Object({ deletes: Type.Array(email_security_DeletedUrlIgnorePattern), patches: Type.Array(email_security_UrlIgnorePattern), posts: Type.Array(email_security_UrlIgnorePattern), puts: Type.Array(email_security_UrlIgnorePattern) }, { additionalProperties: false }) }, { additionalProperties: false })]), "4XX": email_security_api_response_common_failure },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }, { additionalProperties: false }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_UrlIgnorePatternId }, { additionalProperties: false }), { maxItems: 1000 }), patches: Type.Array(Type.Composite([email_security_UpdateUrlIgnorePattern, Type.Object({ id: email_security_UrlIgnorePatternId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }), posts: Type.Array(email_security_CreateUrlIgnorePattern, { maxItems: 1000 }), puts: Type.Array(Type.Composite([email_security_CreateUrlIgnorePattern, Type.Object({ id: email_security_UrlIgnorePatternId }, { additionalProperties: false })], { additionalProperties: false }), { maxItems: 1000 }) }, { additionalProperties: false }) },
+  responses: { 200: Type.Composite([email_security_api_response_common, Type.Object({ result: Type.Object({ deletes: Type.Array(email_security_DeletedUrlIgnorePattern), patches: Type.Array(email_security_UrlIgnorePattern), posts: Type.Array(email_security_UrlIgnorePattern), puts: Type.Array(email_security_UrlIgnorePattern) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": email_security_api_response_common_failure },
 };
 
 export type delete_Email_security_delete_url_ignore_pattern = typeof delete_Email_security_delete_url_ignore_pattern;
@@ -36558,7 +36558,7 @@ export const get_R2__get__event__notification__configs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket_config }, { additionalProperties: false }))]), 404: r2_v4_response_failure, "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket_config }, { additionalProperties: false }))], { additionalProperties: false }), 404: r2_v4_response_failure, "4XX": r2_v4_response_failure },
 };
 
 export type delete_R2__event__notification__delete__config = typeof delete_R2__event__notification__delete__config;
@@ -36578,7 +36578,7 @@ export const get_R2__get__event__notification__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ queue_id: r2_queue_identifier, bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": Type.Union([Type.Literal("default"), Type.Literal("eu"), Type.Literal("fedramp")]) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_queues_config }, { additionalProperties: false }))]), 404: r2_v4_response_failure, "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_queues_config }, { additionalProperties: false }))], { additionalProperties: false }), 404: r2_v4_response_failure, "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__event__notification__config = typeof put_R2__put__event__notification__config;
@@ -37428,7 +37428,7 @@ export const patch_Patch__hyperdrive = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: hyperdrive_identifier, hyperdrive_id: hyperdrive_identifier }, { additionalProperties: false }), body: hyperdrive_hyperdrive_config_patch },
-  responses: { 200: Type.Intersect([hyperdrive_api_response_common, Type.Partial(Type.Object({ result: hyperdrive_hyperdrive_config_response }, { additionalProperties: false }))]), "4XX": hyperdrive_api_response_common_failure },
+  responses: { 200: Type.Composite([hyperdrive_api_response_common, Type.Partial(Type.Object({ result: hyperdrive_hyperdrive_config_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": hyperdrive_api_response_common_failure },
 };
 
 export type put_Update__hyperdrive = typeof put_Update__hyperdrive;
@@ -37478,7 +37478,7 @@ export const get_Account__resource__group__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ id: iam_resource_group_identifier, name: Type.String() }, { additionalProperties: false }))), path: Type.Object({ account_id: iam_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([iam_api_response_common, Type.Partial(Type.Object({ result: Type.Array(iam_resource_group) }, { additionalProperties: false }))]), "4XX": iam_api_response_common_failure },
+  responses: { 200: Type.Composite([iam_api_response_common, Type.Partial(Type.Object({ result: Type.Array(iam_resource_group) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": iam_api_response_common_failure },
 };
 
 export type post_Account__resource__group__create = typeof post_Account__resource__group__create;
@@ -38028,7 +38028,7 @@ export const get_Asn__intelligence__get__asn__subnets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ asn: intel_asn, account_id: intel_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Partial(Type.Object({ asn: intel_asn, count: intel_count, ip_count_total: Type.Integer(), page: intel_page, per_page: intel_per_page, subnets: Type.Array(Type.String()) }, { additionalProperties: false })), "4XX": Type.Intersect([Type.Partial(Type.Object({ asn: intel_asn, count: intel_count, ip_count_total: Type.Integer(), page: intel_page, per_page: intel_per_page, subnets: Type.Array(Type.String()) }, { additionalProperties: false })), intel_api_response_common_failure]) },
+  responses: { 200: Type.Partial(Type.Object({ asn: intel_asn, count: intel_count, ip_count_total: Type.Integer(), page: intel_page, per_page: intel_per_page, subnets: Type.Array(Type.String()) }, { additionalProperties: false })), "4XX": Type.Composite([Type.Partial(Type.Object({ asn: intel_asn, count: intel_count, ip_count_total: Type.Integer(), page: intel_page, per_page: intel_per_page, subnets: Type.Array(Type.String()) }, { additionalProperties: false })), intel_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type get_Get__security__center__issue__types = typeof get_Get__security__center__issue__types;
@@ -38038,7 +38038,7 @@ export const get_Get__security__center__issue__types = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: security_center_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Array(Type.String()) }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Array(Type.String()) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Passive__dns__by__ip__get__passive__dns__by__ip = typeof get_Passive__dns__by__ip__get__passive__dns__by__ip;
@@ -38709,7 +38709,7 @@ export const delete_Delete__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, account_id: logpush_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": logpush_api_response_common_failure },
+  responses: { 200: Type.Composite([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs__job_id = typeof get_Get__accounts__account_id__logpush__jobs__job_id;
@@ -38819,7 +38819,7 @@ export const delete_Delete__accounts__account_id__logs__control__cmb__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logcontrol_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([logcontrol_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": logcontrol_api_response_common_failure },
+  responses: { 200: Type.Composite([logcontrol_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logs__control__cmb__config = typeof get_Get__accounts__account_id__logs__control__cmb__config;
@@ -40924,7 +40924,7 @@ export const get_Moq__relays__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ created_before: Type.String({ format: "date-time" }), created_after: Type.String({ format: "date-time" }), per_page: Type.Integer({ minimum: 1 }), asc: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: moq_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: Type.Array(moq_relay_list_item), result_info: moq_result_info }, { additionalProperties: false }))]), 500: moq_api_response_error },
+  responses: { 200: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: Type.Array(moq_relay_list_item), result_info: moq_result_info }, { additionalProperties: false }))], { additionalProperties: false }), 500: moq_api_response_error },
 };
 
 export type post_Moq__relays__create = typeof post_Moq__relays__create;
@@ -40934,7 +40934,7 @@ export const post_Moq__relays__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: moq_account_identifier }, { additionalProperties: false }), body: Type.Object({ name: Type.String({ minLength: 1 }) }, { additionalProperties: false }) },
-  responses: { 201: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: moq_relay_create_response }, { additionalProperties: false }))]), 400: moq_api_response_error, 409: moq_api_response_error, 413: moq_api_response_error, 500: moq_api_response_error },
+  responses: { 201: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: moq_relay_create_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: moq_api_response_error, 409: moq_api_response_error, 413: moq_api_response_error, 500: moq_api_response_error },
 };
 
 export type delete_Moq__relays__delete = typeof delete_Moq__relays__delete;
@@ -40944,7 +40944,7 @@ export const delete_Moq__relays__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: moq_account_identifier, relay_id: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
+  responses: { 200: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
 };
 
 export type get_Moq__relays__get = typeof get_Moq__relays__get;
@@ -40954,7 +40954,7 @@ export const get_Moq__relays__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: moq_account_identifier, relay_id: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: moq_relay }, { additionalProperties: false }))]), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
+  responses: { 200: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: moq_relay }, { additionalProperties: false }))], { additionalProperties: false }), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
 };
 
 export type put_Moq__relays__update = typeof put_Moq__relays__update;
@@ -40964,7 +40964,7 @@ export const put_Moq__relays__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: moq_account_identifier, relay_id: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ config: moq_relay_config, name: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: moq_relay }, { additionalProperties: false }))]), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
+  responses: { 200: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: moq_relay }, { additionalProperties: false }))], { additionalProperties: false }), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
 };
 
 export type get_Moq__relays__tokens__list = typeof get_Moq__relays__tokens__list;
@@ -40974,7 +40974,7 @@ export const get_Moq__relays__tokens__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: moq_account_identifier, relay_id: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: moq_tokens_envelope }, { additionalProperties: false }))]), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
+  responses: { 200: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: moq_tokens_envelope }, { additionalProperties: false }))], { additionalProperties: false }), 400: moq_api_response_error, 404: moq_api_response_error, 500: moq_api_response_error },
 };
 
 export type post_Moq__relays__tokens__create = typeof post_Moq__relays__tokens__create;
@@ -40984,7 +40984,7 @@ export const post_Moq__relays__tokens__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: moq_account_identifier, relay_id: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }), body: Type.Object({ expires: Type.Optional(Type.String({ format: "date-time" })), label: Type.Optional(Type.String()), operations: Type.Array(Type.Union([Type.Literal("publish"), Type.Literal("subscribe")]), { minItems: 1 }) }, { additionalProperties: false }) },
-  responses: { 201: Type.Intersect([moq_api_response_common, Type.Partial(Type.Object({ result: moq_tokens_envelope }, { additionalProperties: false }))]), 400: moq_api_response_error, 404: moq_api_response_error, 409: moq_api_response_error, 500: moq_api_response_error },
+  responses: { 201: Type.Composite([moq_api_response_common, Type.Partial(Type.Object({ result: moq_tokens_envelope }, { additionalProperties: false }))], { additionalProperties: false }), 400: moq_api_response_error, 404: moq_api_response_error, 409: moq_api_response_error, 500: moq_api_response_error },
 };
 
 export type delete_Moq__relays__tokens__delete = typeof delete_Moq__relays__tokens__delete;
@@ -41264,7 +41264,7 @@ export const post_Pages__project__create__project = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: pages_identifier }, { additionalProperties: false }), body: Type.Object({ build_config: Type.Optional(Type.Partial(Type.Object({ build_caching: Type.Boolean(), build_command: Type.String(), destination_dir: Type.String(), root_dir: Type.String(), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false }))), deployment_configs: Type.Optional(Type.Partial(Type.Object({ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request }, { additionalProperties: false }))), name: Type.String(), production_branch: Type.String(), source: Type.Optional(Type.Object({ config: Type.Partial(Type.Object({ deployments_enabled: Type.Boolean(), owner: Type.String(), owner_id: Type.String(), path_excludes: Type.Array(Type.String()), path_includes: Type.Array(Type.String()), pr_comments_enabled: Type.Boolean(), preview_branch_excludes: Type.Array(Type.String()), preview_branch_includes: Type.Array(Type.String()), preview_deployment_setting: Type.Union([Type.Literal("all"), Type.Literal("none"), Type.Literal("custom")]), production_branch: Type.String(), production_deployments_enabled: Type.Boolean(), repo_id: Type.String(), repo_name: Type.String() }, { additionalProperties: false })), type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]) }, { additionalProperties: false })) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type delete_Pages__project__delete__project = typeof delete_Pages__project__delete__project;
@@ -41274,7 +41274,7 @@ export const delete_Pages__project__delete__project = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__project__get__project = typeof get_Pages__project__get__project;
@@ -41284,7 +41284,7 @@ export const get_Pages__project__get__project = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type patch_Pages__project__update__project = typeof patch_Pages__project__update__project;
@@ -41294,7 +41294,7 @@ export const patch_Pages__project__update__project = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ build_config: Type.Partial(Type.Object({ build_caching: Type.Boolean(), build_command: Type.String(), destination_dir: Type.String(), root_dir: Type.String(), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false })), deployment_configs: Type.Partial(Type.Object({ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request }, { additionalProperties: false })), name: Type.String(), production_branch: Type.String(), source: Type.Object({ config: Type.Partial(Type.Object({ deployments_enabled: Type.Boolean(), owner: Type.String(), owner_id: Type.String(), path_excludes: Type.Array(Type.String()), path_includes: Type.Array(Type.String()), pr_comments_enabled: Type.Boolean(), preview_branch_excludes: Type.Array(Type.String()), preview_branch_includes: Type.Array(Type.String()), preview_deployment_setting: Type.Union([Type.Literal("all"), Type.Literal("none"), Type.Literal("custom")]), production_branch: Type.String(), production_deployments_enabled: Type.Boolean(), repo_id: Type.String(), repo_name: Type.String() }, { additionalProperties: false })), type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]) }, { additionalProperties: false }) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__deployment__get__deployments = typeof get_Pages__deployment__get__deployments;
@@ -41314,7 +41314,7 @@ export const post_Pages__deployment__create__deployment = {
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ _headers: Type.Unsafe<Blob>({ type: "string", format: "binary" }), _redirects: Type.Unsafe<Blob>({ type: "string", format: "binary" }), "_routes.json": Type.Unsafe<Blob>({ type: "string", format: "binary" }), "_worker.bundle": Type.Unsafe<Blob>({ type: "string", format: "binary" }), "_worker.js": Type.Unsafe<Blob>({ type: "string", format: "binary" }), branch: Type.String(), commit_dirty: Type.Union([Type.Literal("true"), Type.Literal("false")]), commit_hash: Type.String(), commit_message: Type.String(), "functions-filepath-routing-config.json": Type.Unsafe<Blob>({ type: "string", format: "binary" }), manifest: Type.String(), pages_build_output_dir: Type.String(), wrangler_config_hash: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type delete_Pages__deployment__delete__deployment = typeof delete_Pages__deployment__delete__deployment;
@@ -41324,7 +41324,7 @@ export const delete_Pages__deployment__delete__deployment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__deployment__get__deployment__info = typeof get_Pages__deployment__get__deployment__info;
@@ -41334,7 +41334,7 @@ export const get_Pages__deployment__get__deployment__info = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__deployment__get__deployment__logs = typeof get_Pages__deployment__get__deployment__logs;
@@ -41344,7 +41344,7 @@ export const get_Pages__deployment__get__deployment__logs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_deployment_log }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_deployment_log }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type post_Pages__deployment__retry__deployment = typeof post_Pages__deployment__retry__deployment;
@@ -41354,7 +41354,7 @@ export const post_Pages__deployment__retry__deployment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type post_Pages__deployment__rollback__deployment = typeof post_Pages__deployment__rollback__deployment;
@@ -41364,7 +41364,7 @@ export const post_Pages__deployment__rollback__deployment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_deployment }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type post_Pages__deployment__create__tail = typeof post_Pages__deployment__create__tail;
@@ -41374,7 +41374,7 @@ export const post_Pages__deployment__create__tail = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ filters: Type.Array(Type.Record(Type.String(), Type.Unknown())) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_tail }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_tail }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type delete_Pages__deployment__delete__tail = typeof delete_Pages__deployment__delete__tail;
@@ -41384,7 +41384,7 @@ export const delete_Pages__deployment__delete__tail = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ tail_id: pages_identifier, deployment_id: pages_identifier, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__domains__get__domains = typeof get_Pages__domains__get__domains;
@@ -41404,7 +41404,7 @@ export const post_Pages__domains__add__domain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }), body: Type.Object({ name: pages_domain_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_domain }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_domain }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type delete_Pages__domains__delete__domain = typeof delete_Pages__domains__delete__domain;
@@ -41414,7 +41414,7 @@ export const delete_Pages__domains__delete__domain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ domain_name: pages_domain_name, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__domains__get__domain = typeof get_Pages__domains__get__domain;
@@ -41424,7 +41424,7 @@ export const get_Pages__domains__get__domain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ domain_name: pages_domain_name, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_domain }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_domain }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type patch_Pages__domains__patch__domain = typeof patch_Pages__domains__patch__domain;
@@ -41434,7 +41434,7 @@ export const patch_Pages__domains__patch__domain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ domain_name: pages_domain_name, project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_domain }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_domain }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type post_Pages__purge__build__cache = typeof post_Pages__purge__build__cache;
@@ -41444,7 +41444,7 @@ export const post_Pages__purge__build__cache = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type delete_Pages__project__disconnect__project__source = typeof delete_Pages__project__disconnect__project__source;
@@ -41454,7 +41454,7 @@ export const delete_Pages__project__disconnect__project__source = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type post_Pages__project__connect__project__source = typeof post_Pages__project__connect__project__source;
@@ -41464,7 +41464,7 @@ export const post_Pages__project__connect__project__source = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }), body: pages_source },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_project }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type get_Pages__project__get__upload__token = typeof get_Pages__project__get__upload__token;
@@ -41474,7 +41474,7 @@ export const get_Pages__project__get__upload__token = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_pages_upload_token_response }, { additionalProperties: false })]), "4XX": pages_api_response_common_failure },
+  responses: { 200: Type.Composite([pages_api_response_common, Type.Object({ result: pages_pages_upload_token_response }, { additionalProperties: false })], { additionalProperties: false }), "4XX": pages_api_response_common_failure },
 };
 
 export type delete_Pay__per__crawl_crawlerDeleteStripeConfig = typeof delete_Pay__per__crawl_crawlerDeleteStripeConfig;
@@ -42034,7 +42034,7 @@ export const get_List__catalogs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_list }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_list }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_Get__catalog__details = typeof get_Get__catalog__details;
@@ -42044,7 +42044,7 @@ export const get_Get__catalog__details = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type post_Store__credentials = typeof post_Store__credentials;
@@ -42054,7 +42054,7 @@ export const post_Store__credentials = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name }, { additionalProperties: false }), body: r2_data_catalog_catalog_credential_request },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type post_Disable__catalog = typeof post_Disable__catalog;
@@ -42074,7 +42074,7 @@ export const post_Enable__catalog = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_activation_response }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 409: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_activation_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 409: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_Get__maintenance__config = typeof get_Get__maintenance__config;
@@ -42084,7 +42084,7 @@ export const get_Get__maintenance__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_maintenance_config_response }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_maintenance_config_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type post_Update__maintenance__config = typeof post_Update__maintenance__config;
@@ -42094,7 +42094,7 @@ export const post_Update__maintenance__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name }, { additionalProperties: false }), body: r2_data_catalog_catalog_maintenance_update_request },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_maintenance_config }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_catalog_maintenance_config }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_List__namespaces = typeof get_List__namespaces;
@@ -42104,7 +42104,7 @@ export const get_List__namespaces = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page_token: Type.String(), page_size: Type.Integer({ minimum: 1, maximum: 1000 }), parent: Type.String(), return_uuids: Type.Boolean(), return_details: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_namespace_list_response }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_namespace_list_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_List__tables = typeof get_List__tables;
@@ -42114,7 +42114,7 @@ export const get_List__tables = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page_token: Type.String(), page_size: Type.Integer({ minimum: 1, maximum: 1000 }), return_uuids: Type.Boolean(), return_details: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name, namespace: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_table_list_response }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_table_list_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_Get__table = typeof get_Get__table;
@@ -42124,7 +42124,7 @@ export const get_Get__table = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name, namespace: Type.String(), table_name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_get_table_response }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_get_table_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_Get__table__maintenance__config = typeof get_Get__table__maintenance__config;
@@ -42134,7 +42134,7 @@ export const get_Get__table__maintenance__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name, namespace: Type.String(), table_name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_table_maintenance_config_response }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_table_maintenance_config_response }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type post_Update__table__maintenance__config = typeof post_Update__table__maintenance__config;
@@ -42144,7 +42144,7 @@ export const post_Update__table__maintenance__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_data_catalog_account_id, bucket_name: r2_data_catalog_bucket_name, namespace: Type.String(), table_name: Type.String() }, { additionalProperties: false }), body: r2_data_catalog_table_maintenance_update_request },
-  responses: { 200: Type.Intersect([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_table_maintenance_config }, { additionalProperties: false }))]), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
+  responses: { 200: Type.Composite([r2_data_catalog_api_response_single, Type.Partial(Type.Object({ result: r2_data_catalog_table_maintenance_config }, { additionalProperties: false }))], { additionalProperties: false }), 400: r2_data_catalog_api_response_common_failure, 401: r2_data_catalog_api_response_common_failure, 403: r2_data_catalog_api_response_common_failure, 404: r2_data_catalog_api_response_common_failure, 500: r2_data_catalog_api_response_common_failure },
 };
 
 export type get_R2__list__buckets = typeof get_R2__list__buckets;
@@ -42164,7 +42164,7 @@ export const post_R2__create__bucket = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))), body: Type.Object({ locationHint: Type.Optional(r2_bucket_location), name: r2_bucket_name, storageClass: Type.Optional(r2_storage_class) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type delete_R2__delete__bucket = typeof delete_R2__delete__bucket;
@@ -42184,7 +42184,7 @@ export const get_R2__get__bucket = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type patch_R2__patch__bucket = typeof patch_R2__patch__bucket;
@@ -42194,7 +42194,7 @@ export const patch_R2__patch__bucket = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Object({ "cf-r2-jurisdiction": Type.Optional(r2_jurisdiction), "cf-r2-storage-class": r2_storage_class }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type delete_R2__delete__bucket__cors__policy = typeof delete_R2__delete__bucket__cors__policy;
@@ -42214,7 +42214,7 @@ export const get_R2__get__bucket__cors__policy = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ rules: Type.Array(r2_cors_rule) }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ rules: Type.Array(r2_cors_rule) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__bucket__cors__policy = typeof put_R2__put__bucket__cors__policy;
@@ -42234,7 +42234,7 @@ export const get_R2__list__custom__domains = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_list_custom_domains_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_list_custom_domains_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type post_R2__add__custom__domain = typeof post_R2__add__custom__domain;
@@ -42244,7 +42244,7 @@ export const post_R2__add__custom__domain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))), body: r2_add_custom_domain_request },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_add_custom_domain_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_add_custom_domain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type delete_R2__delete__custom__domain = typeof delete_R2__delete__custom__domain;
@@ -42254,7 +42254,7 @@ export const delete_R2__delete__custom__domain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier, domain: r2_domain_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_remove_custom_domain_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_remove_custom_domain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__custom__domain__settings = typeof get_R2__get__custom__domain__settings;
@@ -42264,7 +42264,7 @@ export const get_R2__get__custom__domain__settings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_get_custom_domain_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_get_custom_domain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__edit__custom__domain__settings = typeof put_R2__edit__custom__domain__settings;
@@ -42274,7 +42274,7 @@ export const put_R2__edit__custom__domain__settings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))), body: r2_edit_custom_domain_request },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_edit_custom_domain_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_edit_custom_domain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__bucket__public__policy = typeof get_R2__get__bucket__public__policy;
@@ -42284,7 +42284,7 @@ export const get_R2__get__bucket__public__policy = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_managed_domain_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_managed_domain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__bucket__public__policy = typeof put_R2__put__bucket__public__policy;
@@ -42294,7 +42294,7 @@ export const put_R2__put__bucket__public__policy = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))), body: r2_edit_managed_domain_request },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_managed_domain_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_managed_domain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__bucket__lifecycle__configuration = typeof get_R2__get__bucket__lifecycle__configuration;
@@ -42304,7 +42304,7 @@ export const get_R2__get__bucket__lifecycle__configuration = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_lifecycle_config }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_lifecycle_config }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__bucket__lifecycle__configuration = typeof put_R2__put__bucket__lifecycle__configuration;
@@ -42324,7 +42324,7 @@ export const get_R2__get__bucket__local__uploads__configuration = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_local_uploads_configuration }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_local_uploads_configuration }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__bucket__local__uploads__configuration = typeof put_R2__put__bucket__local__uploads__configuration;
@@ -42344,7 +42344,7 @@ export const get_R2__get__bucket__lock__configuration = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket_lock_rule_config }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket_lock_rule_config }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__bucket__lock__configuration = typeof put_R2__put__bucket__lock__configuration;
@@ -42384,7 +42384,7 @@ export const delete_R2__delete__object = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, object_key: Type.String() }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_r2_delete_object_result }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_r2_delete_object_result }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__object = typeof get_R2__get__object;
@@ -42405,7 +42405,7 @@ export const put_R2__put__object = {
   requestFormat: Type.Literal("binary"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, object_key: Type.String() }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction, "Content-Type": Type.String(), "Content-Length": Type.Integer(), "cf-r2-storage-class": r2_storage_class }, { additionalProperties: false }))), body: Type.Unsafe<Blob>({ type: "string", format: "binary" }) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_r2_put_object_result }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_r2_put_object_result }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type delete_R2__delete__bucket__sippy__config = typeof delete_R2__delete__bucket__sippy__config;
@@ -42415,7 +42415,7 @@ export const delete_R2__delete__bucket__sippy__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ bucket_name: r2_bucket_name, account_id: r2_account_identifier }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ enabled: Type.Literal(false) }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ enabled: Type.Literal(false) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__bucket__sippy__config = typeof get_R2__get__bucket__sippy__config;
@@ -42425,7 +42425,7 @@ export const get_R2__get__bucket__sippy__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_sippy }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_sippy }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__put__bucket__sippy__config = typeof put_R2__put__bucket__sippy__config;
@@ -42435,7 +42435,7 @@ export const put_R2__put__bucket__sippy__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }, { additionalProperties: false }))), body: __typedOpenapiOneOf([r2_enable_sippy_aws, r2_enable_sippy_gcs, r2_enable_sippy_s3]) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_sippy }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_sippy }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__account__level__metrics = typeof get_R2__get__account__level__metrics;
@@ -42445,7 +42445,7 @@ export const get_R2__get__account__level__metrics = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_account_level_metrics }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_account_level_metrics }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type post_R2__create__temp__access__credentials = typeof post_R2__create__temp__access__credentials;
@@ -42455,7 +42455,7 @@ export const post_R2__create__temp__access__credentials = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier }, { additionalProperties: false }), body: r2_temp_access_creds_request },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_temp_access_creds_response }, { additionalProperties: false }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Composite([r2_v4_response, Type.Partial(Type.Object({ result: r2_temp_access_creds_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": r2_v4_response_failure },
 };
 
 export type get_Get_apps = typeof get_Get_apps;
@@ -42575,7 +42575,7 @@ export const get_Get_all_meetings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page_no: Type.Number({ minimum: 0 }), per_page: Type.Number({ minimum: 0 }), start_time: Type.String({ format: "date-time" }), end_time: Type.String({ format: "date-time" }), search: Type.String(), status: Type.Union([Type.Literal("ACTIVE"), Type.Literal("INACTIVE")]) }, { additionalProperties: false }))), path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(realtimekit_Meeting) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(realtimekit_Meeting) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_Create_meeting = typeof post_Create_meeting;
@@ -42725,7 +42725,7 @@ export const get_Get_meeting_participants = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page_no: Type.Number({ minimum: 0 }), per_page: Type.Number({ minimum: 0 }) }, { additionalProperties: false }))), path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(realtimekit_Participant) }, { additionalProperties: false }))]), 500: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(realtimekit_Participant) }, { additionalProperties: false }))], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type post_Add_participant = typeof post_Add_participant;
@@ -42735,7 +42735,7 @@ export const post_Add_participant = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: Type.Object({ custom_participant_id: Type.String(), name: Type.Optional(Type.Union([Type.String(), Type.Null()])), picture: Type.Optional(Type.Union([Type.String({ format: "uri" }), Type.Null()])), preset_name: Type.String() }, { additionalProperties: false }) },
-  responses: { 201: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Intersect([realtimekit_Participant, Type.Object({ token: Type.String() }, { additionalProperties: false })]) }, { additionalProperties: false }))]), 500: realtimekit_GenericErrorResponse },
+  responses: { 201: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Composite([realtimekit_Participant, Type.Object({ token: Type.String() }, { additionalProperties: false })], { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type delete_Delete_meeting_participant = typeof delete_Delete_meeting_participant;
@@ -42745,7 +42745,7 @@ export const delete_Delete_meeting_participant = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }), participant_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Object({ created_at: Type.String({ format: "date-time" }), custom_participant_id: Type.String(), preset_id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }) }, { additionalProperties: false }))]), 500: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Object({ created_at: Type.String({ format: "date-time" }), custom_participant_id: Type.String(), preset_id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type get_Get_meeting_participant = typeof get_Get_meeting_participant;
@@ -42755,7 +42755,7 @@ export const get_Get_meeting_participant = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }), participant_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: realtimekit_Participant }, { additionalProperties: false })]), 500: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: realtimekit_Participant }, { additionalProperties: false })], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type patch_Edit_participant = typeof patch_Edit_participant;
@@ -42765,7 +42765,7 @@ export const patch_Edit_participant = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }), participant_id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ name: Type.Union([Type.String(), Type.Null()]), picture: Type.Union([Type.String({ format: "uri" }), Type.Null()]), preset_name: Type.Union([Type.String(), Type.Null()]) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Intersect([realtimekit_Participant, Type.Object({ token: Type.String() }, { additionalProperties: false })]) }, { additionalProperties: false }))]), 500: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Composite([realtimekit_Participant, Type.Object({ token: Type.String() }, { additionalProperties: false })], { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type put_Replace_participant = typeof put_Replace_participant;
@@ -42775,7 +42775,7 @@ export const put_Replace_participant = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }), participant_id: Type.String() }, { additionalProperties: false }), body: Type.Object({ custom_participant_id: Type.String(), name: Type.Optional(Type.Union([Type.String(), Type.Null()])), picture: Type.Optional(Type.Union([Type.String({ format: "uri" }), Type.Null()])), preset_name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Intersect([realtimekit_Participant, Type.Object({ token: Type.String() }, { additionalProperties: false })]) }, { additionalProperties: false }))]), 500: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Composite([realtimekit_Participant, Type.Object({ token: Type.String() }, { additionalProperties: false })], { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type post_Regenerate_token = typeof post_Regenerate_token;
@@ -42785,7 +42785,7 @@ export const post_Regenerate_token = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String({ format: "uuid" }), participant_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Object({ token: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false })]), 500: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Object({ token: Type.String() }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }), 500: realtimekit_GenericErrorResponse },
 };
 
 export type get_Get__presets = typeof get_Get__presets;
@@ -42795,7 +42795,7 @@ export const get_Get__presets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ per_page: Type.Number({ minimum: 0 }), page_no: Type.Number({ minimum: 0 }), search: Type.String() }, { additionalProperties: false }))), path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(realtimekit_PresetListItem) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(realtimekit_PresetListItem) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_Post__presets = typeof post_Post__presets;
@@ -42805,7 +42805,7 @@ export const post_Post__presets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas }, { additionalProperties: false }), body: realtimekit_Preset },
-  responses: { 201: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Intersect([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset]) }, { additionalProperties: false })]) },
+  responses: { 201: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Composite([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset], { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type delete_Delete__presets__preset_id = typeof delete_Delete__presets__preset_id;
@@ -42815,7 +42815,7 @@ export const delete_Delete__presets__preset_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, preset_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Intersect([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset]) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Composite([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset], { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type get_Get__presets__preset_id = typeof get_Get__presets__preset_id;
@@ -42825,7 +42825,7 @@ export const get_Get__presets__preset_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, preset_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Intersect([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset]) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Composite([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset], { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type patch_Patch__presets__preset_id = typeof patch_Patch__presets__preset_id;
@@ -42835,7 +42835,7 @@ export const patch_Patch__presets__preset_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, preset_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: realtimekit_UpdatePreset },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Intersect([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset]) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Composite([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset], { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type put_Put__presets__preset_id = typeof put_Put__presets__preset_id;
@@ -42845,7 +42845,7 @@ export const put_Put__presets__preset_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, preset_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: realtimekit_Preset },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Intersect([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset]) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: Type.Composite([Type.Object({ created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) }, { additionalProperties: false }), realtimekit_Preset], { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type get_Get_all_recordings = typeof get_Get_all_recordings;
@@ -42855,7 +42855,7 @@ export const get_Get_all_recordings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ meeting_id: Type.String({ format: "uuid" }), page_no: Type.Number({ minimum: 0 }), per_page: Type.Number({ minimum: 0 }), expired: Type.Boolean(), search: Type.String(), sort_by: Type.Literal("invokedTime"), sort_order: Type.Union([Type.Literal("ASC"), Type.Literal("DESC")]), start_time: Type.String({ format: "date-time" }), end_time: Type.String({ format: "date-time" }), status: Type.Array(Type.Union([Type.Literal("INVOKED"), Type.Literal("RECORDING"), Type.Literal("UPLOADING"), Type.Literal("UPLOADED"), Type.Literal("ERRORED"), Type.Literal("PAUSED")])) }, { additionalProperties: false }))), path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(Type.Intersect([realtimekit_Recording, Type.Partial(Type.Object({ storage_config: realtimekit_StorageConfig }, { additionalProperties: false })), Type.Partial(Type.Object({ meeting: realtimekit_Meeting }, { additionalProperties: false }))])) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_PagingResponse, Type.Partial(Type.Object({ data: Type.Array(Type.Composite([realtimekit_Recording, Type.Partial(Type.Object({ storage_config: realtimekit_StorageConfig }, { additionalProperties: false })), Type.Partial(Type.Object({ meeting: realtimekit_Meeting }, { additionalProperties: false }))], { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_Start_recording = typeof post_Start_recording;
@@ -42865,7 +42865,7 @@ export const post_Start_recording = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas }, { additionalProperties: false }), body: Type.Object({ allow_multiple_recordings: Type.Optional(Type.Boolean()), audio_config: Type.Optional(realtimekit_AudioConfig), file_name_prefix: Type.Optional(Type.String()), interactive_config: Type.Optional(realtimekit_InteractiveConfig), max_seconds: Type.Optional(Type.Integer({ minimum: 60, maximum: 86400 })), meeting_id: Type.String({ format: "uuid" }), realtimekit_bucket_config: Type.Optional(realtimekit_realtimekitBucketConfig), rtmp_out_config: Type.Optional(realtimekit_LivestreamingConfig), storage_config: Type.Optional(realtimekit_StorageConfig), url: Type.Optional(Type.String({ format: "uri" })), video_config: Type.Optional(realtimekit_VideoConfig) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Intersect([realtimekit_Recording, Type.Partial(Type.Object({ start_reason: realtimekit_startReason, stop_reason: realtimekit_stopReason, storage_config: realtimekit_StorageConfig }, { additionalProperties: false }))]) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Composite([realtimekit_Recording, Type.Partial(Type.Object({ start_reason: realtimekit_startReason, stop_reason: realtimekit_stopReason, storage_config: realtimekit_StorageConfig }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_Get_active_recording = typeof get_Get_active_recording;
@@ -42875,7 +42875,7 @@ export const get_Get_active_recording = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, meeting_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Object({ data: realtimekit_Recording }, { additionalProperties: false })]), 404: realtimekit_GenericErrorResponse },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Object({ data: realtimekit_Recording }, { additionalProperties: false })], { additionalProperties: false }), 404: realtimekit_GenericErrorResponse },
 };
 
 export type post_StartTrackRecordingForAMeeting = typeof post_StartTrackRecordingForAMeeting;
@@ -42885,7 +42885,7 @@ export const post_StartTrackRecordingForAMeeting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas }, { additionalProperties: false }), body: Type.Object({ layers: Type.Optional(Type.Record(Type.String(), realtimekit_TrackConfigLayer)), meeting_id: Type.String({ format: "uuid" }), user_ids: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 256 }), { minItems: 1, maxItems: 100 })) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Object({ recording: realtimekit_Recording }, { additionalProperties: false }) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Object({ recording: realtimekit_Recording }, { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_Get_one_recording = typeof get_Get_one_recording;
@@ -42895,7 +42895,7 @@ export const get_Get_one_recording = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: realtimekit_app_id_schemas, recording_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Intersect([realtimekit_Recording, Type.Partial(Type.Object({ start_reason: realtimekit_startReason, stop_reason: realtimekit_stopReason, storage_config: realtimekit_StorageConfig }, { additionalProperties: false }))]) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Composite([realtimekit_Recording, Type.Partial(Type.Object({ start_reason: realtimekit_startReason, stop_reason: realtimekit_stopReason, storage_config: realtimekit_StorageConfig }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_Pause_resume_stop_recording = typeof put_Pause_resume_stop_recording;
@@ -42905,7 +42905,7 @@ export const put_Pause_resume_stop_recording = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: realtimekit_account_identifier, app_id: Type.String({ minLength: 32, maxLength: 32, pattern: "^[a-f0-9]{32}$" }), recording_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: Type.Object({ action: Type.Union([Type.Literal("stop"), Type.Literal("pause"), Type.Literal("resume")]) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Intersect([realtimekit_Recording, Type.Partial(Type.Object({ start_reason: realtimekit_startReason, stop_reason: realtimekit_stopReason, storage_config: realtimekit_StorageConfig }, { additionalProperties: false }))]) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([realtimekit_GenericSuccessResponse, Type.Partial(Type.Object({ data: Type.Composite([realtimekit_Recording, Type.Partial(Type.Object({ start_reason: realtimekit_startReason, stop_reason: realtimekit_stopReason, storage_config: realtimekit_StorageConfig }, { additionalProperties: false }))], { additionalProperties: false }) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetSessions = typeof get_GetSessions;
@@ -43453,7 +43453,7 @@ export const get_ListAccountRulesets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ cursor: rulesets_Cursor, per_page: rulesets_PerPage }, { additionalProperties: false }))), path: Type.Object({ account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })])), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })], { additionalProperties: false })), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_CreateAccountRuleset = typeof post_CreateAccountRuleset;
@@ -43462,8 +43462,8 @@ export const post_CreateAccountRuleset = {
   path: Type.Literal("/accounts/{account_id}/rulesets"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: Type.Optional(rulesets_RequestRules) }, { additionalProperties: false })]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  parameters: { path: Type.Object({ account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: Type.Optional(rulesets_RequestRules) }, { additionalProperties: false })], { additionalProperties: false }) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetAccountEntrypointRuleset = typeof get_GetAccountEntrypointRuleset;
@@ -43473,7 +43473,7 @@ export const get_GetAccountEntrypointRuleset = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateAccountEntrypointRuleset = typeof put_UpdateAccountEntrypointRuleset;
@@ -43482,8 +43482,8 @@ export const put_UpdateAccountEntrypointRuleset = {
   path: Type.Literal("/accounts/{account_id}/rulesets/phases/{ruleset_phase}/entrypoint"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Intersect([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ rules: rulesets_RequestRules }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Composite([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ rules: rulesets_RequestRules }, { additionalProperties: false }))], { additionalProperties: false }) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListAccountEntrypointRulesetVersions = typeof get_ListAccountEntrypointRulesetVersions;
@@ -43493,7 +43493,7 @@ export const get_ListAccountEntrypointRulesetVersions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })])), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })], { additionalProperties: false })), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetAccountEntrypointRulesetVersion = typeof get_GetAccountEntrypointRulesetVersion;
@@ -43503,7 +43503,7 @@ export const get_GetAccountEntrypointRulesetVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_version: rulesets_RulesetVersion, ruleset_phase: rulesets_RulesetPhase, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteAccountRuleset = typeof delete_DeleteAccountRuleset;
@@ -43513,7 +43513,7 @@ export const delete_DeleteAccountRuleset = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 204: Type.Unknown(), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetAccountRuleset = typeof get_GetAccountRuleset;
@@ -43523,7 +43523,7 @@ export const get_GetAccountRuleset = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateAccountRuleset = typeof put_UpdateAccountRuleset;
@@ -43532,8 +43532,8 @@ export const put_UpdateAccountRuleset = {
   path: Type.Literal("/accounts/{account_id}/rulesets/{ruleset_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Intersect([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_RequestRules }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Composite([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_RequestRules }, { additionalProperties: false }))], { additionalProperties: false }) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_CreateAccountRulesetRule = typeof post_CreateAccountRulesetRule;
@@ -43543,7 +43543,7 @@ export const post_CreateAccountRulesetRule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Intersect([rulesets_RequestRule, Type.Partial(Type.Object({ position: __typedOpenapiOneOf([Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ before: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ after: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ index: Type.Integer({ minimum: 1 }) }, { additionalProperties: false }))])]) }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteAccountRulesetRule = typeof delete_DeleteAccountRulesetRule;
@@ -43553,7 +43553,7 @@ export const delete_DeleteAccountRulesetRule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ rule_id: rulesets_RuleId, ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type patch_UpdateAccountRulesetRule = typeof patch_UpdateAccountRulesetRule;
@@ -43563,7 +43563,7 @@ export const patch_UpdateAccountRulesetRule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ rule_id: rulesets_RuleId, ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }), body: Type.Intersect([rulesets_RequestRule, Type.Partial(Type.Object({ position: __typedOpenapiOneOf([Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ before: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ after: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ index: Type.Integer({ minimum: 1 }) }, { additionalProperties: false }))])]) }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListAccountRulesetVersions = typeof get_ListAccountRulesetVersions;
@@ -43573,7 +43573,7 @@ export const get_ListAccountRulesetVersions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })])), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })], { additionalProperties: false })), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteAccountRulesetVersion = typeof delete_DeleteAccountRulesetVersion;
@@ -43583,7 +43583,7 @@ export const delete_DeleteAccountRulesetVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_version: rulesets_RulesetVersion, ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 204: Type.Unknown(), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetAccountRulesetVersion = typeof get_GetAccountRulesetVersion;
@@ -43593,7 +43593,7 @@ export const get_GetAccountRulesetVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_version: rulesets_RulesetVersion, ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListAccountRulesetVersionRulesByTag = typeof get_ListAccountRulesetVersionRulesByTag;
@@ -43603,7 +43603,7 @@ export const get_ListAccountRulesetVersionRulesByTag = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ rule_tag: rulesets_RuleCategory, ruleset_version: rulesets_RulesetVersion, ruleset_id: rulesets_RulesetId, account_id: rulesets_AccountId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_Web__analytics__create__site = typeof post_Web__analytics__create__site;
@@ -44163,7 +44163,7 @@ export const get_Get__security__center__insights = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }, { additionalProperties: false }))), path: Type.Object({ account_id: security_center_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ count: security_center_count, issues: Type.Array(security_center_issue), page: security_center_page, per_page: security_center_perPage }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ count: security_center_count, issues: Type.Array(security_center_issue), page: security_center_page, per_page: security_center_perPage }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__security__center__account__audit__log = typeof get_Get__security__center__account__audit__log;
@@ -44193,7 +44193,7 @@ export const get_Get__security__center__account__scans = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: security_center_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_scansListResponse }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_scansListResponse }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type post_Start__security__center__account__scan = typeof post_Start__security__center__account__scan;
@@ -44203,7 +44203,7 @@ export const post_Start__security__center__account__scan = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: security_center_identifier }, { additionalProperties: false }), body: security_center_newScanRequest },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_newScanResponse }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_newScanResponse }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__security__center__insight__counts__by__severity = typeof get_Get__security__center__insight__counts__by__severity;
@@ -44253,7 +44253,7 @@ export const get_Get__security__center__insight__context = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: security_center_identifier, issue_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type put_Archive__security__center__insight = typeof put_Archive__security__center__insight;
@@ -44613,7 +44613,7 @@ export const post_Workers__kv__namespace__create__a__namespace = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_kv_identifier }, { additionalProperties: false }), body: workers_kv_create_rename_namespace_body },
-  responses: { 200: Type.Intersect([workers_kv_api_response_common, Type.Partial(Type.Object({ result: workers_kv_namespace }, { additionalProperties: false }))]), "4XX": workers_kv_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_kv_api_response_common, Type.Partial(Type.Object({ result: workers_kv_namespace }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_kv_api_response_common_failure },
 };
 
 export type delete_Workers__kv__namespace__remove__a__namespace = typeof delete_Workers__kv__namespace__remove__a__namespace;
@@ -44633,7 +44633,7 @@ export const get_Workers__kv__namespace__get__a__namespace = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ namespace_id: workers_kv_namespace_identifier, account_id: workers_kv_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_kv_api_response_common, Type.Partial(Type.Object({ result: workers_kv_namespace }, { additionalProperties: false }))]), "4XX": workers_kv_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_kv_api_response_common, Type.Partial(Type.Object({ result: workers_kv_namespace }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_kv_api_response_common_failure },
 };
 
 export type put_Workers__kv__namespace__rename__a__namespace = typeof put_Workers__kv__namespace__rename__a__namespace;
@@ -44643,7 +44643,7 @@ export const put_Workers__kv__namespace__rename__a__namespace = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ namespace_id: workers_kv_namespace_identifier, account_id: workers_kv_identifier }, { additionalProperties: false }), body: workers_kv_create_rename_namespace_body },
-  responses: { 200: Type.Intersect([workers_kv_api_response_common, Type.Object({ result: workers_kv_namespace }, { additionalProperties: false })]), "4XX": workers_kv_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_kv_api_response_common, Type.Object({ result: workers_kv_namespace }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_kv_api_response_common_failure },
 };
 
 export type put_Workers__kv__namespace__write__multiple__key__value__pairs = typeof put_Workers__kv__namespace__write__multiple__key__value__pairs;
@@ -44683,7 +44683,7 @@ export const get_Workers__kv__namespace__list__a__namespace___s__keys = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ limit: Type.Number({ minimum: 10, maximum: 1000 }), prefix: Type.String(), cursor: Type.String() }, { additionalProperties: false }))), path: Type.Object({ namespace_id: workers_kv_namespace_identifier, account_id: workers_kv_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_kv_api_response_common, Type.Partial(Type.Object({ result: Type.Array(workers_kv_key), result_info: workers_kv_cursor_result_info }, { additionalProperties: false }))]), "4XX": workers_kv_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_kv_api_response_common, Type.Partial(Type.Object({ result: Type.Array(workers_kv_key), result_info: workers_kv_cursor_result_info }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_kv_api_response_common_failure },
 };
 
 export type get_Workers__kv__namespace__read__the__metadata__for__a__key = typeof get_Workers__kv__namespace__read__the__metadata__for__a__key;
@@ -44693,7 +44693,7 @@ export const get_Workers__kv__namespace__read__the__metadata__for__a__key = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ key_name: workers_kv_key_name, namespace_id: workers_kv_namespace_identifier, account_id: workers_kv_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_kv_api_response_common, Type.Partial(Type.Object({ result: workers_kv_list_metadata }, { additionalProperties: false }))]), "4XX": workers_kv_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_kv_api_response_common, Type.Partial(Type.Object({ result: workers_kv_list_metadata }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_kv_api_response_common_failure },
 };
 
 export type delete_Workers__kv__namespace__delete__key__value__pair = typeof delete_Workers__kv__namespace__delete__key__value__pair;
@@ -45104,7 +45104,7 @@ export const delete_Stream__subtitles___captions__delete__captions__or__subtitle
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ language: stream_language, identifier: stream_identifier, account_id: stream_identifier_2 }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([stream_api_response_common, Type.Partial(Type.Object({ result: Type.String() }, { additionalProperties: false }))]), "4XX": stream_api_response_common_failure },
+  responses: { 200: Type.Composite([stream_api_response_common, Type.Partial(Type.Object({ result: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": stream_api_response_common_failure },
 };
 
 export type get_Stream__subtitles___captions__get__caption__or__subtitle__for__language = typeof get_Stream__subtitles___captions__get__caption__or__subtitle__for__language;
@@ -45614,7 +45614,7 @@ export const get_Vectorize__list__vectorize__indexes = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vectorize_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([vectorize_api_response_common, Type.Partial(Type.Object({ result: Type.Array(vectorize_create_index_response) }, { additionalProperties: false }))]), "4XX": Type.Intersect([Type.Intersect([vectorize_api_response_single, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), vectorize_api_response_common_failure]) },
+  responses: { 200: Type.Composite([vectorize_api_response_common, Type.Partial(Type.Object({ result: Type.Array(vectorize_create_index_response) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Intersect([Type.Intersect([vectorize_api_response_single, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), vectorize_api_response_common_failure]) },
 };
 
 export type post_Vectorize__create__vectorize__index = typeof post_Vectorize__create__vectorize__index;
@@ -45764,7 +45764,7 @@ export const post_Create__credential__set = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier }, { additionalProperties: false }), body: vuln_scanner_create_credential_set_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type delete_Delete__credential__set = typeof delete_Delete__credential__set;
@@ -45784,7 +45784,7 @@ export const get_Get__credential__set = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type patch_Edit__credential__set = typeof patch_Edit__credential__set;
@@ -45794,7 +45794,7 @@ export const patch_Edit__credential__set = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_patch_credential_set_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type put_Update__credential__set = typeof put_Update__credential__set;
@@ -45804,7 +45804,7 @@ export const put_Update__credential__set = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_update_credential_set_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential_set, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type get_List__credentials = typeof get_List__credentials;
@@ -45824,7 +45824,7 @@ export const post_Create__credential = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_create_credential_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type delete_Delete__credential = typeof delete_Delete__credential;
@@ -45844,7 +45844,7 @@ export const get_Get__credential = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }), credential_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type patch_Edit__credential = typeof patch_Edit__credential;
@@ -45854,7 +45854,7 @@ export const patch_Edit__credential = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }), credential_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_patch_credential_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type put_Update__credential = typeof put_Update__credential;
@@ -45864,7 +45864,7 @@ export const put_Update__credential = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, credential_set_id: Type.String({ format: "uuid" }), credential_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_update_credential_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_credential, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type get_List__scans = typeof get_List__scans;
@@ -45884,7 +45884,7 @@ export const post_Create__scan = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier }, { additionalProperties: false }), body: vuln_scanner_create_scan_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_scan, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_scan, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type delete_Delete__scan = typeof delete_Delete__scan;
@@ -45894,7 +45894,7 @@ export const delete_Delete__scan = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, scan_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_delete_scan_response, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_delete_scan_response, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type get_Get__scan = typeof get_Get__scan;
@@ -45904,7 +45904,7 @@ export const get_Get__scan = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, scan_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_scan, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_scan, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type get_List__target__environments = typeof get_List__target__environments;
@@ -45924,7 +45924,7 @@ export const post_Create__target__environment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier }, { additionalProperties: false }), body: vuln_scanner_create_target_environment_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type delete_Delete__target__environment = typeof delete_Delete__target__environment;
@@ -45944,7 +45944,7 @@ export const get_Get__target__environment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, target_environment_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type patch_Edit__target__environment = typeof patch_Edit__target__environment;
@@ -45954,7 +45954,7 @@ export const patch_Edit__target__environment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, target_environment_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_patch_target_environment_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type put_Update__target__environment = typeof put_Update__target__environment;
@@ -45964,7 +45964,7 @@ export const put_Update__target__environment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: vuln_scanner_identifier, target_environment_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }), body: vuln_scanner_update_target_environment_request },
-  responses: { 200: Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))]), "4XX": vuln_scanner_api_response_common_failure },
+  responses: { 200: Type.Composite([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result: vuln_scanner_target_environment, result_info: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": vuln_scanner_api_response_common_failure },
 };
 
 export type get_Waiting__room__list__waiting__rooms__account = typeof get_Waiting__room__list__waiting__rooms__account;
@@ -46094,7 +46094,7 @@ export const get_Worker__account__settings__fetch__worker__account__settings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_account_settings }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_account_settings }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type put_Worker__account__settings__create__worker__account__settings = typeof put_Worker__account__settings__create__worker__account__settings;
@@ -46104,7 +46104,7 @@ export const put_Worker__account__settings__create__worker__account__settings = 
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }), body: workers_account_settings },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_account_settings }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_account_settings }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type post_Worker__assets__upload = typeof post_Worker__assets__upload;
@@ -46194,7 +46194,7 @@ export const get_Namespace__worker__list__scripts = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ tags: Type.String() }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: Type.Array(workers_namespace_script_response) }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: Type.Array(workers_namespace_script_response) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Namespace__worker__script__delete__worker = typeof delete_Namespace__worker__script__delete__worker;
@@ -46244,7 +46244,7 @@ export const get_Namespace__worker__get__script__bindings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_bindings }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_bindings }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Namespace__worker__get__script__content = typeof get_Namespace__worker__get__script__content;
@@ -46274,7 +46274,7 @@ export const get_Namespace__worker__list__script__secrets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: Type.Array(workers_secret) }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: Type.Array(workers_secret) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type put_Namespace__worker__put__script__secrets = typeof put_Namespace__worker__put__script__secrets;
@@ -46284,7 +46284,7 @@ export const put_Namespace__worker__put__script__secrets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }), body: workers_secret },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_secret }, { additionalProperties: false })]), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_secret }, { additionalProperties: false })], { additionalProperties: false }), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
 };
 
 export type patch_Namespace__worker__patch__script__secrets__bulk = typeof patch_Namespace__worker__patch__script__secrets__bulk;
@@ -46294,7 +46294,7 @@ export const patch_Namespace__worker__patch__script__secrets__bulk = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }), body: workers_secret_patch_request },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_secret_patch_response }, { additionalProperties: false })]), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_secret_patch_response }, { additionalProperties: false })], { additionalProperties: false }), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Namespace__worker__delete__script__secret = typeof delete_Namespace__worker__delete__script__secret;
@@ -46314,7 +46314,7 @@ export const get_Namespace__worker__get__script__secrets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ url_encoded: workers_secret_name_url_encoded }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name, secret_name: workers_secret_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_secret }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_secret }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Namespace__worker__get__script__settings = typeof get_Namespace__worker__get__script__settings;
@@ -46324,7 +46324,7 @@ export const get_Namespace__worker__get__script__settings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: workers_namespace_script_and_version_settings_item }, { additionalProperties: false }))]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: workers_namespace_script_and_version_settings_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type patch_Namespace__worker__patch__script__settings = typeof patch_Namespace__worker__patch__script__settings;
@@ -46334,7 +46334,7 @@ export const patch_Namespace__worker__patch__script__settings = {
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ settings: workers_namespace_script_and_version_settings_item }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: workers_namespace_script_and_version_settings_item }, { additionalProperties: false }))]), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: workers_namespace_script_and_version_settings_item }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
 };
 
 export type get_Namespace__worker__get__script__tags = typeof get_Namespace__worker__get__script__tags;
@@ -46344,7 +46344,7 @@ export const get_Namespace__worker__get__script__tags = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: Type.Array(workers_tag) }, { additionalProperties: false }))]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: Type.Array(workers_tag) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type put_Namespace__worker__put__script__tags = typeof put_Namespace__worker__put__script__tags;
@@ -46354,7 +46354,7 @@ export const put_Namespace__worker__put__script__tags = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, dispatch_namespace: workers_dispatch_namespace_name, script_name: workers_script_name }, { additionalProperties: false }), body: workers_tags },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: Type.Array(workers_tag) }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: Type.Array(workers_tag) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Namespace__worker__delete__script__tag = typeof delete_Namespace__worker__delete__script__tag;
@@ -46394,7 +46394,7 @@ export const put_Workers_domains_update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }), body: Type.Intersect([workers_Domain, Type.Record(Type.String(), Type.Unknown())]) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Domain }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Domain }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Workers_domains_delete = typeof delete_Workers_domains_delete;
@@ -46414,7 +46414,7 @@ export const get_Workers_domains_get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, domain_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Domain }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Domain }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Durable__objects__namespace__list__namespaces = typeof get_Durable__objects__namespace__list__namespaces;
@@ -46614,7 +46614,7 @@ export const get_Worker__placement__list__regions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_placement_regions_response }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_placement_regions_response }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Worker__script__list__workers = typeof get_Worker__script__list__workers;
@@ -46663,7 +46663,7 @@ export const put_Worker__script__upload__worker__module = {
   path: Type.Literal("/accounts/{account_id}/workers/scripts/{script_name}"),
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ bindings_inherit: Type.Literal("strict") }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: Type.Intersect([workers_multipart_script, Type.Partial(Type.Object({ metadata: Type.Partial(Type.Object({ annotations: Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }) }, { additionalProperties: false })) }, { additionalProperties: false })) }, { additionalProperties: false }))]) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ bindings_inherit: Type.Literal("strict") }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: Type.Composite([workers_multipart_script, Type.Partial(Type.Object({ metadata: Type.Partial(Type.Object({ annotations: Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }) }, { additionalProperties: false })) }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }) },
   responses: { 200: Type.Intersect([workers_script_response_upload_single, Type.Record(Type.String(), Type.Unknown())]), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
 };
 
@@ -46704,7 +46704,7 @@ export const get_Worker__deployments__list__deployments = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: Type.Object({ deployments: Type.Array(workers_deployment) }, { additionalProperties: false }) }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: Type.Object({ deployments: Type.Array(workers_deployment) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type post_Worker__deployments__create__deployment = typeof post_Worker__deployments__create__deployment;
@@ -46714,7 +46714,7 @@ export const post_Worker__deployments__create__deployment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: workers_deployment },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_deployment }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_deployment }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Worker__deployments__delete__deployment = typeof delete_Worker__deployments__delete__deployment;
@@ -46734,7 +46734,7 @@ export const get_Worker__deployments__get__deployment = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name, deployment_id: Type.String({ format: "uuid" }) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_deployment }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_deployment }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Worker__cron__trigger__get__cron__triggers = typeof get_Worker__cron__trigger__get__cron__triggers;
@@ -46744,7 +46744,7 @@ export const get_Worker__cron__trigger__get__cron__triggers = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: Type.Object({ schedules: Type.Array(workers_schedule) }, { additionalProperties: false }) }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: Type.Object({ schedules: Type.Array(workers_schedule) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type put_Worker__cron__trigger__update__cron__triggers = typeof put_Worker__cron__trigger__update__cron__triggers;
@@ -46754,7 +46754,7 @@ export const put_Worker__cron__trigger__update__cron__triggers = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: Type.Array(workers_schedule) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: Type.Object({ schedules: Type.Array(workers_schedule) }, { additionalProperties: false }) }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: Type.Object({ schedules: Type.Array(workers_schedule) }, { additionalProperties: false }) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Worker__script__settings__get__settings = typeof get_Worker__script__settings__get__settings;
@@ -46784,7 +46784,7 @@ export const get_Worker__list__script__secrets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: Type.Array(workers_secret) }, { additionalProperties: false }))]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: Type.Array(workers_secret) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type put_Worker__put__script__secret = typeof put_Worker__put__script__secret;
@@ -46794,7 +46794,7 @@ export const put_Worker__put__script__secret = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: workers_secret },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: workers_secret }, { additionalProperties: false }))]), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: workers_secret }, { additionalProperties: false }))], { additionalProperties: false }), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
 };
 
 export type patch_Worker__patch__script__secrets__bulk = typeof patch_Worker__patch__script__secrets__bulk;
@@ -46804,7 +46804,7 @@ export const patch_Worker__patch__script__secrets__bulk = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: workers_secret_patch_request },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: workers_secret_patch_response }, { additionalProperties: false }))]), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: workers_secret_patch_response }, { additionalProperties: false }))], { additionalProperties: false }), 429: workers_api_response_common_failure, "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Worker__delete__script__secret = typeof delete_Worker__delete__script__secret;
@@ -46824,7 +46824,7 @@ export const get_Worker__get__script__secret = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ url_encoded: workers_secret_name_url_encoded }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name, secret_name: workers_secret_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: workers_secret }, { additionalProperties: false }))]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Partial(Type.Object({ result: workers_secret }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Worker__script__get__settings = typeof get_Worker__script__get__settings;
@@ -46884,7 +46884,7 @@ export const get_Worker__tail__logs__list__tails = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_tail }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_tail }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type post_Worker__tail__logs__start__tail = typeof post_Worker__tail__logs__start__tail;
@@ -46894,7 +46894,7 @@ export const post_Worker__tail__logs__start__tail = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_tail }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_tail }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type delete_Worker__tail__logs__delete__tail = typeof delete_Worker__tail__logs__delete__tail;
@@ -47014,7 +47014,7 @@ export const get_Worker__subdomain__get__subdomain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_subdomain_2 }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_subdomain_2 }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type put_Worker__subdomain__create__subdomain = typeof put_Worker__subdomain__create__subdomain;
@@ -47024,7 +47024,7 @@ export const put_Worker__subdomain__create__subdomain = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }), body: workers_subdomain_2 },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_subdomain_2 }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_subdomain_2 }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_ListWorkers = typeof get_ListWorkers;
@@ -47034,7 +47034,7 @@ export const get_ListWorkers = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 100 }), order_by: Type.Union([Type.Literal("deployed_on"), Type.Literal("updated_on"), Type.Literal("created_on"), Type.Literal("name")]), order: Type.Union([Type.Literal("asc"), Type.Literal("desc")]) }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_collection, Type.Object({ result: Type.Array(workers_Worker) }, { additionalProperties: false })]), 401: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })]), 500: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Intersect([workers_api_response_collection, Type.Object({ result: Type.Array(workers_Worker) }, { additionalProperties: false })]), 401: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 500: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type post_CreateWorker = typeof post_CreateWorker;
@@ -47044,7 +47044,7 @@ export const post_CreateWorker = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier }, { additionalProperties: false }), body: Type.Intersect([workers_Worker, Type.Record(Type.String(), Type.Unknown())]) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })]), 400: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerNameInvalid, workers_ErrorWorkerInvalid, workers_ErrorWorkerTagLengthLimit, workers_ErrorWorkerNameSubdomainLengthLimit, workers_ErrorWorkerTagInvalid, workers_ErrorWorkerObservabilitySamplingRateInvalid, workers_ErrorWorkerNamePreviewLengthLimit])) }, { additionalProperties: false })]), 401: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })]), 403: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerLimit, workers_ErrorWorkerTagLimit])) }, { additionalProperties: false })]), 409: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNameConflict) }, { additionalProperties: false })]), 500: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })], { additionalProperties: false }), 400: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerNameInvalid, workers_ErrorWorkerInvalid, workers_ErrorWorkerTagLengthLimit, workers_ErrorWorkerNameSubdomainLengthLimit, workers_ErrorWorkerTagInvalid, workers_ErrorWorkerObservabilitySamplingRateInvalid, workers_ErrorWorkerNamePreviewLengthLimit])) }, { additionalProperties: false })], { additionalProperties: false }), 401: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 403: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerLimit, workers_ErrorWorkerTagLimit])) }, { additionalProperties: false })], { additionalProperties: false }), 409: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNameConflict) }, { additionalProperties: false })], { additionalProperties: false }), 500: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type delete_DeleteWorker = typeof delete_DeleteWorker;
@@ -47054,7 +47054,7 @@ export const delete_DeleteWorker = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, worker_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: workers_api_response_common, 400: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorMissingParam) }, { additionalProperties: false })]), 401: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })]), 404: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })]), 500: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })]) },
+  responses: { 200: workers_api_response_common, 400: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorMissingParam) }, { additionalProperties: false })], { additionalProperties: false }), 401: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 404: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 500: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type get_GetWorker = typeof get_GetWorker;
@@ -47064,7 +47064,7 @@ export const get_GetWorker = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, worker_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })]), 400: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorMissingParam) }, { additionalProperties: false })]), 404: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })]), 500: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })], { additionalProperties: false }), 400: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorMissingParam) }, { additionalProperties: false })], { additionalProperties: false }), 404: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 500: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type patch_EditWorker = typeof patch_EditWorker;
@@ -47074,7 +47074,7 @@ export const patch_EditWorker = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, worker_id: Type.String() }, { additionalProperties: false }), body: Type.Intersect([workers_Worker, Type.Record(Type.String(), Type.Unknown())]) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })]), 400: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorMissingParam, workers_ErrorWorkerNameInvalid, workers_ErrorWorkerInvalid, workers_ErrorWorkerTagLengthLimit, workers_ErrorWorkerTagInvalid, workers_ErrorWorkerNameSubdomainLengthLimit, workers_ErrorWorkerNamePreviewLengthLimit, workers_ErrorWorkerObservabilitySamplingRateInvalid])) }, { additionalProperties: false })]), 401: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })]), 403: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerLimit, workers_ErrorWorkerTagLimit])) }, { additionalProperties: false })]), 404: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })]), 409: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNameConflict) }, { additionalProperties: false })]), 500: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })], { additionalProperties: false }), 400: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorMissingParam, workers_ErrorWorkerNameInvalid, workers_ErrorWorkerInvalid, workers_ErrorWorkerTagLengthLimit, workers_ErrorWorkerTagInvalid, workers_ErrorWorkerNameSubdomainLengthLimit, workers_ErrorWorkerNamePreviewLengthLimit, workers_ErrorWorkerObservabilitySamplingRateInvalid])) }, { additionalProperties: false })], { additionalProperties: false }), 401: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 403: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerLimit, workers_ErrorWorkerTagLimit])) }, { additionalProperties: false })], { additionalProperties: false }), 404: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 409: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNameConflict) }, { additionalProperties: false })], { additionalProperties: false }), 500: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type put_UpdateWorker = typeof put_UpdateWorker;
@@ -47084,7 +47084,7 @@ export const put_UpdateWorker = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: workers_identifier, worker_id: Type.String() }, { additionalProperties: false }), body: Type.Intersect([workers_Worker, Type.Record(Type.String(), Type.Unknown())]) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })]), 400: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorMissingParam, workers_ErrorWorkerNameInvalid, workers_ErrorWorkerInvalid, workers_ErrorWorkerTagLengthLimit, workers_ErrorWorkerTagInvalid, workers_ErrorWorkerNameSubdomainLengthLimit, workers_ErrorWorkerNamePreviewLengthLimit, workers_ErrorWorkerObservabilitySamplingRateInvalid])) }, { additionalProperties: false })]), 401: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })]), 403: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerLimit, workers_ErrorWorkerTagLimit])) }, { additionalProperties: false })]), 404: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })]), 409: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNameConflict) }, { additionalProperties: false })]), 500: Type.Intersect([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Worker }, { additionalProperties: false })], { additionalProperties: false }), 400: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorMissingParam, workers_ErrorWorkerNameInvalid, workers_ErrorWorkerInvalid, workers_ErrorWorkerTagLengthLimit, workers_ErrorWorkerTagInvalid, workers_ErrorWorkerNameSubdomainLengthLimit, workers_ErrorWorkerNamePreviewLengthLimit, workers_ErrorWorkerObservabilitySamplingRateInvalid])) }, { additionalProperties: false })], { additionalProperties: false }), 401: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorAuth_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 403: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(__typedOpenapiOneOf([workers_ErrorWorkerLimit, workers_ErrorWorkerTagLimit])) }, { additionalProperties: false })], { additionalProperties: false }), 404: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNotFound_schemas) }, { additionalProperties: false })], { additionalProperties: false }), 409: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorWorkerNameConflict) }, { additionalProperties: false })], { additionalProperties: false }), 500: Type.Composite([workers_api_response_common_failure, Type.Object({ errors: Type.Array(workers_ErrorInternalServer_schemas) }, { additionalProperties: false })], { additionalProperties: false }) },
 };
 
 export type get_ListWorkerVersions = typeof get_ListWorkerVersions;
@@ -47104,7 +47104,7 @@ export const post_CreateWorkerVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ deploy: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, worker_id: Type.String() }, { additionalProperties: false }), body: workers_Version },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Version }, { additionalProperties: false })]), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Version }, { additionalProperties: false })], { additionalProperties: false }), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
 };
 
 export type patch_PatchLatestWorkerVersion = typeof patch_PatchLatestWorkerVersion;
@@ -47114,7 +47114,7 @@ export const patch_PatchLatestWorkerVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ deploy: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, worker_id: Type.String() }, { additionalProperties: false }), body: Type.Intersect([workers_Version, Type.Record(Type.String(), Type.Unknown())]) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Version }, { additionalProperties: false })]), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Version }, { additionalProperties: false })], { additionalProperties: false }), "4XX": Type.Union([workers_api_response_common_failure, workers_exports_reconciliation_error_response]) },
 };
 
 export type delete_DeleteWorkerVersion = typeof delete_DeleteWorkerVersion;
@@ -47134,7 +47134,7 @@ export const get_GetWorkerVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ include: Type.Literal("modules") }, { additionalProperties: false }))), path: Type.Object({ account_id: workers_identifier, worker_id: Type.String(), version_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([workers_api_response_common, Type.Object({ result: workers_Version }, { additionalProperties: false })]), "4XX": workers_api_response_common_failure },
+  responses: { 200: Type.Composite([workers_api_response_common, Type.Object({ result: workers_Version }, { additionalProperties: false })], { additionalProperties: false }), "4XX": workers_api_response_common_failure },
 };
 
 export type get_Wor__list__workflows = typeof get_Wor__list__workflows;
@@ -47594,7 +47594,7 @@ export const delete_Origin__ca__revoke__certificate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ certificate_id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: tls_certificates_and_hostnames_certificate_revoke_response, "4XX": Type.Intersect([tls_certificates_and_hostnames_certificate_revoke_response, tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: tls_certificates_and_hostnames_certificate_revoke_response, "4XX": Type.Composite([tls_certificates_and_hostnames_certificate_revoke_response, tls_certificates_and_hostnames_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type get_Origin__ca__get__certificate = typeof get_Origin__ca__get__certificate;
@@ -49924,7 +49924,7 @@ export const delete_User__subscription__delete__user__subscription = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ identifier: bill_subs_api_schemas_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Partial(Type.Object({ subscription_id: bill_subs_api_schemas_identifier }, { additionalProperties: false })), "4XX": Type.Intersect([Type.Partial(Type.Object({ subscription_id: bill_subs_api_schemas_identifier }, { additionalProperties: false })), bill_subs_api_api_response_common_failure]) },
+  responses: { 200: Type.Partial(Type.Object({ subscription_id: bill_subs_api_schemas_identifier }, { additionalProperties: false })), "4XX": Type.Composite([Type.Partial(Type.Object({ subscription_id: bill_subs_api_schemas_identifier }, { additionalProperties: false })), bill_subs_api_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type put_User__subscription__update__user__subscription = typeof put_User__subscription__update__user__subscription;
@@ -50034,7 +50034,7 @@ export const post_TriggerDeployHook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ deploy_hook_uuid: builds_deploy_hook_uuid }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([builds_APIResponse, Type.Partial(Type.Object({ result: builds_TriggerDeployHookResponse }, { additionalProperties: false }))]), 404: builds_ErrorResponse, 429: builds_ErrorResponse },
+  responses: { 200: Type.Composite([builds_APIResponse, Type.Partial(Type.Object({ result: builds_TriggerDeployHookResponse }, { additionalProperties: false }))], { additionalProperties: false }), 404: builds_ErrorResponse, 429: builds_ErrorResponse },
 };
 
 export type get_Zones__get = typeof get_Zones__get;
@@ -50044,7 +50044,7 @@ export const get_Zones__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: Type.String({ maxLength: 253 }), status: Type.Union([Type.Literal("initializing"), Type.Literal("pending"), Type.Literal("active"), Type.Literal("moved")]), type: Type.Array(Type.Union([Type.Literal("full"), Type.Literal("partial"), Type.Literal("secondary"), Type.Literal("internal")])), "account.id": Type.String(), "account.name": Type.String({ maxLength: 253 }), page: Type.Number({ minimum: 1 }), per_page: Type.Number({ minimum: 5, maximum: 50 }), order: Type.Union([Type.Literal("name"), Type.Literal("status"), Type.Literal("account.id"), Type.Literal("account.name"), Type.Literal("plan.id")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), match: Type.Union([Type.Literal("any"), Type.Literal("all")]) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([zones_api_response_common, Type.Partial(Type.Object({ result_info: zones_result_info }, { additionalProperties: false })), Type.Partial(Type.Object({ result: Type.Array(zones_zone) }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure },
+  responses: { 200: Type.Composite([zones_api_response_common, Type.Partial(Type.Object({ result_info: zones_result_info }, { additionalProperties: false })), Type.Partial(Type.Object({ result: Type.Array(zones_zone) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure },
 };
 
 export type post_Zones__post = typeof post_Zones__post;
@@ -50054,7 +50054,7 @@ export const post_Zones__post = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { body: Type.Object({ account: Type.Partial(Type.Object({ id: zones_identifier }, { additionalProperties: false })), name: zones_name, type: Type.Optional(zones_type) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([zones_api_response_common, Type.Partial(Type.Object({ result: zones_zone }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure },
+  responses: { 200: Type.Composite([zones_api_response_common, Type.Partial(Type.Object({ result: zones_zone }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure },
 };
 
 export type get_Custom__pages__for__a__zone__list__custom__pages = typeof get_Custom__pages__for__a__zone__list__custom__pages;
@@ -50164,7 +50164,7 @@ export const get_Zones__0__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([zones_api_response_common, Type.Partial(Type.Object({ result: zones_zone }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure },
+  responses: { 200: Type.Composite([zones_api_response_common, Type.Partial(Type.Object({ result: zones_zone }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure },
 };
 
 export type patch_Zones__0__patch = typeof patch_Zones__0__patch;
@@ -50174,7 +50174,7 @@ export const patch_Zones__0__patch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ paused: zones_paused, plan: Type.Partial(Type.Object({ id: zones_identifier }, { additionalProperties: false })), type: Type.Union([Type.Literal("full"), Type.Literal("partial"), Type.Literal("secondary"), Type.Literal("internal")]), vanity_name_servers: zones_vanity_name_servers }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([zones_api_response_common, Type.Partial(Type.Object({ result: zones_zone }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure },
+  responses: { 200: Type.Composite([zones_api_response_common, Type.Partial(Type.Object({ result: zones_zone }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure },
 };
 
 export type get_Zone__level__access__applications__list__access__applications = typeof get_Zone__level__access__applications__list__access__applications;
@@ -50704,7 +50704,7 @@ export const post_Dls__zone__regional__hostnames__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier }, { additionalProperties: false }), body: Type.Object({ hostname: dls_hostname_schemas, region_key: dls_region_key, routing: Type.Optional(dls_routing) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }, { additionalProperties: false }))]), "4XX": dls_api_response_common_failure },
+  responses: { 200: Type.Composite([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": dls_api_response_common_failure },
 };
 
 export type delete_Dls__zone__regional__hostnames__delete = typeof delete_Dls__zone__regional__hostnames__delete;
@@ -50724,7 +50724,7 @@ export const get_Dls__zone__regional__hostnames__fetch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }, { additionalProperties: false }))]), "4XX": dls_api_response_common_failure },
+  responses: { 200: Type.Composite([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": dls_api_response_common_failure },
 };
 
 export type patch_Dls__zone__regional__hostnames__patch = typeof patch_Dls__zone__regional__hostnames__patch;
@@ -50734,7 +50734,7 @@ export const patch_Dls__zone__regional__hostnames__patch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }, { additionalProperties: false }), body: Type.Object({ region_key: dls_region_key }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }, { additionalProperties: false }))]), "4XX": dls_api_response_common_failure },
+  responses: { 200: Type.Composite([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": dls_api_response_common_failure },
 };
 
 export type get_Ai__audit__get__robots = typeof get_Ai__audit__get__robots;
@@ -50744,7 +50744,7 @@ export const get_Ai__audit__get__robots = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ subdomain: Type.String() }, { additionalProperties: false }))), path: Type.Object({ zone_id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([ai_audit_api_response_common, Type.Partial(Type.Object({ result: ai_audit_robots_rules }, { additionalProperties: false }))]), 400: ai_audit_api_response_common_failure, 401: ai_audit_api_response_common_failure, 403: ai_audit_api_response_common_failure, 404: ai_audit_api_response_common_failure, 500: ai_audit_api_response_common_failure, 503: ai_audit_api_response_common_failure },
+  responses: { 200: Type.Composite([ai_audit_api_response_common, Type.Partial(Type.Object({ result: ai_audit_robots_rules }, { additionalProperties: false }))], { additionalProperties: false }), 400: ai_audit_api_response_common_failure, 401: ai_audit_api_response_common_failure, 403: ai_audit_api_response_common_failure, 404: ai_audit_api_response_common_failure, 500: ai_audit_api_response_common_failure, 503: ai_audit_api_response_common_failure },
 };
 
 export type post_Ai__audit__bulk__get__robots = typeof post_Ai__audit__bulk__get__robots;
@@ -50754,7 +50754,7 @@ export const post_Ai__audit__bulk__get__robots = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: Type.String() }, { additionalProperties: false }), body: Type.Array(Type.String(), { maxItems: 25 }) },
-  responses: { 200: Type.Intersect([ai_audit_api_response_common, Type.Partial(Type.Object({ result: ai_audit_bulk_robots_rules }, { additionalProperties: false }))]), 400: ai_audit_api_response_common_failure, 401: ai_audit_api_response_common_failure, 403: ai_audit_api_response_common_failure, 404: ai_audit_api_response_common_failure, 408: ai_audit_api_response_common_failure, 500: ai_audit_api_response_common_failure, 503: ai_audit_api_response_common_failure },
+  responses: { 200: Type.Composite([ai_audit_api_response_common, Type.Partial(Type.Object({ result: ai_audit_bulk_robots_rules }, { additionalProperties: false }))], { additionalProperties: false }), 400: ai_audit_api_response_common_failure, 401: ai_audit_api_response_common_failure, 403: ai_audit_api_response_common_failure, 404: ai_audit_api_response_common_failure, 408: ai_audit_api_response_common_failure, 500: ai_audit_api_response_common_failure, 503: ai_audit_api_response_common_failure },
 };
 
 export type get_Ai__security__custom__topics__get = typeof get_Ai__security__custom__topics__get;
@@ -50894,7 +50894,7 @@ export const post_Api__shield__expression__templates__fallthrough = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2 }, { additionalProperties: false }), body: api_shield_request_expression_templates_fallthrough },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_response_expression_templates_fallthrough }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_response_expression_templates_fallthrough }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type get_Api__shield__labels__get__labels = typeof get_Api__shield__labels__get__labels;
@@ -50914,7 +50914,7 @@ export const get_Api__shield__labels__get__managed__label = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ with_mapped_resource_counts: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_full_managed_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_full_managed_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type put_Api__shield__labels__replace__operations__attached__to__managed__label = typeof put_Api__shield__labels__replace__operations__attached__to__managed__label;
@@ -50924,7 +50924,7 @@ export const put_Api__shield__labels__replace__operations__attached__to__managed
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }), body: api_shield_replace_operations_attached_to_label_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_full_managed_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_full_managed_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type delete_Api__shield__labels__delete__user__labels = typeof delete_Api__shield__labels__delete__user__labels;
@@ -50954,7 +50954,7 @@ export const delete_Api__shield__delete__user__label = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type get_Api__shield__labels__get__user__label = typeof get_Api__shield__labels__get__user__label;
@@ -50964,7 +50964,7 @@ export const get_Api__shield__labels__get__user__label = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ with_mapped_resource_counts: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_full_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_full_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type patch_Api__shield__patch__user__label = typeof patch_Api__shield__patch__user__label;
@@ -50974,7 +50974,7 @@ export const patch_Api__shield__patch__user__label = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }), body: api_shield_patch_label_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type put_Api__shield__put__user__label = typeof put_Api__shield__put__user__label;
@@ -50984,7 +50984,7 @@ export const put_Api__shield__put__user__label = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }), body: api_shield_put_label_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type put_Api__shield__labels__replace__operations__attached__to__user__label = typeof put_Api__shield__labels__replace__operations__attached__to__user__label;
@@ -50994,7 +50994,7 @@ export const put_Api__shield__labels__replace__operations__attached__to__user__l
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, name: api_shield_label_name }, { additionalProperties: false }), body: api_shield_replace_operations_attached_to_label_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_full_label }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_full_label }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type delete_Api__shield__endpoint__management__delete__multiple__operations = typeof delete_Api__shield__endpoint__management__delete__multiple__operations;
@@ -51044,7 +51044,7 @@ export const delete_Api__shield__operations__bulk__delete__labels__to__operation
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2 }, { additionalProperties: false }), body: api_shield_bulk_delete_labels_on_operation_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation_with_labels_only) }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation_with_labels_only) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type post_Api__shield__operations__bulk__post__labels__to__operations = typeof post_Api__shield__operations__bulk__post__labels__to__operations;
@@ -51054,7 +51054,7 @@ export const post_Api__shield__operations__bulk__post__labels__to__operations = 
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2 }, { additionalProperties: false }), body: api_shield_bulk_post_labels_on_operation_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation_with_labels_only) }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation_with_labels_only) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type put_Api__shield__operations__bulk__put__labels__to__operations = typeof put_Api__shield__operations__bulk__put__labels__to__operations;
@@ -51064,7 +51064,7 @@ export const put_Api__shield__operations__bulk__put__labels__to__operations = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2 }, { additionalProperties: false }), body: api_shield_bulk_put_labels_on_operation_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation_with_labels_only) }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation_with_labels_only) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type delete_Api__shield__endpoint__management__delete__an__operation = typeof delete_Api__shield__endpoint__management__delete__an__operation;
@@ -51094,7 +51094,7 @@ export const delete_Api__shield__operations__delete__labels__from__operation = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, operation_id: api_shield_uuid }, { additionalProperties: false }), body: api_shield_delete_labels_on_operation_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_operation_with_labels_only }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_operation_with_labels_only }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type post_Api__shield__operations__post__labels__to__operation = typeof post_Api__shield__operations__post__labels__to__operation;
@@ -51104,7 +51104,7 @@ export const post_Api__shield__operations__post__labels__to__operation = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, operation_id: api_shield_uuid }, { additionalProperties: false }), body: api_shield_post_labels_on_operation_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_operation_with_labels_only }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_operation_with_labels_only }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type put_Api__shield__operations__put__labels__to__operation = typeof put_Api__shield__operations__put__labels__to__operation;
@@ -51114,7 +51114,7 @@ export const put_Api__shield__operations__put__labels__to__operation = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, operation_id: api_shield_uuid }, { additionalProperties: false }), body: api_shield_put_labels_on_operation_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_operation_with_labels_only }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_operation_with_labels_only }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type get_Api__shield__endpoint__management__retrieve__operations__and__features__as__open__api__schemas = typeof get_Api__shield__endpoint__management__retrieve__operations__and__features__as__open__api__schemas;
@@ -51714,7 +51714,7 @@ export const delete_Custom__hostname__for__a__zone__delete__custom__hostname____
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ custom_hostname_id: tls_certificates_and_hostnames_identifier, zone_id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), "4XX": Type.Intersect([Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), "4XX": Type.Composite([Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), tls_certificates_and_hostnames_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type get_Custom__hostname__for__a__zone__custom__hostname__details = typeof get_Custom__hostname__for__a__zone__custom__hostname__details;
@@ -51744,7 +51744,7 @@ export const delete_Custom__hostname__for__a__zone__delete_single_certificate_an
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ custom_hostname_id: tls_certificates_and_hostnames_identifier, certificate_pack_id: tls_certificates_and_hostnames_identifier, certificate_id: tls_certificates_and_hostnames_identifier, zone_id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 202: Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), "4XX": Type.Intersect([Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 202: Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), "4XX": Type.Composite([Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false })), tls_certificates_and_hostnames_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type put_Custom__hostname__for__a__zone__edit__custom__certificate__custom__hostname = typeof put_Custom__hostname__for__a__zone__edit__custom__certificate__custom__hostname;
@@ -52394,7 +52394,7 @@ export const post_Zone__environment__purge = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_purge_identifier, environment_id: cache_purge_identifier }, { additionalProperties: false }), body: Type.Union([cache_purge_FlexPurgeByTags, cache_purge_FlexPurgeByHostnames, cache_purge_FlexPurgeByPrefixes, cache_purge_Everything, cache_purge_SingleFile, cache_purge_SingleFileWithUrlAndHeaders]) },
-  responses: { 200: cache_purge_api_response_single_id, "4XX": Type.Intersect([cache_purge_api_response_single_id, cache_purge_api_response_common_failure]) },
+  responses: { 200: cache_purge_api_response_single_id, "4XX": Type.Composite([cache_purge_api_response_single_id, cache_purge_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type post_ZonesEnvironmentsRollback = typeof post_ZonesEnvironmentsRollback;
@@ -52474,7 +52474,7 @@ export const delete_Zone__lockdown__delete__a__zone__lockdown__rule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ lock_downs_id: firewall_lockdowns_components_schemas_id, zone_id: firewall_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: firewall_lockdowns_components_schemas_id }, { additionalProperties: false })) }, { additionalProperties: false })), "4XX": Type.Intersect([Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: firewall_lockdowns_components_schemas_id }, { additionalProperties: false })) }, { additionalProperties: false })), firewall_api_response_common_failure]) },
+  responses: { 200: Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: firewall_lockdowns_components_schemas_id }, { additionalProperties: false })) }, { additionalProperties: false })), "4XX": Type.Composite([Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: firewall_lockdowns_components_schemas_id }, { additionalProperties: false })) }, { additionalProperties: false })), firewall_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type get_Zone__lockdown__get__a__zone__lockdown__rule = typeof get_Zone__lockdown__get__a__zone__lockdown__rule;
@@ -53035,7 +53035,7 @@ export const delete_Delete__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, zone_id: logpush_identifier }, { additionalProperties: false }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": logpush_api_response_common_failure },
+  responses: { 200: Type.Composite([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__jobs__job_id = typeof get_Get__zones__zone_id__logpush__jobs__job_id;
@@ -53225,7 +53225,7 @@ export const delete_DeleteManagedTransforms = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 204: Type.Unknown(), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListManagedTransforms = typeof get_ListManagedTransforms;
@@ -53235,7 +53235,7 @@ export const get_ListManagedTransforms = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_ManagedTransforms_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_ManagedTransforms_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type patch_UpdateManagedTransforms = typeof patch_UpdateManagedTransforms;
@@ -53245,7 +53245,7 @@ export const patch_UpdateManagedTransforms = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: rulesets_ManagedTransformsPatch },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_ManagedTransforms_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_ManagedTransforms_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_Usage__analytics__get__zone__media__usage = typeof get_Usage__analytics__get__zone__media__usage;
@@ -53265,7 +53265,7 @@ export const get_Origin__cloud__regions__v2__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 100 }) }, { additionalProperties: false }))), path: Type.Object({ zone_id: cache_rules_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Object({ result: Type.Array(cache_rules_origin_cloud_region_v2_entry), result_info: cache_rules_origin_cloud_region_v2_result_info }, { additionalProperties: false })]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Object({ result: Type.Array(cache_rules_origin_cloud_region_v2_entry), result_info: cache_rules_origin_cloud_region_v2_result_info }, { additionalProperties: false })], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type delete_Origin__cloud__regions__v2__batch__delete = typeof delete_Origin__cloud__regions__v2__batch__delete;
@@ -53275,7 +53275,7 @@ export const delete_Origin__cloud__regions__v2__batch__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_rules_identifier }, { additionalProperties: false }), body: Type.Array(Type.String(), { maxItems: 100 }) },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_batch_result }, { additionalProperties: false }))]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_batch_result }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type put_Origin__cloud__regions__v2__batch__upsert = typeof put_Origin__cloud__regions__v2__batch__upsert;
@@ -53285,7 +53285,7 @@ export const put_Origin__cloud__regions__v2__batch__upsert = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_rules_identifier }, { additionalProperties: false }), body: Type.Array(cache_rules_origin_cloud_region_v2_request, { maxItems: 100 }) },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_batch_result }, { additionalProperties: false }))]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_batch_result }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type get_Origin__cloud__regions__v2__supported__regions = typeof get_Origin__cloud__regions__v2__supported__regions;
@@ -53295,7 +53295,7 @@ export const get_Origin__cloud__regions__v2__supported__regions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_rules_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_supported_cloud_regions_result }, { additionalProperties: false }))]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_supported_cloud_regions_result }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type delete_Origin__cloud__regions__v2__delete = typeof delete_Origin__cloud__regions__v2__delete;
@@ -53305,7 +53305,7 @@ export const delete_Origin__cloud__regions__v2__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_rules_identifier, origin_ip: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_delete_result }, { additionalProperties: false }))]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_delete_result }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type get_Origin__cloud__regions__v2__get = typeof get_Origin__cloud__regions__v2__get;
@@ -53315,7 +53315,7 @@ export const get_Origin__cloud__regions__v2__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_rules_identifier, origin_ip: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_entry }, { additionalProperties: false }))]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_entry }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type put_Origin__cloud__regions__v2__upsert = typeof put_Origin__cloud__regions__v2__upsert;
@@ -53325,7 +53325,7 @@ export const put_Origin__cloud__regions__v2__upsert = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_rules_identifier, origin_ip: Type.String() }, { additionalProperties: false }), body: cache_rules_origin_cloud_region_v2_request },
-  responses: { 200: Type.Intersect([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_entry }, { additionalProperties: false }))]), "4XX": cache_rules_api_response_common_failure },
+  responses: { 200: Type.Composite([cache_rules_api_response_common, Type.Partial(Type.Object({ result: cache_rules_origin_cloud_region_v2_entry }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": cache_rules_api_response_common_failure },
 };
 
 export type get_Zone__level__authenticated__origin__pulls__list__certificates = typeof get_Zone__level__authenticated__origin__pulls__list__certificates;
@@ -53595,7 +53595,7 @@ export const get_Page__rules__list__page__rules = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ order: Type.Union([Type.Literal("status"), Type.Literal("priority")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), match: Type.Union([Type.Literal("any"), Type.Literal("all")]), status: Type.Union([Type.Literal("active"), Type.Literal("disabled")]) }, { additionalProperties: false }))), path: Type.Object({ zone_id: zones_identifier_2 }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([zones_api_response_common_2, Type.Partial(Type.Object({ result: Type.Array(zones_page_rule) }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure_2 },
+  responses: { 200: Type.Composite([zones_api_response_common_2, Type.Partial(Type.Object({ result: Type.Array(zones_page_rule) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type post_Page__rules__create__a__page__rule = typeof post_Page__rules__create__a__page__rule;
@@ -53705,7 +53705,7 @@ export const post_Zone__purge = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cache_purge_identifier }, { additionalProperties: false }), body: Type.Union([cache_purge_FlexPurgeByTags, cache_purge_FlexPurgeByHostnames, cache_purge_FlexPurgeByPrefixes, cache_purge_Everything, cache_purge_SingleFile, cache_purge_SingleFileWithUrlAndHeaders]) },
-  responses: { 200: cache_purge_api_response_single_id, "4XX": Type.Intersect([cache_purge_api_response_single_id, cache_purge_api_response_common_failure]) },
+  responses: { 200: cache_purge_api_response_single_id, "4XX": Type.Composite([cache_purge_api_response_single_id, cache_purge_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type get_Rate__limit__analytics__get__zone__analytics = typeof get_Rate__limit__analytics__get__zone__analytics;
@@ -53725,7 +53725,7 @@ export const get_ListZoneRulesets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ cursor: rulesets_Cursor, per_page: rulesets_PerPage }, { additionalProperties: false }))), path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })])), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })], { additionalProperties: false })), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_CreateZoneRuleset = typeof post_CreateZoneRuleset;
@@ -53734,8 +53734,8 @@ export const post_CreateZoneRuleset = {
   path: Type.Literal("/zones/{zone_id}/rulesets"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: Type.Optional(rulesets_RequestRules) }, { additionalProperties: false })]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: Type.Optional(rulesets_RequestRules) }, { additionalProperties: false })], { additionalProperties: false }) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetZoneEntrypointRuleset = typeof get_GetZoneEntrypointRuleset;
@@ -53745,7 +53745,7 @@ export const get_GetZoneEntrypointRuleset = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateZoneEntrypointRuleset = typeof put_UpdateZoneEntrypointRuleset;
@@ -53754,8 +53754,8 @@ export const put_UpdateZoneEntrypointRuleset = {
   path: Type.Literal("/zones/{zone_id}/rulesets/phases/{ruleset_phase}/entrypoint"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Intersect([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ rules: rulesets_RequestRules }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Composite([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ rules: rulesets_RequestRules }, { additionalProperties: false }))], { additionalProperties: false }) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListZoneEntrypointRulesetVersions = typeof get_ListZoneEntrypointRulesetVersions;
@@ -53765,7 +53765,7 @@ export const get_ListZoneEntrypointRulesetVersions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_phase: rulesets_RulesetPhase, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })])), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })], { additionalProperties: false })), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetZoneEntrypointRulesetVersion = typeof get_GetZoneEntrypointRulesetVersion;
@@ -53775,7 +53775,7 @@ export const get_GetZoneEntrypointRulesetVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_version: rulesets_RulesetVersion, ruleset_phase: rulesets_RulesetPhase, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteZoneRuleset = typeof delete_DeleteZoneRuleset;
@@ -53785,7 +53785,7 @@ export const delete_DeleteZoneRuleset = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 204: Type.Unknown(), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetZoneRuleset = typeof get_GetZoneRuleset;
@@ -53795,7 +53795,7 @@ export const get_GetZoneRuleset = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateZoneRuleset = typeof put_UpdateZoneRuleset;
@@ -53804,8 +53804,8 @@ export const put_UpdateZoneRuleset = {
   path: Type.Literal("/zones/{zone_id}/rulesets/{ruleset_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Intersect([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_RequestRules }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Composite([rulesets_Ruleset_schemas, Type.Partial(Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_RequestRules }, { additionalProperties: false }))], { additionalProperties: false }) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type post_CreateZoneRulesetRule = typeof post_CreateZoneRulesetRule;
@@ -53815,7 +53815,7 @@ export const post_CreateZoneRulesetRule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Intersect([rulesets_RequestRule, Type.Partial(Type.Object({ position: __typedOpenapiOneOf([Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ before: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ after: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ index: Type.Integer({ minimum: 1 }) }, { additionalProperties: false }))])]) }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteZoneRulesetRule = typeof delete_DeleteZoneRulesetRule;
@@ -53825,7 +53825,7 @@ export const delete_DeleteZoneRulesetRule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ rule_id: rulesets_RuleId, ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type patch_UpdateZoneRulesetRule = typeof patch_UpdateZoneRulesetRule;
@@ -53835,7 +53835,7 @@ export const patch_UpdateZoneRulesetRule = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ rule_id: rulesets_RuleId, ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: Type.Intersect([rulesets_RequestRule, Type.Partial(Type.Object({ position: __typedOpenapiOneOf([Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ before: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ after: Type.String({ pattern: "^[0-9a-f]{32}$" }) }, { additionalProperties: false }))]), Type.Intersect([rulesets_RulePosition, Type.Partial(Type.Object({ index: Type.Integer({ minimum: 1 }) }, { additionalProperties: false }))])]) }, { additionalProperties: false }))]) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListZoneRulesetVersions = typeof get_ListZoneRulesetVersions;
@@ -53845,7 +53845,7 @@ export const get_ListZoneRulesetVersions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })])), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Array(Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase }, { additionalProperties: false })], { additionalProperties: false })), result_info: rulesets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteZoneRulesetVersion = typeof delete_DeleteZoneRulesetVersion;
@@ -53855,7 +53855,7 @@ export const delete_DeleteZoneRulesetVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_version: rulesets_RulesetVersion, ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 204: Type.Unknown(), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetZoneRulesetVersion = typeof get_GetZoneRulesetVersion;
@@ -53865,7 +53865,7 @@ export const get_GetZoneRulesetVersion = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ ruleset_version: rulesets_RulesetVersion, ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListZoneRulesetVersionRulesByTag = typeof get_ListZoneRulesetVersionRulesByTag;
@@ -53875,7 +53875,7 @@ export const get_ListZoneRulesetVersionRulesByTag = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ rule_tag: rulesets_RuleCategory, ruleset_version: rulesets_RulesetVersion, ruleset_id: rulesets_RulesetId, zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Intersect([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: Type.Composite([rulesets_Ruleset_schemas, Type.Object({ kind: rulesets_RulesetKind, phase: rulesets_RulesetPhase, rules: rulesets_ResponseRules }, { additionalProperties: false })], { additionalProperties: false }), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_Schema__validation__list__schemas__paginated = typeof get_Schema__validation__list__schemas__paginated;
@@ -54165,7 +54165,7 @@ export const get_Get__zone__security__center__insights = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }, { additionalProperties: false }))), path: Type.Object({ zone_id: security_center_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ count: security_center_count, issues: Type.Array(security_center_issue), page: security_center_page, per_page: security_center_perPage }, { additionalProperties: false })) }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ count: security_center_count, issues: Type.Array(security_center_issue), page: security_center_page, per_page: security_center_perPage }, { additionalProperties: false })) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__zone__security__center__audit__log = typeof get_Get__zone__security__center__audit__log;
@@ -54195,7 +54195,7 @@ export const get_Get__security__center__zone__scans = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_scansListResponse }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_scansListResponse }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type post_Start__security__center__zone__scan = typeof post_Start__security__center__zone__scan;
@@ -54205,7 +54205,7 @@ export const post_Start__security__center__zone__scan = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier }, { additionalProperties: false }), body: security_center_newScanRequest },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_newScanResponse }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_newScanResponse }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__zone__security__center__insight__counts__by__severity = typeof get_Get__zone__security__center__insight__counts__by__severity;
@@ -54275,7 +54275,7 @@ export const get_Get__security__txt = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_securityTxt }, { additionalProperties: false }))]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: Type.Composite([security_center_api_response_common, Type.Partial(Type.Object({ result: security_center_securityTxt }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": security_center_api_response_common_failure },
 };
 
 export type put_Update__security__txt = typeof put_Update__security__txt;
@@ -54355,7 +54355,7 @@ export const get_Zone__settings__get__fonts__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: speed_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_fonts }, { additionalProperties: false }))]), "4XX": speed_api_response_common_failure },
+  responses: { 200: Type.Composite([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_fonts }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": speed_api_response_common_failure },
 };
 
 export type patch_Zone__settings__change__fonts__setting = typeof patch_Zone__settings__change__fonts__setting;
@@ -54365,7 +54365,7 @@ export const patch_Zone__settings__change__fonts__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: speed_identifier }, { additionalProperties: false }), body: Type.Object({ value: speed_cloudflare_fonts_value }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_fonts }, { additionalProperties: false }))]), "4XX": speed_api_response_common_failure },
+  responses: { 200: Type.Composite([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_fonts }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": speed_api_response_common_failure },
 };
 
 export type get_Zone__settings__get__google__tag__gateway__config = typeof get_Zone__settings__get__google__tag__gateway__config;
@@ -54375,7 +54375,7 @@ export const get_Zone__settings__get__google__tag__gateway__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: google_tag_gateway_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([google_tag_gateway_api_response_common, Type.Partial(Type.Object({ result: google_tag_gateway_google_tag_gateway_config }, { additionalProperties: false }))]), "4XX": google_tag_gateway_api_response_common_failure },
+  responses: { 200: Type.Composite([google_tag_gateway_api_response_common, Type.Partial(Type.Object({ result: google_tag_gateway_google_tag_gateway_config }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": google_tag_gateway_api_response_common_failure },
 };
 
 export type put_Zone__settings__change__google__tag__gateway__config = typeof put_Zone__settings__change__google__tag__gateway__config;
@@ -54385,7 +54385,7 @@ export const put_Zone__settings__change__google__tag__gateway__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: google_tag_gateway_identifier }, { additionalProperties: false }), body: google_tag_gateway_google_tag_gateway_config },
-  responses: { 200: Type.Intersect([google_tag_gateway_api_response_common, Type.Partial(Type.Object({ result: google_tag_gateway_google_tag_gateway_config }, { additionalProperties: false }))]), "4XX": google_tag_gateway_api_response_common_failure },
+  responses: { 200: Type.Composite([google_tag_gateway_api_response_common, Type.Partial(Type.Object({ result: google_tag_gateway_google_tag_gateway_config }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": google_tag_gateway_api_response_common_failure },
 };
 
 export type get_Zone__cache__settings__get__origin__h2__max__streams__setting = typeof get_Zone__cache__settings__get__origin__h2__max__streams__setting;
@@ -54495,7 +54495,7 @@ export const get_Zone__settings__get__speed__brain__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: speed_identifier }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_speed_brain_response }, { additionalProperties: false }))]), "4XX": speed_api_response_common_failure },
+  responses: { 200: Type.Composite([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_speed_brain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": speed_api_response_common_failure },
 };
 
 export type patch_Zone__settings__change__speed__brain__setting = typeof patch_Zone__settings__change__speed__brain__setting;
@@ -54505,7 +54505,7 @@ export const patch_Zone__settings__change__speed__brain__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: speed_identifier }, { additionalProperties: false }), body: Type.Object({ value: Type.Union([Type.Literal("on"), Type.Literal("off")]) }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_speed_brain_response }, { additionalProperties: false }))]), "4XX": speed_api_response_common_failure },
+  responses: { 200: Type.Composite([speed_api_response_common, Type.Partial(Type.Object({ result: speed_cloudflare_speed_brain_response }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": speed_api_response_common_failure },
 };
 
 export type get_Ssl__detector__automatic__mode__get__enrollment = typeof get_Ssl__detector__automatic__mode__get__enrollment;
@@ -54606,7 +54606,7 @@ export const post_Post__zones__zone_identifier__zaraz__publish = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zaraz_identifier }, { additionalProperties: false }), body: Type.String() },
-  responses: { 200: Type.Intersect([zaraz_api_response_common, Type.Partial(Type.Object({ result: Type.String() }, { additionalProperties: false }))]), "4XX": zaraz_api_response_common_failure },
+  responses: { 200: Type.Composite([zaraz_api_response_common, Type.Partial(Type.Object({ result: Type.String() }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zaraz_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_identifier__zaraz__workflow = typeof get_Get__zones__zone_identifier__zaraz__workflow;
@@ -54636,7 +54636,7 @@ export const get_Zone__settings__get__single__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier, setting_id: zones_setting_name }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([zones_api_response_common_4, Type.Partial(Type.Object({ result: zones_setting }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure_3 },
+  responses: { 200: Type.Composite([zones_api_response_common_4, Type.Partial(Type.Object({ result: zones_setting }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure_3 },
 };
 
 export type patch_Zone__settings__edit__single__setting = typeof patch_Zone__settings__edit__single__setting;
@@ -54646,7 +54646,7 @@ export const patch_Zone__settings__edit__single__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier, setting_id: zones_setting_name }, { additionalProperties: false }), body: zones_zone_settings_single_request },
-  responses: { 200: Type.Intersect([zones_api_response_common_4, Type.Partial(Type.Object({ result: zones_setting }, { additionalProperties: false }))]), "4XX": zones_api_response_common_failure_3 },
+  responses: { 200: Type.Composite([zones_api_response_common_4, Type.Partial(Type.Object({ result: zones_setting }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": zones_api_response_common_failure_3 },
 };
 
 export type get_Smart__shield__get__settings = typeof get_Smart__shield__get__settings;
@@ -54756,7 +54756,7 @@ export const get_ListZoneSnippets = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: snippets_Page, per_page: snippets_PerPage }, { additionalProperties: false }))), path: Type.Object({ zone_id: snippets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: Type.Array(snippets_Snippet_schemas), result_info: snippets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: Type.Array(snippets_Snippet_schemas), result_info: snippets_ResultInfo, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteZoneSnippetRules = typeof delete_DeleteZoneSnippetRules;
@@ -54766,7 +54766,7 @@ export const delete_DeleteZoneSnippetRules = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_SnippetRules_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_SnippetRules_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_ListZoneSnippetRules = typeof get_ListZoneSnippetRules;
@@ -54776,7 +54776,7 @@ export const get_ListZoneSnippetRules = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_SnippetRules_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_SnippetRules_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateZoneSnippetRules = typeof put_UpdateZoneSnippetRules;
@@ -54786,7 +54786,7 @@ export const put_UpdateZoneSnippetRules = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId }, { additionalProperties: false }), body: Type.Object({ rules: snippets_SnippetRules_schemas }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_SnippetRules_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_SnippetRules_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type delete_DeleteZoneSnippet = typeof delete_DeleteZoneSnippet;
@@ -54796,7 +54796,7 @@ export const delete_DeleteZoneSnippet = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId, snippet_name: snippets_SnippetName }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetZoneSnippet = typeof get_GetZoneSnippet;
@@ -54806,7 +54806,7 @@ export const get_GetZoneSnippet = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId, snippet_name: snippets_SnippetName }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_Snippet_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_Snippet_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateZoneSnippet = typeof put_UpdateZoneSnippet;
@@ -54816,7 +54816,7 @@ export const put_UpdateZoneSnippet = {
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId, snippet_name: snippets_SnippetName }, { additionalProperties: false }), body: Type.Object({ metadata: Type.Object({ main_module: snippets_SnippetMainModule }, { additionalProperties: false }) }, { additionalProperties: snippets_SnippetFiles }) },
-  responses: { 200: Type.Intersect([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_Snippet_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([snippets_Response, Type.Partial(Type.Object({ errors: Type.Array(Type.Record(Type.String(), Type.Unknown())), result: snippets_Snippet_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetZoneSnippetContent = typeof get_GetZoneSnippetContent;
@@ -54826,7 +54826,7 @@ export const get_GetZoneSnippetContent = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: snippets_ZoneId, snippet_name: snippets_SnippetName }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), "4XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]), "5XX": Type.Intersect([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Unknown(), "4XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }), "5XX": Type.Composite([snippets_Response, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
   responseHeaders: { 200: Type.Object({ "cf-entrypoint": snippets_SnippetMainModule }, { additionalProperties: false }) },
 };
 
@@ -55107,7 +55107,7 @@ export const get_Ssl__verification__ssl__verification__details = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ retry: Type.Literal(true) }, { additionalProperties: false }))), path: Type.Object({ zone_id: tls_certificates_and_hostnames_identifier }, { additionalProperties: false }) },
-  responses: { 200: tls_certificates_and_hostnames_ssl_verification_response_collection, "4XX": Type.Intersect([tls_certificates_and_hostnames_ssl_verification_response_collection, tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: tls_certificates_and_hostnames_ssl_verification_response_collection, "4XX": Type.Composite([tls_certificates_and_hostnames_ssl_verification_response_collection, tls_certificates_and_hostnames_api_response_common_failure], { additionalProperties: false }) },
 };
 
 export type patch_Ssl__verification__edit__ssl__certificate__pack__validation__method = typeof patch_Ssl__verification__edit__ssl__certificate__pack__validation__method;
@@ -55247,7 +55247,7 @@ export const post_Token__validation__config__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2 }, { additionalProperties: false }), body: Type.Object({ credentials: api_shield_credentials_request, description: api_shield_description, title: api_shield_title, token_sources: api_shield_token_sources, token_type: api_shield_token_type }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_TokenConfiguration }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_TokenConfiguration }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type delete_Token__validation__config__delete = typeof delete_Token__validation__config__delete;
@@ -55257,7 +55257,7 @@ export const delete_Token__validation__config__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, config_id: api_shield_uuid_2 }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: Type.Partial(Type.Object({ id: api_shield_uuid_2 }, { additionalProperties: false })) }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: Type.Partial(Type.Object({ id: api_shield_uuid_2 }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type get_Token__validation__config__get = typeof get_Token__validation__config__get;
@@ -55267,7 +55267,7 @@ export const get_Token__validation__config__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, config_id: api_shield_uuid_2 }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_TokenConfiguration }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_TokenConfiguration }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type patch_Token__validation__config__edit = typeof patch_Token__validation__config__edit;
@@ -55277,7 +55277,7 @@ export const patch_Token__validation__config__edit = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, config_id: api_shield_uuid_2 }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ description: api_shield_description, title: api_shield_title, token_sources: api_shield_token_sources }, { additionalProperties: false }))) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: Type.Partial(Type.Object({ description: api_shield_description, id: api_shield_uuid_2, title: api_shield_title, token_sources: api_shield_token_sources }, { additionalProperties: false })) }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: Type.Partial(Type.Object({ description: api_shield_description, id: api_shield_uuid_2, title: api_shield_title, token_sources: api_shield_token_sources }, { additionalProperties: false })) }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type patch_Token__validation__config__credentials__edit = typeof patch_Token__validation__config__credentials__edit;
@@ -55287,7 +55287,7 @@ export const patch_Token__validation__config__credentials__edit = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, config_id: api_shield_uuid_2 }, { additionalProperties: false }), body: api_shield_credentials_patch_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, api_shield_credentials]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, api_shield_credentials], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type put_Token__validation__config__credentials__update = typeof put_Token__validation__config__credentials__update;
@@ -55297,7 +55297,7 @@ export const put_Token__validation__config__credentials__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, config_id: api_shield_uuid_2 }, { additionalProperties: false }), body: api_shield_credentials_request },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, api_shield_credentials]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, api_shield_credentials], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type get_Token__validation__rules__list = typeof get_Token__validation__rules__list;
@@ -55367,7 +55367,7 @@ export const get_Token__validation__rules__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, rule_id: api_shield_uuid_2 }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_common, Type.Object({ result: api_shield_Rule }, { additionalProperties: false })]), "4XX": api_shield_api_response_common_failure },
+  responses: { 200: Type.Composite([api_shield_api_response_common, Type.Object({ result: api_shield_Rule }, { additionalProperties: false })], { additionalProperties: false }), "4XX": api_shield_api_response_common_failure },
 };
 
 export type patch_Token__validation__rules__edit = typeof patch_Token__validation__rules__edit;
@@ -55387,7 +55387,7 @@ export const delete_DeleteUrlNormalization = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 204: Type.Unknown(), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_GetUrlNormalization = typeof get_GetUrlNormalization;
@@ -55397,7 +55397,7 @@ export const get_GetUrlNormalization = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }) },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_UrlNormalization_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_UrlNormalization_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type put_UpdateUrlNormalization = typeof put_UpdateUrlNormalization;
@@ -55407,7 +55407,7 @@ export const put_UpdateUrlNormalization = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: rulesets_ZoneId }, { additionalProperties: false }), body: rulesets_UrlNormalization_schemas },
-  responses: { 200: Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_UrlNormalization_schemas, success: Type.Literal(true) }, { additionalProperties: false }))]), "4XX": Type.Intersect([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))]) },
+  responses: { 200: Type.Composite([rulesets_Response, Type.Partial(Type.Object({ errors: Type.Tuple([]), result: rulesets_UrlNormalization_schemas, success: Type.Literal(true) }, { additionalProperties: false }))], { additionalProperties: false }), "4XX": Type.Composite([rulesets_Response, Type.Partial(Type.Object({ result: Type.Null(), success: Type.Literal(false) }, { additionalProperties: false }))], { additionalProperties: false }) },
 };
 
 export type get_Waiting__room__list__waiting__rooms = typeof get_Waiting__room__list__waiting__rooms;

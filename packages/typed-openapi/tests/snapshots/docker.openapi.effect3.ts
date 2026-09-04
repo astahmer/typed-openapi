@@ -41,319 +41,319 @@ const Union_default_spec_prop = S.optionalWith(S.Union(S.Literal("spec"), S.Lite
 // </DefaultSchemas>
 
 // <Schemas>
-export const Port = S.Struct({ IP: S.optional(S.String), PrivatePort: S.Int, PublicPort: S.optional(S.Int), Type: S.Union(S.Literal("tcp"), S.Literal("udp"), S.Literal("sctp")) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "IP": 1, "PrivatePort": 1, "PublicPort": 1, "Type": 1 }, key))));
+export const Port = S.Struct({ IP: S.optional(S.String), PrivatePort: S.Int, PublicPort: S.optional(S.Int), Type: S.Union(S.Literal("tcp"), S.Literal("udp"), S.Literal("sctp")) });
 export type Port = S.Schema.Type<typeof Port>;
 
-export const MountPoint = S.Struct({ Type: S.optional(S.Union(S.Literal("bind"), S.Literal("volume"), S.Literal("tmpfs"), S.Literal("npipe"), S.Literal("cluster"))), Name: S.optional(S.String), Source: S.optional(S.String), Destination: S.optional(S.String), Driver: S.optional(S.String), Mode: S.optional(S.String), RW: S.optional(S.Boolean), Propagation: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Type": 1, "Name": 1, "Source": 1, "Destination": 1, "Driver": 1, "Mode": 1, "RW": 1, "Propagation": 1 }, key))));
+export const MountPoint = S.Struct({ Type: S.optional(S.Union(S.Literal("bind"), S.Literal("volume"), S.Literal("tmpfs"), S.Literal("npipe"), S.Literal("cluster"))), Name: S.optional(S.String), Source: S.optional(S.String), Destination: S.optional(S.String), Driver: S.optional(S.String), Mode: S.optional(S.String), RW: S.optional(S.Boolean), Propagation: S.optional(S.String) });
 export type MountPoint = S.Schema.Type<typeof MountPoint>;
 
-export const DeviceMapping = S.Struct({ PathOnHost: S.optional(S.String), PathInContainer: S.optional(S.String), CgroupPermissions: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "PathOnHost": 1, "PathInContainer": 1, "CgroupPermissions": 1 }, key))));
+export const DeviceMapping = S.Struct({ PathOnHost: S.optional(S.String), PathInContainer: S.optional(S.String), CgroupPermissions: S.optional(S.String) });
 export type DeviceMapping = S.Schema.Type<typeof DeviceMapping>;
 
-export const DeviceRequest = S.Struct({ Driver: S.optional(S.String), Count: S.optional(S.Int), DeviceIDs: S.optional(S.Array(S.String)), Capabilities: S.optional(S.Array(S.Array(S.String))), Options: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Driver": 1, "Count": 1, "DeviceIDs": 1, "Capabilities": 1, "Options": 1 }, key))));
+export const DeviceRequest = S.Struct({ Driver: S.optional(S.String), Count: S.optional(S.Int), DeviceIDs: S.optional(S.Array(S.String)), Capabilities: S.optional(S.Array(S.Array(S.String))), Options: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type DeviceRequest = S.Schema.Type<typeof DeviceRequest>;
 
-export const ThrottleDevice = S.Struct({ Path: S.optional(S.String), Rate: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Path": 1, "Rate": 1 }, key))));
+export const ThrottleDevice = S.Struct({ Path: S.optional(S.String), Rate: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0))) });
 export type ThrottleDevice = S.Schema.Type<typeof ThrottleDevice>;
 
-export const Mount = S.Struct({ Target: S.optional(S.String), Source: S.optional(S.String), Type: S.optional(S.Union(S.Literal("bind"), S.Literal("volume"), S.Literal("tmpfs"), S.Literal("npipe"), S.Literal("cluster"))), ReadOnly: S.optional(S.Boolean), Consistency: S.optional(S.String), BindOptions: S.optional(S.Struct({ Propagation: S.optional(S.Union(S.Literal("private"), S.Literal("rprivate"), S.Literal("shared"), S.Literal("rshared"), S.Literal("slave"), S.Literal("rslave"))), NonRecursive: Boolean_default_false_prop, CreateMountpoint: Boolean_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Propagation": 1, "NonRecursive": 1, "CreateMountpoint": 1 }, key))))), VolumeOptions: S.optional(S.Struct({ NoCopy: Boolean_default_false_prop, Labels: S.optional(S.Record({ key: S.String, value: S.String })), DriverConfig: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Options": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NoCopy": 1, "Labels": 1, "DriverConfig": 1 }, key))))), TmpfsOptions: S.optional(S.Struct({ SizeBytes: S.optional(S.Int), Mode: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "SizeBytes": 1, "Mode": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Target": 1, "Source": 1, "Type": 1, "ReadOnly": 1, "Consistency": 1, "BindOptions": 1, "VolumeOptions": 1, "TmpfsOptions": 1 }, key))));
+export const Mount = S.Struct({ Target: S.optional(S.String), Source: S.optional(S.String), Type: S.optional(S.Union(S.Literal("bind"), S.Literal("volume"), S.Literal("tmpfs"), S.Literal("npipe"), S.Literal("cluster"))), ReadOnly: S.optional(S.Boolean), Consistency: S.optional(S.String), BindOptions: S.optional(S.Struct({ Propagation: S.optional(S.Union(S.Literal("private"), S.Literal("rprivate"), S.Literal("shared"), S.Literal("rshared"), S.Literal("slave"), S.Literal("rslave"))), NonRecursive: Boolean_default_false_prop, CreateMountpoint: Boolean_default_false_prop })), VolumeOptions: S.optional(S.Struct({ NoCopy: Boolean_default_false_prop, Labels: S.optional(S.Record({ key: S.String, value: S.String })), DriverConfig: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) })) })), TmpfsOptions: S.optional(S.Struct({ SizeBytes: S.optional(S.Int), Mode: S.optional(S.Int) })) });
 export type Mount = S.Schema.Type<typeof Mount>;
 
-export const RestartPolicy = S.Struct({ Name: S.optional(S.Union(S.Literal(""), S.Literal("no"), S.Literal("always"), S.Literal("unless-stopped"), S.Literal("on-failure"))), MaximumRetryCount: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "MaximumRetryCount": 1 }, key))));
+export const RestartPolicy = S.Struct({ Name: S.optional(S.Union(S.Literal(""), S.Literal("no"), S.Literal("always"), S.Literal("unless-stopped"), S.Literal("on-failure"))), MaximumRetryCount: S.optional(S.Int) });
 export type RestartPolicy = S.Schema.Type<typeof RestartPolicy>;
 
-export const Resources = S.Struct({ CpuShares: S.optional(S.Int), Memory: Int_default_0_prop, CgroupParent: S.optional(S.String), BlkioWeight: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0), S.lessThanOrEqualTo(1000))), BlkioWeightDevice: S.optional(S.Array(S.Struct({ Path: S.optional(S.String), Weight: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Path": 1, "Weight": 1 }, key)))))), BlkioDeviceReadBps: S.optional(S.Array(ThrottleDevice)), BlkioDeviceWriteBps: S.optional(S.Array(ThrottleDevice)), BlkioDeviceReadIOps: S.optional(S.Array(ThrottleDevice)), BlkioDeviceWriteIOps: S.optional(S.Array(ThrottleDevice)), CpuPeriod: S.optional(S.Int), CpuQuota: S.optional(S.Int), CpuRealtimePeriod: S.optional(S.Int), CpuRealtimeRuntime: S.optional(S.Int), CpusetCpus: S.optional(S.String), CpusetMems: S.optional(S.String), Devices: S.optional(S.Array(DeviceMapping)), DeviceCgroupRules: S.optional(S.Array(S.String)), DeviceRequests: S.optional(S.Array(DeviceRequest)), KernelMemoryTCP: S.optional(S.Int), MemoryReservation: S.optional(S.Int), MemorySwap: S.optional(S.Int), MemorySwappiness: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0), S.lessThanOrEqualTo(100))), NanoCpus: S.optional(S.Int), OomKillDisable: S.optional(S.Boolean), Init: S.optional(S.NullOr(S.Boolean)), PidsLimit: S.optional(S.NullOr(S.Int)), Ulimits: S.optional(S.Array(S.Struct({ Name: S.optional(S.String), Soft: S.optional(S.Int), Hard: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Soft": 1, "Hard": 1 }, key)))))), CpuCount: S.optional(S.Int), CpuPercent: S.optional(S.Int), IOMaximumIOps: S.optional(S.Int), IOMaximumBandwidth: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CpuShares": 1, "Memory": 1, "CgroupParent": 1, "BlkioWeight": 1, "BlkioWeightDevice": 1, "BlkioDeviceReadBps": 1, "BlkioDeviceWriteBps": 1, "BlkioDeviceReadIOps": 1, "BlkioDeviceWriteIOps": 1, "CpuPeriod": 1, "CpuQuota": 1, "CpuRealtimePeriod": 1, "CpuRealtimeRuntime": 1, "CpusetCpus": 1, "CpusetMems": 1, "Devices": 1, "DeviceCgroupRules": 1, "DeviceRequests": 1, "KernelMemoryTCP": 1, "MemoryReservation": 1, "MemorySwap": 1, "MemorySwappiness": 1, "NanoCpus": 1, "OomKillDisable": 1, "Init": 1, "PidsLimit": 1, "Ulimits": 1, "CpuCount": 1, "CpuPercent": 1, "IOMaximumIOps": 1, "IOMaximumBandwidth": 1 }, key))));
+export const Resources = S.Struct({ CpuShares: S.optional(S.Int), Memory: Int_default_0_prop, CgroupParent: S.optional(S.String), BlkioWeight: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0), S.lessThanOrEqualTo(1000))), BlkioWeightDevice: S.optional(S.Array(S.Struct({ Path: S.optional(S.String), Weight: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0))) }))), BlkioDeviceReadBps: S.optional(S.Array(ThrottleDevice)), BlkioDeviceWriteBps: S.optional(S.Array(ThrottleDevice)), BlkioDeviceReadIOps: S.optional(S.Array(ThrottleDevice)), BlkioDeviceWriteIOps: S.optional(S.Array(ThrottleDevice)), CpuPeriod: S.optional(S.Int), CpuQuota: S.optional(S.Int), CpuRealtimePeriod: S.optional(S.Int), CpuRealtimeRuntime: S.optional(S.Int), CpusetCpus: S.optional(S.String), CpusetMems: S.optional(S.String), Devices: S.optional(S.Array(DeviceMapping)), DeviceCgroupRules: S.optional(S.Array(S.String)), DeviceRequests: S.optional(S.Array(DeviceRequest)), KernelMemoryTCP: S.optional(S.Int), MemoryReservation: S.optional(S.Int), MemorySwap: S.optional(S.Int), MemorySwappiness: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0), S.lessThanOrEqualTo(100))), NanoCpus: S.optional(S.Int), OomKillDisable: S.optional(S.Boolean), Init: S.optional(S.NullOr(S.Boolean)), PidsLimit: S.optional(S.NullOr(S.Int)), Ulimits: S.optional(S.Array(S.Struct({ Name: S.optional(S.String), Soft: S.optional(S.Int), Hard: S.optional(S.Int) }))), CpuCount: S.optional(S.Int), CpuPercent: S.optional(S.Int), IOMaximumIOps: S.optional(S.Int), IOMaximumBandwidth: S.optional(S.Int) });
 export type Resources = S.Schema.Type<typeof Resources>;
 
-export const Limit = S.Struct({ NanoCPUs: S.optional(S.Int), MemoryBytes: S.optional(S.Int), Pids: Int_default_0_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NanoCPUs": 1, "MemoryBytes": 1, "Pids": 1 }, key))));
+export const Limit = S.Struct({ NanoCPUs: S.optional(S.Int), MemoryBytes: S.optional(S.Int), Pids: Int_default_0_prop });
 export type Limit = S.Schema.Type<typeof Limit>;
 
-export const GenericResources = S.Array(S.Struct({ NamedResourceSpec: S.optional(S.Struct({ Kind: S.optional(S.String), Value: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Kind": 1, "Value": 1 }, key))))), DiscreteResourceSpec: S.optional(S.Struct({ Kind: S.optional(S.String), Value: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Kind": 1, "Value": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NamedResourceSpec": 1, "DiscreteResourceSpec": 1 }, key)))));
+export const GenericResources = S.Array(S.Struct({ NamedResourceSpec: S.optional(S.Struct({ Kind: S.optional(S.String), Value: S.optional(S.String) })), DiscreteResourceSpec: S.optional(S.Struct({ Kind: S.optional(S.String), Value: S.optional(S.Int) })) }));
 export type GenericResources = S.Schema.Type<typeof GenericResources>;
 
-export const ResourceObject = S.Struct({ NanoCPUs: S.optional(S.Int), MemoryBytes: S.optional(S.Int), GenericResources: S.optional(GenericResources) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NanoCPUs": 1, "MemoryBytes": 1, "GenericResources": 1 }, key))));
+export const ResourceObject = S.Struct({ NanoCPUs: S.optional(S.Int), MemoryBytes: S.optional(S.Int), GenericResources: S.optional(GenericResources) });
 export type ResourceObject = S.Schema.Type<typeof ResourceObject>;
 
-export const HealthConfig = S.Struct({ Test: S.optional(S.Array(S.String)), Interval: S.optional(S.Int), Timeout: S.optional(S.Int), Retries: S.optional(S.Int), StartPeriod: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Test": 1, "Interval": 1, "Timeout": 1, "Retries": 1, "StartPeriod": 1 }, key))));
+export const HealthConfig = S.Struct({ Test: S.optional(S.Array(S.String)), Interval: S.optional(S.Int), Timeout: S.optional(S.Int), Retries: S.optional(S.Int), StartPeriod: S.optional(S.Int) });
 export type HealthConfig = S.Schema.Type<typeof HealthConfig>;
 
-export const HealthcheckResult = S.NullOr(S.Struct({ Start: S.optional(S.String), End: S.optional(S.String), ExitCode: S.optional(S.Int), Output: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Start": 1, "End": 1, "ExitCode": 1, "Output": 1 }, key)))));
+export const HealthcheckResult = S.NullOr(S.Struct({ Start: S.optional(S.String), End: S.optional(S.String), ExitCode: S.optional(S.Int), Output: S.optional(S.String) }));
 export type HealthcheckResult = S.Schema.Type<typeof HealthcheckResult>;
 
-export const Health = S.NullOr(S.Struct({ Status: S.optional(S.Union(S.Literal("none"), S.Literal("starting"), S.Literal("healthy"), S.Literal("unhealthy"))), FailingStreak: S.optional(S.Int), Log: S.optional(S.Array(HealthcheckResult)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Status": 1, "FailingStreak": 1, "Log": 1 }, key)))));
+export const Health = S.NullOr(S.Struct({ Status: S.optional(S.Union(S.Literal("none"), S.Literal("starting"), S.Literal("healthy"), S.Literal("unhealthy"))), FailingStreak: S.optional(S.Int), Log: S.optional(S.Array(HealthcheckResult)) }));
 export type Health = S.Schema.Type<typeof Health>;
 
-export const PortBinding = S.Struct({ HostIp: S.optional(S.String), HostPort: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "HostIp": 1, "HostPort": 1 }, key))));
+export const PortBinding = S.Struct({ HostIp: S.optional(S.String), HostPort: S.optional(S.String) });
 export type PortBinding = S.Schema.Type<typeof PortBinding>;
 
 export const PortMap = S.Record({ key: S.String, value: S.NullOr(S.Array(PortBinding)) });
 export type PortMap = S.Schema.Type<typeof PortMap>;
 
-export const HostConfig = S.extend(Resources, S.Struct({ Binds: S.optional(S.Array(S.String)), ContainerIDFile: S.optional(S.String), LogConfig: S.optional(S.Struct({ Type: S.optional(S.Union(S.Literal("json-file"), S.Literal("syslog"), S.Literal("journald"), S.Literal("gelf"), S.Literal("fluentd"), S.Literal("awslogs"), S.Literal("splunk"), S.Literal("etwlogs"), S.Literal("none"))), Config: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Type": 1, "Config": 1 }, key))))), NetworkMode: S.optional(S.String), PortBindings: S.optional(PortMap), RestartPolicy: S.optional(RestartPolicy), AutoRemove: S.optional(S.Boolean), VolumeDriver: S.optional(S.String), VolumesFrom: S.optional(S.Array(S.String)), Mounts: S.optional(S.Array(Mount)), ConsoleSize: S.optional(S.NullOr(S.Array(S.Int.pipe(S.greaterThanOrEqualTo(0))).pipe(S.minItems(2), S.maxItems(2)))), Annotations: S.optional(S.Record({ key: S.String, value: S.String })), CapAdd: S.optional(S.Array(S.String)), CapDrop: S.optional(S.Array(S.String)), CgroupnsMode: S.optional(S.Union(S.Literal("private"), S.Literal("host"))), Dns: S.optional(S.Array(S.String)), DnsOptions: S.optional(S.Array(S.String)), DnsSearch: S.optional(S.Array(S.String)), ExtraHosts: S.optional(S.Array(S.String)), GroupAdd: S.optional(S.Array(S.String)), IpcMode: S.optional(S.String), Cgroup: S.optional(S.String), Links: S.optional(S.Array(S.String)), OomScoreAdj: S.optional(S.Int), PidMode: S.optional(S.String), Privileged: S.optional(S.Boolean), PublishAllPorts: S.optional(S.Boolean), ReadonlyRootfs: S.optional(S.Boolean), SecurityOpt: S.optional(S.Array(S.String)), StorageOpt: S.optional(S.Record({ key: S.String, value: S.String })), Tmpfs: S.optional(S.Record({ key: S.String, value: S.String })), UTSMode: S.optional(S.String), UsernsMode: S.optional(S.String), ShmSize: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0))), Sysctls: S.optional(S.Record({ key: S.String, value: S.String })), Runtime: S.optional(S.String), Isolation: S.optional(S.Union(S.Literal("default"), S.Literal("process"), S.Literal("hyperv"))), MaskedPaths: S.optional(S.Array(S.String)), ReadonlyPaths: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Binds": 1, "ContainerIDFile": 1, "LogConfig": 1, "NetworkMode": 1, "PortBindings": 1, "RestartPolicy": 1, "AutoRemove": 1, "VolumeDriver": 1, "VolumesFrom": 1, "Mounts": 1, "ConsoleSize": 1, "Annotations": 1, "CapAdd": 1, "CapDrop": 1, "CgroupnsMode": 1, "Dns": 1, "DnsOptions": 1, "DnsSearch": 1, "ExtraHosts": 1, "GroupAdd": 1, "IpcMode": 1, "Cgroup": 1, "Links": 1, "OomScoreAdj": 1, "PidMode": 1, "Privileged": 1, "PublishAllPorts": 1, "ReadonlyRootfs": 1, "SecurityOpt": 1, "StorageOpt": 1, "Tmpfs": 1, "UTSMode": 1, "UsernsMode": 1, "ShmSize": 1, "Sysctls": 1, "Runtime": 1, "Isolation": 1, "MaskedPaths": 1, "ReadonlyPaths": 1 }, key)))));
+export const HostConfig = S.extend(Resources, S.Struct({ Binds: S.optional(S.Array(S.String)), ContainerIDFile: S.optional(S.String), LogConfig: S.optional(S.Struct({ Type: S.optional(S.Union(S.Literal("json-file"), S.Literal("syslog"), S.Literal("journald"), S.Literal("gelf"), S.Literal("fluentd"), S.Literal("awslogs"), S.Literal("splunk"), S.Literal("etwlogs"), S.Literal("none"))), Config: S.optional(S.Record({ key: S.String, value: S.String })) })), NetworkMode: S.optional(S.String), PortBindings: S.optional(PortMap), RestartPolicy: S.optional(RestartPolicy), AutoRemove: S.optional(S.Boolean), VolumeDriver: S.optional(S.String), VolumesFrom: S.optional(S.Array(S.String)), Mounts: S.optional(S.Array(Mount)), ConsoleSize: S.optional(S.NullOr(S.Array(S.Int.pipe(S.greaterThanOrEqualTo(0))).pipe(S.minItems(2), S.maxItems(2)))), Annotations: S.optional(S.Record({ key: S.String, value: S.String })), CapAdd: S.optional(S.Array(S.String)), CapDrop: S.optional(S.Array(S.String)), CgroupnsMode: S.optional(S.Union(S.Literal("private"), S.Literal("host"))), Dns: S.optional(S.Array(S.String)), DnsOptions: S.optional(S.Array(S.String)), DnsSearch: S.optional(S.Array(S.String)), ExtraHosts: S.optional(S.Array(S.String)), GroupAdd: S.optional(S.Array(S.String)), IpcMode: S.optional(S.String), Cgroup: S.optional(S.String), Links: S.optional(S.Array(S.String)), OomScoreAdj: S.optional(S.Int), PidMode: S.optional(S.String), Privileged: S.optional(S.Boolean), PublishAllPorts: S.optional(S.Boolean), ReadonlyRootfs: S.optional(S.Boolean), SecurityOpt: S.optional(S.Array(S.String)), StorageOpt: S.optional(S.Record({ key: S.String, value: S.String })), Tmpfs: S.optional(S.Record({ key: S.String, value: S.String })), UTSMode: S.optional(S.String), UsernsMode: S.optional(S.String), ShmSize: S.optional(S.Int.pipe(S.greaterThanOrEqualTo(0))), Sysctls: S.optional(S.Record({ key: S.String, value: S.String })), Runtime: S.optional(S.String), Isolation: S.optional(S.Union(S.Literal("default"), S.Literal("process"), S.Literal("hyperv"))), MaskedPaths: S.optional(S.Array(S.String)), ReadonlyPaths: S.optional(S.Array(S.String)) }));
 export type HostConfig = S.Schema.Type<typeof HostConfig>;
 
-export const ContainerConfig = S.Struct({ Hostname: S.optional(S.String), Domainname: S.optional(S.String), User: S.optional(S.String), AttachStdin: Boolean_default_false_prop, AttachStdout: Boolean_default_true_prop, AttachStderr: Boolean_default_true_prop, ExposedPorts: S.optional(S.NullOr(S.Record({ key: S.String, value: S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))) }))), Tty: Boolean_default_false_prop, OpenStdin: Boolean_default_false_prop, StdinOnce: Boolean_default_false_prop, Env: S.optional(S.Array(S.String)), Cmd: S.optional(S.Array(S.String)), Healthcheck: S.optional(HealthConfig), ArgsEscaped: NullOr_default_false_prop, Image: S.optional(S.String), Volumes: S.optional(S.Record({ key: S.String, value: S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))) })), WorkingDir: S.optional(S.String), Entrypoint: S.optional(S.Array(S.String)), NetworkDisabled: S.optional(S.NullOr(S.Boolean)), MacAddress: S.optional(S.NullOr(S.String)), OnBuild: S.optional(S.NullOr(S.Array(S.String))), Labels: S.optional(S.Record({ key: S.String, value: S.String })), StopSignal: S.optional(S.NullOr(S.String)), StopTimeout: S.optional(S.NullOr(S.Int)), Shell: S.optional(S.NullOr(S.Array(S.String))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Hostname": 1, "Domainname": 1, "User": 1, "AttachStdin": 1, "AttachStdout": 1, "AttachStderr": 1, "ExposedPorts": 1, "Tty": 1, "OpenStdin": 1, "StdinOnce": 1, "Env": 1, "Cmd": 1, "Healthcheck": 1, "ArgsEscaped": 1, "Image": 1, "Volumes": 1, "WorkingDir": 1, "Entrypoint": 1, "NetworkDisabled": 1, "MacAddress": 1, "OnBuild": 1, "Labels": 1, "StopSignal": 1, "StopTimeout": 1, "Shell": 1 }, key))));
+export const ContainerConfig = S.Struct({ Hostname: S.optional(S.String), Domainname: S.optional(S.String), User: S.optional(S.String), AttachStdin: Boolean_default_false_prop, AttachStdout: Boolean_default_true_prop, AttachStderr: Boolean_default_true_prop, ExposedPorts: S.optional(S.NullOr(S.Record({ key: S.String, value: S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))) }))), Tty: Boolean_default_false_prop, OpenStdin: Boolean_default_false_prop, StdinOnce: Boolean_default_false_prop, Env: S.optional(S.Array(S.String)), Cmd: S.optional(S.Array(S.String)), Healthcheck: S.optional(HealthConfig), ArgsEscaped: NullOr_default_false_prop, Image: S.optional(S.String), Volumes: S.optional(S.Record({ key: S.String, value: S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))) })), WorkingDir: S.optional(S.String), Entrypoint: S.optional(S.Array(S.String)), NetworkDisabled: S.optional(S.NullOr(S.Boolean)), MacAddress: S.optional(S.NullOr(S.String)), OnBuild: S.optional(S.NullOr(S.Array(S.String))), Labels: S.optional(S.Record({ key: S.String, value: S.String })), StopSignal: S.optional(S.NullOr(S.String)), StopTimeout: S.optional(S.NullOr(S.Int)), Shell: S.optional(S.NullOr(S.Array(S.String))) });
 export type ContainerConfig = S.Schema.Type<typeof ContainerConfig>;
 
-export const EndpointIPAMConfig = S.NullOr(S.Struct({ IPv4Address: S.optional(S.String), IPv6Address: S.optional(S.String), LinkLocalIPs: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "IPv4Address": 1, "IPv6Address": 1, "LinkLocalIPs": 1 }, key)))));
+export const EndpointIPAMConfig = S.NullOr(S.Struct({ IPv4Address: S.optional(S.String), IPv6Address: S.optional(S.String), LinkLocalIPs: S.optional(S.Array(S.String)) }));
 export type EndpointIPAMConfig = S.Schema.Type<typeof EndpointIPAMConfig>;
 
-export const EndpointSettings = S.Struct({ IPAMConfig: S.optional(EndpointIPAMConfig), Links: S.optional(S.Array(S.String)), Aliases: S.optional(S.Array(S.String)), NetworkID: S.optional(S.String), EndpointID: S.optional(S.String), Gateway: S.optional(S.String), IPAddress: S.optional(S.String), IPPrefixLen: S.optional(S.Int), IPv6Gateway: S.optional(S.String), GlobalIPv6Address: S.optional(S.String), GlobalIPv6PrefixLen: S.optional(S.Int), MacAddress: S.optional(S.String), DriverOpts: S.optional(S.NullOr(S.Record({ key: S.String, value: S.String }))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "IPAMConfig": 1, "Links": 1, "Aliases": 1, "NetworkID": 1, "EndpointID": 1, "Gateway": 1, "IPAddress": 1, "IPPrefixLen": 1, "IPv6Gateway": 1, "GlobalIPv6Address": 1, "GlobalIPv6PrefixLen": 1, "MacAddress": 1, "DriverOpts": 1 }, key))));
+export const EndpointSettings = S.Struct({ IPAMConfig: S.optional(EndpointIPAMConfig), Links: S.optional(S.Array(S.String)), Aliases: S.optional(S.Array(S.String)), NetworkID: S.optional(S.String), EndpointID: S.optional(S.String), Gateway: S.optional(S.String), IPAddress: S.optional(S.String), IPPrefixLen: S.optional(S.Int), IPv6Gateway: S.optional(S.String), GlobalIPv6Address: S.optional(S.String), GlobalIPv6PrefixLen: S.optional(S.Int), MacAddress: S.optional(S.String), DriverOpts: S.optional(S.NullOr(S.Record({ key: S.String, value: S.String }))) });
 export type EndpointSettings = S.Schema.Type<typeof EndpointSettings>;
 
-export const NetworkingConfig = S.Struct({ EndpointsConfig: S.optional(S.Record({ key: S.String, value: EndpointSettings })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "EndpointsConfig": 1 }, key))));
+export const NetworkingConfig = S.Struct({ EndpointsConfig: S.optional(S.Record({ key: S.String, value: EndpointSettings })) });
 export type NetworkingConfig = S.Schema.Type<typeof NetworkingConfig>;
 
-export const Address = S.Struct({ Addr: S.optional(S.String), PrefixLen: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Addr": 1, "PrefixLen": 1 }, key))));
+export const Address = S.Struct({ Addr: S.optional(S.String), PrefixLen: S.optional(S.Int) });
 export type Address = S.Schema.Type<typeof Address>;
 
-export const NetworkSettings = S.Struct({ Bridge: S.optional(S.String), SandboxID: S.optional(S.String), HairpinMode: S.optional(S.Boolean), LinkLocalIPv6Address: S.optional(S.String), LinkLocalIPv6PrefixLen: S.optional(S.Int), Ports: S.optional(PortMap), SandboxKey: S.optional(S.String), SecondaryIPAddresses: S.optional(S.NullOr(S.Array(Address))), SecondaryIPv6Addresses: S.optional(S.NullOr(S.Array(Address))), EndpointID: S.optional(S.String), Gateway: S.optional(S.String), GlobalIPv6Address: S.optional(S.String), GlobalIPv6PrefixLen: S.optional(S.Int), IPAddress: S.optional(S.String), IPPrefixLen: S.optional(S.Int), IPv6Gateway: S.optional(S.String), MacAddress: S.optional(S.String), Networks: S.optional(S.Record({ key: S.String, value: EndpointSettings })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Bridge": 1, "SandboxID": 1, "HairpinMode": 1, "LinkLocalIPv6Address": 1, "LinkLocalIPv6PrefixLen": 1, "Ports": 1, "SandboxKey": 1, "SecondaryIPAddresses": 1, "SecondaryIPv6Addresses": 1, "EndpointID": 1, "Gateway": 1, "GlobalIPv6Address": 1, "GlobalIPv6PrefixLen": 1, "IPAddress": 1, "IPPrefixLen": 1, "IPv6Gateway": 1, "MacAddress": 1, "Networks": 1 }, key))));
+export const NetworkSettings = S.Struct({ Bridge: S.optional(S.String), SandboxID: S.optional(S.String), HairpinMode: S.optional(S.Boolean), LinkLocalIPv6Address: S.optional(S.String), LinkLocalIPv6PrefixLen: S.optional(S.Int), Ports: S.optional(PortMap), SandboxKey: S.optional(S.String), SecondaryIPAddresses: S.optional(S.NullOr(S.Array(Address))), SecondaryIPv6Addresses: S.optional(S.NullOr(S.Array(Address))), EndpointID: S.optional(S.String), Gateway: S.optional(S.String), GlobalIPv6Address: S.optional(S.String), GlobalIPv6PrefixLen: S.optional(S.Int), IPAddress: S.optional(S.String), IPPrefixLen: S.optional(S.Int), IPv6Gateway: S.optional(S.String), MacAddress: S.optional(S.String), Networks: S.optional(S.Record({ key: S.String, value: EndpointSettings })) });
 export type NetworkSettings = S.Schema.Type<typeof NetworkSettings>;
 
-export const GraphDriverData = S.Struct({ Name: S.String, Data: S.Record({ key: S.String, value: S.String }) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Data": 1 }, key))));
+export const GraphDriverData = S.Struct({ Name: S.String, Data: S.Record({ key: S.String, value: S.String }) });
 export type GraphDriverData = S.Schema.Type<typeof GraphDriverData>;
 
 export const ChangeType = S.Union(S.Literal(0), S.Literal(1), S.Literal(2));
 export type ChangeType = S.Schema.Type<typeof ChangeType>;
 
-export const FilesystemChange = S.Struct({ Path: S.String, Kind: ChangeType }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Path": 1, "Kind": 1 }, key))));
+export const FilesystemChange = S.Struct({ Path: S.String, Kind: ChangeType });
 export type FilesystemChange = S.Schema.Type<typeof FilesystemChange>;
 
-export const ImageInspect = S.Struct({ Id: S.optional(S.String), RepoTags: S.optional(S.Array(S.String)), RepoDigests: S.optional(S.Array(S.String)), Parent: S.optional(S.String), Comment: S.optional(S.String), Created: S.optional(S.String), Container: S.optional(S.String), ContainerConfig: S.optional(ContainerConfig), DockerVersion: S.optional(S.String), Author: S.optional(S.String), Config: S.optional(ContainerConfig), Architecture: S.optional(S.String), Variant: S.optional(S.NullOr(S.String)), Os: S.optional(S.String), OsVersion: S.optional(S.NullOr(S.String)), Size: S.optional(S.Int), VirtualSize: S.optional(S.Int), GraphDriver: S.optional(GraphDriverData), RootFS: S.optional(S.Struct({ Type: S.String, Layers: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Type": 1, "Layers": 1 }, key))))), Metadata: S.optional(S.Struct({ LastTagTime: S.optional(S.NullOr(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "LastTagTime": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "RepoTags": 1, "RepoDigests": 1, "Parent": 1, "Comment": 1, "Created": 1, "Container": 1, "ContainerConfig": 1, "DockerVersion": 1, "Author": 1, "Config": 1, "Architecture": 1, "Variant": 1, "Os": 1, "OsVersion": 1, "Size": 1, "VirtualSize": 1, "GraphDriver": 1, "RootFS": 1, "Metadata": 1 }, key))));
+export const ImageInspect = S.Struct({ Id: S.optional(S.String), RepoTags: S.optional(S.Array(S.String)), RepoDigests: S.optional(S.Array(S.String)), Parent: S.optional(S.String), Comment: S.optional(S.String), Created: S.optional(S.String), Container: S.optional(S.String), ContainerConfig: S.optional(ContainerConfig), DockerVersion: S.optional(S.String), Author: S.optional(S.String), Config: S.optional(ContainerConfig), Architecture: S.optional(S.String), Variant: S.optional(S.NullOr(S.String)), Os: S.optional(S.String), OsVersion: S.optional(S.NullOr(S.String)), Size: S.optional(S.Int), VirtualSize: S.optional(S.Int), GraphDriver: S.optional(GraphDriverData), RootFS: S.optional(S.Struct({ Type: S.String, Layers: S.optional(S.Array(S.String)) })), Metadata: S.optional(S.Struct({ LastTagTime: S.optional(S.NullOr(S.String)) })) });
 export type ImageInspect = S.Schema.Type<typeof ImageInspect>;
 
-export const ImageSummary = S.Struct({ Id: S.String, ParentId: S.String, RepoTags: S.Array(S.String), RepoDigests: S.Array(S.String), Created: S.Int, Size: S.Int, SharedSize: S.Int, VirtualSize: S.optional(S.Int), Labels: S.Record({ key: S.String, value: S.String }), Containers: S.Int }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "ParentId": 1, "RepoTags": 1, "RepoDigests": 1, "Created": 1, "Size": 1, "SharedSize": 1, "VirtualSize": 1, "Labels": 1, "Containers": 1 }, key))));
+export const ImageSummary = S.Struct({ Id: S.String, ParentId: S.String, RepoTags: S.Array(S.String), RepoDigests: S.Array(S.String), Created: S.Int, Size: S.Int, SharedSize: S.Int, VirtualSize: S.optional(S.Int), Labels: S.Record({ key: S.String, value: S.String }), Containers: S.Int });
 export type ImageSummary = S.Schema.Type<typeof ImageSummary>;
 
-export const AuthConfig = S.Struct({ username: S.optional(S.String), password: S.optional(S.String), email: S.optional(S.String), serveraddress: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "username": 1, "password": 1, "email": 1, "serveraddress": 1 }, key))));
+export const AuthConfig = S.Struct({ username: S.optional(S.String), password: S.optional(S.String), email: S.optional(S.String), serveraddress: S.optional(S.String) });
 export type AuthConfig = S.Schema.Type<typeof AuthConfig>;
 
-export const ProcessConfig = S.Struct({ privileged: S.optional(S.Boolean), user: S.optional(S.String), tty: S.optional(S.Boolean), entrypoint: S.optional(S.String), arguments: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "privileged": 1, "user": 1, "tty": 1, "entrypoint": 1, "arguments": 1 }, key))));
+export const ProcessConfig = S.Struct({ privileged: S.optional(S.Boolean), user: S.optional(S.String), tty: S.optional(S.Boolean), entrypoint: S.optional(S.String), arguments: S.optional(S.Array(S.String)) });
 export type ProcessConfig = S.Schema.Type<typeof ProcessConfig>;
 
-export const ObjectVersion = S.Struct({ Index: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Index": 1 }, key))));
+export const ObjectVersion = S.Struct({ Index: S.optional(S.Int) });
 export type ObjectVersion = S.Schema.Type<typeof ObjectVersion>;
 
 export const Topology = S.Record({ key: S.String, value: S.String });
 export type Topology = S.Schema.Type<typeof Topology>;
 
-export const ClusterVolumeSpec = S.Struct({ Group: S.optional(S.String), AccessMode: S.optional(S.Struct({ Scope: Union_default_single_prop, Sharing: Union_default_none_prop, MountVolume: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))), Secrets: S.optional(S.Array(S.Struct({ Key: S.optional(S.String), Secret: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Key": 1, "Secret": 1 }, key)))))), AccessibilityRequirements: S.optional(S.Struct({ Requisite: S.optional(S.Array(Topology)), Preferred: S.optional(S.Array(Topology)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Requisite": 1, "Preferred": 1 }, key))))), CapacityRange: S.optional(S.Struct({ RequiredBytes: S.optional(S.Int), LimitBytes: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "RequiredBytes": 1, "LimitBytes": 1 }, key))))), Availability: Union_default_active_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Scope": 1, "Sharing": 1, "MountVolume": 1, "Secrets": 1, "AccessibilityRequirements": 1, "CapacityRange": 1, "Availability": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Group": 1, "AccessMode": 1 }, key))));
+export const ClusterVolumeSpec = S.Struct({ Group: S.optional(S.String), AccessMode: S.optional(S.Struct({ Scope: Union_default_single_prop, Sharing: Union_default_none_prop, MountVolume: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))), Secrets: S.optional(S.Array(S.Struct({ Key: S.optional(S.String), Secret: S.optional(S.String) }))), AccessibilityRequirements: S.optional(S.Struct({ Requisite: S.optional(S.Array(Topology)), Preferred: S.optional(S.Array(Topology)) })), CapacityRange: S.optional(S.Struct({ RequiredBytes: S.optional(S.Int), LimitBytes: S.optional(S.Int) })), Availability: Union_default_active_prop })) });
 export type ClusterVolumeSpec = S.Schema.Type<typeof ClusterVolumeSpec>;
 
-export const ClusterVolume = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ClusterVolumeSpec), Info: S.optional(S.Struct({ CapacityBytes: S.optional(S.Int), VolumeContext: S.optional(S.Record({ key: S.String, value: S.String })), VolumeID: S.optional(S.String), AccessibleTopology: S.optional(S.Array(Topology)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CapacityBytes": 1, "VolumeContext": 1, "VolumeID": 1, "AccessibleTopology": 1 }, key))))), PublishStatus: S.optional(S.Array(S.Struct({ NodeID: S.optional(S.String), State: S.optional(S.Union(S.Literal("pending-publish"), S.Literal("published"), S.Literal("pending-node-unpublish"), S.Literal("pending-controller-unpublish"))), PublishContext: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NodeID": 1, "State": 1, "PublishContext": 1 }, key)))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "Info": 1, "PublishStatus": 1 }, key))));
+export const ClusterVolume = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ClusterVolumeSpec), Info: S.optional(S.Struct({ CapacityBytes: S.optional(S.Int), VolumeContext: S.optional(S.Record({ key: S.String, value: S.String })), VolumeID: S.optional(S.String), AccessibleTopology: S.optional(S.Array(Topology)) })), PublishStatus: S.optional(S.Array(S.Struct({ NodeID: S.optional(S.String), State: S.optional(S.Union(S.Literal("pending-publish"), S.Literal("published"), S.Literal("pending-node-unpublish"), S.Literal("pending-controller-unpublish"))), PublishContext: S.optional(S.Record({ key: S.String, value: S.String })) }))) });
 export type ClusterVolume = S.Schema.Type<typeof ClusterVolume>;
 
-export const Volume = S.Struct({ Name: S.String, Driver: S.String, Mountpoint: S.String, CreatedAt: S.optional(S.String), Status: S.optional(S.Record({ key: S.String, value: S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))) })), Labels: S.Record({ key: S.String, value: S.String }), Scope: Union_default_local_prop, ClusterVolume: S.optional(ClusterVolume), Options: S.Record({ key: S.String, value: S.String }), UsageData: S.optional(S.NullOr(S.Struct({ Size: Int_default_neg_1_prop, RefCount: Int_default_neg_1_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Size": 1, "RefCount": 1 }, key)))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Driver": 1, "Mountpoint": 1, "CreatedAt": 1, "Status": 1, "Labels": 1, "Scope": 1, "ClusterVolume": 1, "Options": 1, "UsageData": 1 }, key))));
+export const Volume = S.Struct({ Name: S.String, Driver: S.String, Mountpoint: S.String, CreatedAt: S.optional(S.String), Status: S.optional(S.Record({ key: S.String, value: S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))) })), Labels: S.Record({ key: S.String, value: S.String }), Scope: Union_default_local_prop, ClusterVolume: S.optional(ClusterVolume), Options: S.Record({ key: S.String, value: S.String }), UsageData: S.optional(S.NullOr(S.Struct({ Size: Int_default_neg_1_prop, RefCount: Int_default_neg_1_prop }))) });
 export type Volume = S.Schema.Type<typeof Volume>;
 
-export const VolumeCreateOptions = S.Struct({ Name: S.optional(S.String), Driver: String_default_local_prop, DriverOpts: S.optional(S.Record({ key: S.String, value: S.String })), Labels: S.optional(S.Record({ key: S.String, value: S.String })), ClusterVolumeSpec: S.optional(ClusterVolumeSpec) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Driver": 1, "DriverOpts": 1, "Labels": 1, "ClusterVolumeSpec": 1 }, key))));
+export const VolumeCreateOptions = S.Struct({ Name: S.optional(S.String), Driver: String_default_local_prop, DriverOpts: S.optional(S.Record({ key: S.String, value: S.String })), Labels: S.optional(S.Record({ key: S.String, value: S.String })), ClusterVolumeSpec: S.optional(ClusterVolumeSpec) });
 export type VolumeCreateOptions = S.Schema.Type<typeof VolumeCreateOptions>;
 
-export const VolumeListResponse = S.Struct({ Volumes: S.optional(S.Array(Volume)), Warnings: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Volumes": 1, "Warnings": 1 }, key))));
+export const VolumeListResponse = S.Struct({ Volumes: S.optional(S.Array(Volume)), Warnings: S.optional(S.Array(S.String)) });
 export type VolumeListResponse = S.Schema.Type<typeof VolumeListResponse>;
 
-export const IPAMConfig = S.Struct({ Subnet: S.optional(S.String), IPRange: S.optional(S.String), Gateway: S.optional(S.String), AuxiliaryAddresses: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Subnet": 1, "IPRange": 1, "Gateway": 1, "AuxiliaryAddresses": 1 }, key))));
+export const IPAMConfig = S.Struct({ Subnet: S.optional(S.String), IPRange: S.optional(S.String), Gateway: S.optional(S.String), AuxiliaryAddresses: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type IPAMConfig = S.Schema.Type<typeof IPAMConfig>;
 
-export const IPAM = S.Struct({ Driver: String_default_default_prop, Config: S.optional(S.Array(IPAMConfig)), Options: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Driver": 1, "Config": 1, "Options": 1 }, key))));
+export const IPAM = S.Struct({ Driver: String_default_default_prop, Config: S.optional(S.Array(IPAMConfig)), Options: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type IPAM = S.Schema.Type<typeof IPAM>;
 
-export const NetworkContainer = S.Struct({ Name: S.optional(S.String), EndpointID: S.optional(S.String), MacAddress: S.optional(S.String), IPv4Address: S.optional(S.String), IPv6Address: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "EndpointID": 1, "MacAddress": 1, "IPv4Address": 1, "IPv6Address": 1 }, key))));
+export const NetworkContainer = S.Struct({ Name: S.optional(S.String), EndpointID: S.optional(S.String), MacAddress: S.optional(S.String), IPv4Address: S.optional(S.String), IPv6Address: S.optional(S.String) });
 export type NetworkContainer = S.Schema.Type<typeof NetworkContainer>;
 
-export const Network = S.Struct({ Name: S.optional(S.String), Id: S.optional(S.String), Created: S.optional(S.String), Scope: S.optional(S.String), Driver: S.optional(S.String), EnableIPv6: S.optional(S.Boolean), IPAM: S.optional(IPAM), Internal: S.optional(S.Boolean), Attachable: S.optional(S.Boolean), Ingress: S.optional(S.Boolean), Containers: S.optional(S.Record({ key: S.String, value: NetworkContainer })), Options: S.optional(S.Record({ key: S.String, value: S.String })), Labels: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Id": 1, "Created": 1, "Scope": 1, "Driver": 1, "EnableIPv6": 1, "IPAM": 1, "Internal": 1, "Attachable": 1, "Ingress": 1, "Containers": 1, "Options": 1, "Labels": 1 }, key))));
+export const Network = S.Struct({ Name: S.optional(S.String), Id: S.optional(S.String), Created: S.optional(S.String), Scope: S.optional(S.String), Driver: S.optional(S.String), EnableIPv6: S.optional(S.Boolean), IPAM: S.optional(IPAM), Internal: S.optional(S.Boolean), Attachable: S.optional(S.Boolean), Ingress: S.optional(S.Boolean), Containers: S.optional(S.Record({ key: S.String, value: NetworkContainer })), Options: S.optional(S.Record({ key: S.String, value: S.String })), Labels: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type Network = S.Schema.Type<typeof Network>;
 
-export const ErrorDetail = S.Struct({ code: S.optional(S.Int), message: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "code": 1, "message": 1 }, key))));
+export const ErrorDetail = S.Struct({ code: S.optional(S.Int), message: S.optional(S.String) });
 export type ErrorDetail = S.Schema.Type<typeof ErrorDetail>;
 
-export const ProgressDetail = S.Struct({ current: S.optional(S.Int), total: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "current": 1, "total": 1 }, key))));
+export const ProgressDetail = S.Struct({ current: S.optional(S.Int), total: S.optional(S.Int) });
 export type ProgressDetail = S.Schema.Type<typeof ProgressDetail>;
 
-export const ImageID = S.Struct({ ID: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1 }, key))));
+export const ImageID = S.Struct({ ID: S.optional(S.String) });
 export type ImageID = S.Schema.Type<typeof ImageID>;
 
-export const BuildInfo = S.Struct({ id: S.optional(S.String), stream: S.optional(S.String), error: S.optional(S.String), errorDetail: S.optional(ErrorDetail), status: S.optional(S.String), progress: S.optional(S.String), progressDetail: S.optional(ProgressDetail), aux: S.optional(ImageID) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1, "stream": 1, "error": 1, "errorDetail": 1, "status": 1, "progress": 1, "progressDetail": 1, "aux": 1 }, key))));
+export const BuildInfo = S.Struct({ id: S.optional(S.String), stream: S.optional(S.String), error: S.optional(S.String), errorDetail: S.optional(ErrorDetail), status: S.optional(S.String), progress: S.optional(S.String), progressDetail: S.optional(ProgressDetail), aux: S.optional(ImageID) });
 export type BuildInfo = S.Schema.Type<typeof BuildInfo>;
 
-export const BuildCache = S.Struct({ ID: S.optional(S.String), Parent: S.optional(S.NullOr(S.String)), Parents: S.optional(S.NullOr(S.Array(S.String))), Type: S.optional(S.Union(S.Literal("internal"), S.Literal("frontend"), S.Literal("source.local"), S.Literal("source.git.checkout"), S.Literal("exec.cachemount"), S.Literal("regular"))), Description: S.optional(S.String), InUse: S.optional(S.Boolean), Shared: S.optional(S.Boolean), Size: S.optional(S.Int), CreatedAt: S.optional(S.String), LastUsedAt: S.optional(S.NullOr(S.String)), UsageCount: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Parent": 1, "Parents": 1, "Type": 1, "Description": 1, "InUse": 1, "Shared": 1, "Size": 1, "CreatedAt": 1, "LastUsedAt": 1, "UsageCount": 1 }, key))));
+export const BuildCache = S.Struct({ ID: S.optional(S.String), Parent: S.optional(S.NullOr(S.String)), Parents: S.optional(S.NullOr(S.Array(S.String))), Type: S.optional(S.Union(S.Literal("internal"), S.Literal("frontend"), S.Literal("source.local"), S.Literal("source.git.checkout"), S.Literal("exec.cachemount"), S.Literal("regular"))), Description: S.optional(S.String), InUse: S.optional(S.Boolean), Shared: S.optional(S.Boolean), Size: S.optional(S.Int), CreatedAt: S.optional(S.String), LastUsedAt: S.optional(S.NullOr(S.String)), UsageCount: S.optional(S.Int) });
 export type BuildCache = S.Schema.Type<typeof BuildCache>;
 
-export const CreateImageInfo = S.Struct({ id: S.optional(S.String), error: S.optional(S.String), errorDetail: S.optional(ErrorDetail), status: S.optional(S.String), progress: S.optional(S.String), progressDetail: S.optional(ProgressDetail) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1, "error": 1, "errorDetail": 1, "status": 1, "progress": 1, "progressDetail": 1 }, key))));
+export const CreateImageInfo = S.Struct({ id: S.optional(S.String), error: S.optional(S.String), errorDetail: S.optional(ErrorDetail), status: S.optional(S.String), progress: S.optional(S.String), progressDetail: S.optional(ProgressDetail) });
 export type CreateImageInfo = S.Schema.Type<typeof CreateImageInfo>;
 
-export const PushImageInfo = S.Struct({ error: S.optional(S.String), status: S.optional(S.String), progress: S.optional(S.String), progressDetail: S.optional(ProgressDetail) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "error": 1, "status": 1, "progress": 1, "progressDetail": 1 }, key))));
+export const PushImageInfo = S.Struct({ error: S.optional(S.String), status: S.optional(S.String), progress: S.optional(S.String), progressDetail: S.optional(ProgressDetail) });
 export type PushImageInfo = S.Schema.Type<typeof PushImageInfo>;
 
-export const ErrorResponse = S.Struct({ message: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "message": 1 }, key))));
+export const ErrorResponse = S.Struct({ message: S.String });
 export type ErrorResponse = S.Schema.Type<typeof ErrorResponse>;
 
-export const IdResponse = S.Struct({ Id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1 }, key))));
+export const IdResponse = S.Struct({ Id: S.String });
 export type IdResponse = S.Schema.Type<typeof IdResponse>;
 
-export const PluginMount = S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Source: S.String, Destination: S.String, Type: S.String, Options: S.Array(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Description": 1, "Settable": 1, "Source": 1, "Destination": 1, "Type": 1, "Options": 1 }, key))));
+export const PluginMount = S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Source: S.String, Destination: S.String, Type: S.String, Options: S.Array(S.String) });
 export type PluginMount = S.Schema.Type<typeof PluginMount>;
 
-export const PluginDevice = S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Path: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Description": 1, "Settable": 1, "Path": 1 }, key))));
+export const PluginDevice = S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Path: S.String });
 export type PluginDevice = S.Schema.Type<typeof PluginDevice>;
 
-export const PluginEnv = S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Value: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Description": 1, "Settable": 1, "Value": 1 }, key))));
+export const PluginEnv = S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Value: S.String });
 export type PluginEnv = S.Schema.Type<typeof PluginEnv>;
 
-export const PluginInterfaceType = S.Struct({ Prefix: S.String, Capability: S.String, Version: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Prefix": 1, "Capability": 1, "Version": 1 }, key))));
+export const PluginInterfaceType = S.Struct({ Prefix: S.String, Capability: S.String, Version: S.String });
 export type PluginInterfaceType = S.Schema.Type<typeof PluginInterfaceType>;
 
-export const PluginPrivilege = S.Struct({ Name: S.optional(S.String), Description: S.optional(S.String), Value: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Description": 1, "Value": 1 }, key))));
+export const PluginPrivilege = S.Struct({ Name: S.optional(S.String), Description: S.optional(S.String), Value: S.optional(S.Array(S.String)) });
 export type PluginPrivilege = S.Schema.Type<typeof PluginPrivilege>;
 
-export const Plugin = S.Struct({ Id: S.optional(S.String), Name: S.String, Enabled: S.Boolean, Settings: S.Struct({ Mounts: S.Array(PluginMount), Env: S.Array(S.String), Args: S.Array(S.String), Devices: S.Array(PluginDevice) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Mounts": 1, "Env": 1, "Args": 1, "Devices": 1 }, key)))), PluginReference: S.optional(S.String), Config: S.Struct({ DockerVersion: S.optional(S.String), Description: S.String, Documentation: S.String, Interface: S.Struct({ Types: S.Array(PluginInterfaceType), Socket: S.String, ProtocolScheme: S.optional(S.Union(S.Literal(""), S.Literal("moby.plugins.http/v1"))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Types": 1, "Socket": 1, "ProtocolScheme": 1 }, key)))), Entrypoint: S.Array(S.String), WorkDir: S.String, User: S.optional(S.Struct({ UID: S.optional(S.Int), GID: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "UID": 1, "GID": 1 }, key))))), Network: S.Struct({ Type: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Type": 1 }, key)))), Linux: S.Struct({ Capabilities: S.Array(S.String), AllowAllDevices: S.Boolean, Devices: S.Array(PluginDevice) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Capabilities": 1, "AllowAllDevices": 1, "Devices": 1 }, key)))), PropagatedMount: S.String, IpcHost: S.Boolean, PidHost: S.Boolean, Mounts: S.Array(PluginMount), Env: S.Array(PluginEnv), Args: S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Value: S.Array(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Description": 1, "Settable": 1, "Value": 1 }, key)))), rootfs: S.optional(S.Struct({ type: S.optional(S.String), diff_ids: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "type": 1, "diff_ids": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "DockerVersion": 1, "Description": 1, "Documentation": 1, "Interface": 1, "Entrypoint": 1, "WorkDir": 1, "User": 1, "Network": 1, "Linux": 1, "PropagatedMount": 1, "IpcHost": 1, "PidHost": 1, "Mounts": 1, "Env": 1, "Args": 1, "rootfs": 1 }, key)))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "Name": 1, "Enabled": 1, "Settings": 1, "PluginReference": 1, "Config": 1 }, key))));
+export const Plugin = S.Struct({ Id: S.optional(S.String), Name: S.String, Enabled: S.Boolean, Settings: S.Struct({ Mounts: S.Array(PluginMount), Env: S.Array(S.String), Args: S.Array(S.String), Devices: S.Array(PluginDevice) }), PluginReference: S.optional(S.String), Config: S.Struct({ DockerVersion: S.optional(S.String), Description: S.String, Documentation: S.String, Interface: S.Struct({ Types: S.Array(PluginInterfaceType), Socket: S.String, ProtocolScheme: S.optional(S.Union(S.Literal(""), S.Literal("moby.plugins.http/v1"))) }), Entrypoint: S.Array(S.String), WorkDir: S.String, User: S.optional(S.Struct({ UID: S.optional(S.Int), GID: S.optional(S.Int) })), Network: S.Struct({ Type: S.String }), Linux: S.Struct({ Capabilities: S.Array(S.String), AllowAllDevices: S.Boolean, Devices: S.Array(PluginDevice) }), PropagatedMount: S.String, IpcHost: S.Boolean, PidHost: S.Boolean, Mounts: S.Array(PluginMount), Env: S.Array(PluginEnv), Args: S.Struct({ Name: S.String, Description: S.String, Settable: S.Array(S.String), Value: S.Array(S.String) }), rootfs: S.optional(S.Struct({ type: S.optional(S.String), diff_ids: S.optional(S.Array(S.String)) })) }) });
 export type Plugin = S.Schema.Type<typeof Plugin>;
 
-export const NodeSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Role: S.optional(S.Union(S.Literal("worker"), S.Literal("manager"))), Availability: S.optional(S.Union(S.Literal("active"), S.Literal("pause"), S.Literal("drain"))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Labels": 1, "Role": 1, "Availability": 1 }, key))));
+export const NodeSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Role: S.optional(S.Union(S.Literal("worker"), S.Literal("manager"))), Availability: S.optional(S.Union(S.Literal("active"), S.Literal("pause"), S.Literal("drain"))) });
 export type NodeSpec = S.Schema.Type<typeof NodeSpec>;
 
-export const Platform = S.Struct({ Architecture: S.optional(S.String), OS: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Architecture": 1, "OS": 1 }, key))));
+export const Platform = S.Struct({ Architecture: S.optional(S.String), OS: S.optional(S.String) });
 export type Platform = S.Schema.Type<typeof Platform>;
 
-export const EngineDescription = S.Struct({ EngineVersion: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Plugins: S.optional(S.Array(S.Struct({ Type: S.optional(S.String), Name: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Type": 1, "Name": 1 }, key)))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "EngineVersion": 1, "Labels": 1, "Plugins": 1 }, key))));
+export const EngineDescription = S.Struct({ EngineVersion: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Plugins: S.optional(S.Array(S.Struct({ Type: S.optional(S.String), Name: S.optional(S.String) }))) });
 export type EngineDescription = S.Schema.Type<typeof EngineDescription>;
 
-export const TLSInfo = S.Struct({ TrustRoot: S.optional(S.String), CertIssuerSubject: S.optional(S.String), CertIssuerPublicKey: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "TrustRoot": 1, "CertIssuerSubject": 1, "CertIssuerPublicKey": 1 }, key))));
+export const TLSInfo = S.Struct({ TrustRoot: S.optional(S.String), CertIssuerSubject: S.optional(S.String), CertIssuerPublicKey: S.optional(S.String) });
 export type TLSInfo = S.Schema.Type<typeof TLSInfo>;
 
-export const NodeDescription = S.Struct({ Hostname: S.optional(S.String), Platform: S.optional(Platform), Resources: S.optional(ResourceObject), Engine: S.optional(EngineDescription), TLSInfo: S.optional(TLSInfo) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Hostname": 1, "Platform": 1, "Resources": 1, "Engine": 1, "TLSInfo": 1 }, key))));
+export const NodeDescription = S.Struct({ Hostname: S.optional(S.String), Platform: S.optional(Platform), Resources: S.optional(ResourceObject), Engine: S.optional(EngineDescription), TLSInfo: S.optional(TLSInfo) });
 export type NodeDescription = S.Schema.Type<typeof NodeDescription>;
 
 export const NodeState = S.Union(S.Literal("unknown"), S.Literal("down"), S.Literal("ready"), S.Literal("disconnected"));
 export type NodeState = S.Schema.Type<typeof NodeState>;
 
-export const NodeStatus = S.Struct({ State: S.optional(NodeState), Message: S.optional(S.String), Addr: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "State": 1, "Message": 1, "Addr": 1 }, key))));
+export const NodeStatus = S.Struct({ State: S.optional(NodeState), Message: S.optional(S.String), Addr: S.optional(S.String) });
 export type NodeStatus = S.Schema.Type<typeof NodeStatus>;
 
 export const Reachability = S.Union(S.Literal("unknown"), S.Literal("unreachable"), S.Literal("reachable"));
 export type Reachability = S.Schema.Type<typeof Reachability>;
 
-export const ManagerStatus = S.NullOr(S.Struct({ Leader: Boolean_default_false_prop, Reachability: S.optional(Reachability), Addr: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Leader": 1, "Reachability": 1, "Addr": 1 }, key)))));
+export const ManagerStatus = S.NullOr(S.Struct({ Leader: Boolean_default_false_prop, Reachability: S.optional(Reachability), Addr: S.optional(S.String) }));
 export type ManagerStatus = S.Schema.Type<typeof ManagerStatus>;
 
-export const Node = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(NodeSpec), Description: S.optional(NodeDescription), Status: S.optional(NodeStatus), ManagerStatus: S.optional(ManagerStatus) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "Description": 1, "Status": 1, "ManagerStatus": 1 }, key))));
+export const Node = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(NodeSpec), Description: S.optional(NodeDescription), Status: S.optional(NodeStatus), ManagerStatus: S.optional(ManagerStatus) });
 export type Node = S.Schema.Type<typeof Node>;
 
-export const SwarmSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Orchestration: S.optional(S.NullOr(S.Struct({ TaskHistoryRetentionLimit: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "TaskHistoryRetentionLimit": 1 }, key)))))), Raft: S.optional(S.Struct({ SnapshotInterval: S.optional(S.Int), KeepOldSnapshots: S.optional(S.Int), LogEntriesForSlowFollowers: S.optional(S.Int), ElectionTick: S.optional(S.Int), HeartbeatTick: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "SnapshotInterval": 1, "KeepOldSnapshots": 1, "LogEntriesForSlowFollowers": 1, "ElectionTick": 1, "HeartbeatTick": 1 }, key))))), Dispatcher: S.optional(S.NullOr(S.Struct({ HeartbeatPeriod: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "HeartbeatPeriod": 1 }, key)))))), CAConfig: S.optional(S.NullOr(S.Struct({ NodeCertExpiry: S.optional(S.Int), ExternalCAs: S.optional(S.Array(S.Struct({ Protocol: S.optional(S.Literal("cfssl")), URL: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })), CACert: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Protocol": 1, "URL": 1, "Options": 1, "CACert": 1 }, key)))))), SigningCACert: S.optional(S.String), SigningCAKey: S.optional(S.String), ForceRotate: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NodeCertExpiry": 1, "ExternalCAs": 1, "SigningCACert": 1, "SigningCAKey": 1, "ForceRotate": 1 }, key)))))), EncryptionConfig: S.optional(S.Struct({ AutoLockManagers: S.optional(S.Boolean) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "AutoLockManagers": 1 }, key))))), TaskDefaults: S.optional(S.Struct({ LogDriver: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Options": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "LogDriver": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Labels": 1, "Orchestration": 1, "Raft": 1, "Dispatcher": 1, "CAConfig": 1, "EncryptionConfig": 1, "TaskDefaults": 1 }, key))));
+export const SwarmSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Orchestration: S.optional(S.NullOr(S.Struct({ TaskHistoryRetentionLimit: S.optional(S.Int) }))), Raft: S.optional(S.Struct({ SnapshotInterval: S.optional(S.Int), KeepOldSnapshots: S.optional(S.Int), LogEntriesForSlowFollowers: S.optional(S.Int), ElectionTick: S.optional(S.Int), HeartbeatTick: S.optional(S.Int) })), Dispatcher: S.optional(S.NullOr(S.Struct({ HeartbeatPeriod: S.optional(S.Int) }))), CAConfig: S.optional(S.NullOr(S.Struct({ NodeCertExpiry: S.optional(S.Int), ExternalCAs: S.optional(S.Array(S.Struct({ Protocol: S.optional(S.Literal("cfssl")), URL: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })), CACert: S.optional(S.String) }))), SigningCACert: S.optional(S.String), SigningCAKey: S.optional(S.String), ForceRotate: S.optional(S.Int) }))), EncryptionConfig: S.optional(S.Struct({ AutoLockManagers: S.optional(S.Boolean) })), TaskDefaults: S.optional(S.Struct({ LogDriver: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) })) })) });
 export type SwarmSpec = S.Schema.Type<typeof SwarmSpec>;
 
-export const ClusterInfo = S.NullOr(S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(SwarmSpec), TLSInfo: S.optional(TLSInfo), RootRotationInProgress: S.optional(S.Boolean), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), SubnetSize: S.optional(S.Int.pipe(S.lessThanOrEqualTo(29))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "TLSInfo": 1, "RootRotationInProgress": 1, "DataPathPort": 1, "DefaultAddrPool": 1, "SubnetSize": 1 }, key)))));
+export const ClusterInfo = S.NullOr(S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(SwarmSpec), TLSInfo: S.optional(TLSInfo), RootRotationInProgress: S.optional(S.Boolean), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), SubnetSize: S.optional(S.Int.pipe(S.lessThanOrEqualTo(29))) }));
 export type ClusterInfo = S.Schema.Type<typeof ClusterInfo>;
 
-export const JoinTokens = S.Struct({ Worker: S.optional(S.String), Manager: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Worker": 1, "Manager": 1 }, key))));
+export const JoinTokens = S.Struct({ Worker: S.optional(S.String), Manager: S.optional(S.String) });
 export type JoinTokens = S.Schema.Type<typeof JoinTokens>;
 
-export const Swarm = ClusterInfo.pipe(S.filter((value) => S.is(S.Struct({ JoinTokens: S.optional(JoinTokens) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "JoinTokens": 1 }, key)))))(value)));
+export const Swarm = ClusterInfo.pipe(S.filter((value) => S.is(S.Struct({ JoinTokens: S.optional(JoinTokens) }))(value)));
 export type Swarm = S.Schema.Type<typeof Swarm>;
 
-export const NetworkAttachmentConfig = S.Struct({ Target: S.optional(S.String), Aliases: S.optional(S.Array(S.String)), DriverOpts: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Target": 1, "Aliases": 1, "DriverOpts": 1 }, key))));
+export const NetworkAttachmentConfig = S.Struct({ Target: S.optional(S.String), Aliases: S.optional(S.Array(S.String)), DriverOpts: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type NetworkAttachmentConfig = S.Schema.Type<typeof NetworkAttachmentConfig>;
 
-export const TaskSpec = S.Struct({ PluginSpec: S.optional(S.Struct({ Name: S.optional(S.String), Remote: S.optional(S.String), Disabled: S.optional(S.Boolean), PluginPrivilege: S.optional(S.Array(PluginPrivilege)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Remote": 1, "Disabled": 1, "PluginPrivilege": 1 }, key))))), ContainerSpec: S.optional(S.Struct({ Image: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Command: S.optional(S.Array(S.String)), Args: S.optional(S.Array(S.String)), Hostname: S.optional(S.String), Env: S.optional(S.Array(S.String)), Dir: S.optional(S.String), User: S.optional(S.String), Groups: S.optional(S.Array(S.String)), Privileges: S.optional(S.Struct({ CredentialSpec: S.optional(S.Struct({ Config: S.optional(S.String), File: S.optional(S.String), Registry: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Config": 1, "File": 1, "Registry": 1 }, key))))), SELinuxContext: S.optional(S.Struct({ Disable: S.optional(S.Boolean), User: S.optional(S.String), Role: S.optional(S.String), Type: S.optional(S.String), Level: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Disable": 1, "User": 1, "Role": 1, "Type": 1, "Level": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CredentialSpec": 1, "SELinuxContext": 1 }, key))))), TTY: S.optional(S.Boolean), OpenStdin: S.optional(S.Boolean), ReadOnly: S.optional(S.Boolean), Mounts: S.optional(S.Array(Mount)), StopSignal: S.optional(S.String), StopGracePeriod: S.optional(S.Int), HealthCheck: S.optional(HealthConfig), Hosts: S.optional(S.Array(S.String)), DNSConfig: S.optional(S.Struct({ Nameservers: S.optional(S.Array(S.String)), Search: S.optional(S.Array(S.String)), Options: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Nameservers": 1, "Search": 1, "Options": 1 }, key))))), Secrets: S.optional(S.Array(S.Struct({ File: S.optional(S.Struct({ Name: S.optional(S.String), UID: S.optional(S.String), GID: S.optional(S.String), Mode: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "UID": 1, "GID": 1, "Mode": 1 }, key))))), SecretID: S.optional(S.String), SecretName: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "File": 1, "SecretID": 1, "SecretName": 1 }, key)))))), Configs: S.optional(S.Array(S.Struct({ File: S.optional(S.Struct({ Name: S.optional(S.String), UID: S.optional(S.String), GID: S.optional(S.String), Mode: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "UID": 1, "GID": 1, "Mode": 1 }, key))))), Runtime: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))), ConfigID: S.optional(S.String), ConfigName: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "File": 1, "Runtime": 1, "ConfigID": 1, "ConfigName": 1 }, key)))))), Isolation: S.optional(S.Union(S.Literal("default"), S.Literal("process"), S.Literal("hyperv"))), Init: S.optional(S.NullOr(S.Boolean)), Sysctls: S.optional(S.Record({ key: S.String, value: S.String })), CapabilityAdd: S.optional(S.Array(S.String)), CapabilityDrop: S.optional(S.Array(S.String)), Ulimits: S.optional(S.Array(S.Struct({ Name: S.optional(S.String), Soft: S.optional(S.Int), Hard: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Soft": 1, "Hard": 1 }, key)))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Image": 1, "Labels": 1, "Command": 1, "Args": 1, "Hostname": 1, "Env": 1, "Dir": 1, "User": 1, "Groups": 1, "Privileges": 1, "TTY": 1, "OpenStdin": 1, "ReadOnly": 1, "Mounts": 1, "StopSignal": 1, "StopGracePeriod": 1, "HealthCheck": 1, "Hosts": 1, "DNSConfig": 1, "Secrets": 1, "Configs": 1, "Isolation": 1, "Init": 1, "Sysctls": 1, "CapabilityAdd": 1, "CapabilityDrop": 1, "Ulimits": 1 }, key))))), NetworkAttachmentSpec: S.optional(S.Struct({ ContainerID: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ContainerID": 1 }, key))))), Resources: S.optional(S.Struct({ Limits: S.optional(Limit), Reservations: S.optional(ResourceObject) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Limits": 1, "Reservations": 1 }, key))))), RestartPolicy: S.optional(S.Struct({ Condition: S.optional(S.Union(S.Literal("none"), S.Literal("on-failure"), S.Literal("any"))), Delay: S.optional(S.Int), MaxAttempts: Int_default_0_prop, Window: Int_default_0_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Condition": 1, "Delay": 1, "MaxAttempts": 1, "Window": 1 }, key))))), Placement: S.optional(S.Struct({ Constraints: S.optional(S.Array(S.String)), Preferences: S.optional(S.Array(S.Struct({ Spread: S.optional(S.Struct({ SpreadDescriptor: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "SpreadDescriptor": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Spread": 1 }, key)))))), MaxReplicas: Int_default_0_prop, Platforms: S.optional(S.Array(Platform)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Constraints": 1, "Preferences": 1, "MaxReplicas": 1, "Platforms": 1 }, key))))), ForceUpdate: S.optional(S.Int), Runtime: S.optional(S.String), Networks: S.optional(S.Array(NetworkAttachmentConfig)), LogDriver: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Options": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "PluginSpec": 1, "ContainerSpec": 1, "NetworkAttachmentSpec": 1, "Resources": 1, "RestartPolicy": 1, "Placement": 1, "ForceUpdate": 1, "Runtime": 1, "Networks": 1, "LogDriver": 1 }, key))));
+export const TaskSpec = S.Struct({ PluginSpec: S.optional(S.Struct({ Name: S.optional(S.String), Remote: S.optional(S.String), Disabled: S.optional(S.Boolean), PluginPrivilege: S.optional(S.Array(PluginPrivilege)) })), ContainerSpec: S.optional(S.Struct({ Image: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Command: S.optional(S.Array(S.String)), Args: S.optional(S.Array(S.String)), Hostname: S.optional(S.String), Env: S.optional(S.Array(S.String)), Dir: S.optional(S.String), User: S.optional(S.String), Groups: S.optional(S.Array(S.String)), Privileges: S.optional(S.Struct({ CredentialSpec: S.optional(S.Struct({ Config: S.optional(S.String), File: S.optional(S.String), Registry: S.optional(S.String) })), SELinuxContext: S.optional(S.Struct({ Disable: S.optional(S.Boolean), User: S.optional(S.String), Role: S.optional(S.String), Type: S.optional(S.String), Level: S.optional(S.String) })) })), TTY: S.optional(S.Boolean), OpenStdin: S.optional(S.Boolean), ReadOnly: S.optional(S.Boolean), Mounts: S.optional(S.Array(Mount)), StopSignal: S.optional(S.String), StopGracePeriod: S.optional(S.Int), HealthCheck: S.optional(HealthConfig), Hosts: S.optional(S.Array(S.String)), DNSConfig: S.optional(S.Struct({ Nameservers: S.optional(S.Array(S.String)), Search: S.optional(S.Array(S.String)), Options: S.optional(S.Array(S.String)) })), Secrets: S.optional(S.Array(S.Struct({ File: S.optional(S.Struct({ Name: S.optional(S.String), UID: S.optional(S.String), GID: S.optional(S.String), Mode: S.optional(S.Int) })), SecretID: S.optional(S.String), SecretName: S.optional(S.String) }))), Configs: S.optional(S.Array(S.Struct({ File: S.optional(S.Struct({ Name: S.optional(S.String), UID: S.optional(S.String), GID: S.optional(S.String), Mode: S.optional(S.Int) })), Runtime: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))), ConfigID: S.optional(S.String), ConfigName: S.optional(S.String) }))), Isolation: S.optional(S.Union(S.Literal("default"), S.Literal("process"), S.Literal("hyperv"))), Init: S.optional(S.NullOr(S.Boolean)), Sysctls: S.optional(S.Record({ key: S.String, value: S.String })), CapabilityAdd: S.optional(S.Array(S.String)), CapabilityDrop: S.optional(S.Array(S.String)), Ulimits: S.optional(S.Array(S.Struct({ Name: S.optional(S.String), Soft: S.optional(S.Int), Hard: S.optional(S.Int) }))) })), NetworkAttachmentSpec: S.optional(S.Struct({ ContainerID: S.optional(S.String) })), Resources: S.optional(S.Struct({ Limits: S.optional(Limit), Reservations: S.optional(ResourceObject) })), RestartPolicy: S.optional(S.Struct({ Condition: S.optional(S.Union(S.Literal("none"), S.Literal("on-failure"), S.Literal("any"))), Delay: S.optional(S.Int), MaxAttempts: Int_default_0_prop, Window: Int_default_0_prop })), Placement: S.optional(S.Struct({ Constraints: S.optional(S.Array(S.String)), Preferences: S.optional(S.Array(S.Struct({ Spread: S.optional(S.Struct({ SpreadDescriptor: S.optional(S.String) })) }))), MaxReplicas: Int_default_0_prop, Platforms: S.optional(S.Array(Platform)) })), ForceUpdate: S.optional(S.Int), Runtime: S.optional(S.String), Networks: S.optional(S.Array(NetworkAttachmentConfig)), LogDriver: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) })) });
 export type TaskSpec = S.Schema.Type<typeof TaskSpec>;
 
 export const TaskState = S.Union(S.Literal("new"), S.Literal("allocated"), S.Literal("pending"), S.Literal("assigned"), S.Literal("accepted"), S.Literal("preparing"), S.Literal("ready"), S.Literal("starting"), S.Literal("running"), S.Literal("complete"), S.Literal("shutdown"), S.Literal("failed"), S.Literal("rejected"), S.Literal("remove"), S.Literal("orphaned"));
 export type TaskState = S.Schema.Type<typeof TaskState>;
 
-export const Task = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Spec: S.optional(TaskSpec), ServiceID: S.optional(S.String), Slot: S.optional(S.Int), NodeID: S.optional(S.String), AssignedGenericResources: S.optional(GenericResources), Status: S.optional(S.Struct({ Timestamp: S.optional(S.String), State: S.optional(TaskState), Message: S.optional(S.String), Err: S.optional(S.String), ContainerStatus: S.optional(S.Struct({ ContainerID: S.optional(S.String), PID: S.optional(S.Int), ExitCode: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ContainerID": 1, "PID": 1, "ExitCode": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Timestamp": 1, "State": 1, "Message": 1, "Err": 1, "ContainerStatus": 1 }, key))))), DesiredState: S.optional(TaskState), JobIteration: S.optional(ObjectVersion) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Name": 1, "Labels": 1, "Spec": 1, "ServiceID": 1, "Slot": 1, "NodeID": 1, "AssignedGenericResources": 1, "Status": 1, "DesiredState": 1, "JobIteration": 1 }, key))));
+export const Task = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Spec: S.optional(TaskSpec), ServiceID: S.optional(S.String), Slot: S.optional(S.Int), NodeID: S.optional(S.String), AssignedGenericResources: S.optional(GenericResources), Status: S.optional(S.Struct({ Timestamp: S.optional(S.String), State: S.optional(TaskState), Message: S.optional(S.String), Err: S.optional(S.String), ContainerStatus: S.optional(S.Struct({ ContainerID: S.optional(S.String), PID: S.optional(S.Int), ExitCode: S.optional(S.Int) })) })), DesiredState: S.optional(TaskState), JobIteration: S.optional(ObjectVersion) });
 export type Task = S.Schema.Type<typeof Task>;
 
-export const EndpointPortConfig = S.Struct({ Name: S.optional(S.String), Protocol: S.optional(S.Union(S.Literal("tcp"), S.Literal("udp"), S.Literal("sctp"))), TargetPort: S.optional(S.Int), PublishedPort: S.optional(S.Int), PublishMode: Union_default_ingress_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Protocol": 1, "TargetPort": 1, "PublishedPort": 1, "PublishMode": 1 }, key))));
+export const EndpointPortConfig = S.Struct({ Name: S.optional(S.String), Protocol: S.optional(S.Union(S.Literal("tcp"), S.Literal("udp"), S.Literal("sctp"))), TargetPort: S.optional(S.Int), PublishedPort: S.optional(S.Int), PublishMode: Union_default_ingress_prop });
 export type EndpointPortConfig = S.Schema.Type<typeof EndpointPortConfig>;
 
-export const EndpointSpec = S.Struct({ Mode: Union_default_vip_prop, Ports: S.optional(S.Array(EndpointPortConfig)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Mode": 1, "Ports": 1 }, key))));
+export const EndpointSpec = S.Struct({ Mode: Union_default_vip_prop, Ports: S.optional(S.Array(EndpointPortConfig)) });
 export type EndpointSpec = S.Schema.Type<typeof EndpointSpec>;
 
-export const ServiceSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), TaskTemplate: S.optional(TaskSpec), Mode: S.optional(S.Struct({ Replicated: S.optional(S.Struct({ Replicas: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Replicas": 1 }, key))))), Global: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))), ReplicatedJob: S.optional(S.Struct({ MaxConcurrent: Int_default_1_prop, TotalCompletions: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "MaxConcurrent": 1, "TotalCompletions": 1 }, key))))), GlobalJob: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Replicated": 1, "Global": 1, "ReplicatedJob": 1, "GlobalJob": 1 }, key))))), UpdateConfig: S.optional(S.Struct({ Parallelism: S.optional(S.Int), Delay: S.optional(S.Int), FailureAction: S.optional(S.Union(S.Literal("continue"), S.Literal("pause"), S.Literal("rollback"))), Monitor: S.optional(S.Int), MaxFailureRatio: S.optional(S.Number), Order: S.optional(S.Union(S.Literal("stop-first"), S.Literal("start-first"))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Parallelism": 1, "Delay": 1, "FailureAction": 1, "Monitor": 1, "MaxFailureRatio": 1, "Order": 1 }, key))))), RollbackConfig: S.optional(S.Struct({ Parallelism: S.optional(S.Int), Delay: S.optional(S.Int), FailureAction: S.optional(S.Union(S.Literal("continue"), S.Literal("pause"))), Monitor: S.optional(S.Int), MaxFailureRatio: S.optional(S.Number), Order: S.optional(S.Union(S.Literal("stop-first"), S.Literal("start-first"))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Parallelism": 1, "Delay": 1, "FailureAction": 1, "Monitor": 1, "MaxFailureRatio": 1, "Order": 1 }, key))))), Networks: S.optional(S.Array(NetworkAttachmentConfig)), EndpointSpec: S.optional(EndpointSpec) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Labels": 1, "TaskTemplate": 1, "Mode": 1, "UpdateConfig": 1, "RollbackConfig": 1, "Networks": 1, "EndpointSpec": 1 }, key))));
+export const ServiceSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), TaskTemplate: S.optional(TaskSpec), Mode: S.optional(S.Struct({ Replicated: S.optional(S.Struct({ Replicas: S.optional(S.Int) })), Global: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))), ReplicatedJob: S.optional(S.Struct({ MaxConcurrent: Int_default_1_prop, TotalCompletions: S.optional(S.Int) })), GlobalJob: S.optional(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false)))) })), UpdateConfig: S.optional(S.Struct({ Parallelism: S.optional(S.Int), Delay: S.optional(S.Int), FailureAction: S.optional(S.Union(S.Literal("continue"), S.Literal("pause"), S.Literal("rollback"))), Monitor: S.optional(S.Int), MaxFailureRatio: S.optional(S.Number), Order: S.optional(S.Union(S.Literal("stop-first"), S.Literal("start-first"))) })), RollbackConfig: S.optional(S.Struct({ Parallelism: S.optional(S.Int), Delay: S.optional(S.Int), FailureAction: S.optional(S.Union(S.Literal("continue"), S.Literal("pause"))), Monitor: S.optional(S.Int), MaxFailureRatio: S.optional(S.Number), Order: S.optional(S.Union(S.Literal("stop-first"), S.Literal("start-first"))) })), Networks: S.optional(S.Array(NetworkAttachmentConfig)), EndpointSpec: S.optional(EndpointSpec) });
 export type ServiceSpec = S.Schema.Type<typeof ServiceSpec>;
 
-export const Service = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ServiceSpec), Endpoint: S.optional(S.Struct({ Spec: S.optional(EndpointSpec), Ports: S.optional(S.Array(EndpointPortConfig)), VirtualIPs: S.optional(S.Array(S.Struct({ NetworkID: S.optional(S.String), Addr: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NetworkID": 1, "Addr": 1 }, key)))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Spec": 1, "Ports": 1, "VirtualIPs": 1 }, key))))), UpdateStatus: S.optional(S.Struct({ State: S.optional(S.Union(S.Literal("updating"), S.Literal("paused"), S.Literal("completed"))), StartedAt: S.optional(S.String), CompletedAt: S.optional(S.String), Message: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "State": 1, "StartedAt": 1, "CompletedAt": 1, "Message": 1 }, key))))), ServiceStatus: S.optional(S.Struct({ RunningTasks: S.optional(S.Int), DesiredTasks: S.optional(S.Int), CompletedTasks: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "RunningTasks": 1, "DesiredTasks": 1, "CompletedTasks": 1 }, key))))), JobStatus: S.optional(S.Struct({ JobIteration: S.optional(ObjectVersion), LastExecution: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "JobIteration": 1, "LastExecution": 1 }, key))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "Endpoint": 1, "UpdateStatus": 1, "ServiceStatus": 1, "JobStatus": 1 }, key))));
+export const Service = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ServiceSpec), Endpoint: S.optional(S.Struct({ Spec: S.optional(EndpointSpec), Ports: S.optional(S.Array(EndpointPortConfig)), VirtualIPs: S.optional(S.Array(S.Struct({ NetworkID: S.optional(S.String), Addr: S.optional(S.String) }))) })), UpdateStatus: S.optional(S.Struct({ State: S.optional(S.Union(S.Literal("updating"), S.Literal("paused"), S.Literal("completed"))), StartedAt: S.optional(S.String), CompletedAt: S.optional(S.String), Message: S.optional(S.String) })), ServiceStatus: S.optional(S.Struct({ RunningTasks: S.optional(S.Int), DesiredTasks: S.optional(S.Int), CompletedTasks: S.optional(S.Int) })), JobStatus: S.optional(S.Struct({ JobIteration: S.optional(ObjectVersion), LastExecution: S.optional(S.String) })) });
 export type Service = S.Schema.Type<typeof Service>;
 
-export const ImageDeleteResponseItem = S.Struct({ Untagged: S.optional(S.String), Deleted: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Untagged": 1, "Deleted": 1 }, key))));
+export const ImageDeleteResponseItem = S.Struct({ Untagged: S.optional(S.String), Deleted: S.optional(S.String) });
 export type ImageDeleteResponseItem = S.Schema.Type<typeof ImageDeleteResponseItem>;
 
-export const ServiceUpdateResponse = S.Struct({ Warnings: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Warnings": 1 }, key))));
+export const ServiceUpdateResponse = S.Struct({ Warnings: S.optional(S.Array(S.String)) });
 export type ServiceUpdateResponse = S.Schema.Type<typeof ServiceUpdateResponse>;
 
-export const ContainerSummary = S.Struct({ Id: S.optional(S.String), Names: S.optional(S.Array(S.String)), Image: S.optional(S.String), ImageID: S.optional(S.String), Command: S.optional(S.String), Created: S.optional(S.Int), Ports: S.optional(S.Array(Port)), SizeRw: S.optional(S.Int), SizeRootFs: S.optional(S.Int), Labels: S.optional(S.Record({ key: S.String, value: S.String })), State: S.optional(S.String), Status: S.optional(S.String), HostConfig: S.optional(S.Struct({ NetworkMode: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NetworkMode": 1 }, key))))), NetworkSettings: S.optional(S.Struct({ Networks: S.optional(S.Record({ key: S.String, value: EndpointSettings })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Networks": 1 }, key))))), Mounts: S.optional(S.Array(MountPoint)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "Names": 1, "Image": 1, "ImageID": 1, "Command": 1, "Created": 1, "Ports": 1, "SizeRw": 1, "SizeRootFs": 1, "Labels": 1, "State": 1, "Status": 1, "HostConfig": 1, "NetworkSettings": 1, "Mounts": 1 }, key))));
+export const ContainerSummary = S.Struct({ Id: S.optional(S.String), Names: S.optional(S.Array(S.String)), Image: S.optional(S.String), ImageID: S.optional(S.String), Command: S.optional(S.String), Created: S.optional(S.Int), Ports: S.optional(S.Array(Port)), SizeRw: S.optional(S.Int), SizeRootFs: S.optional(S.Int), Labels: S.optional(S.Record({ key: S.String, value: S.String })), State: S.optional(S.String), Status: S.optional(S.String), HostConfig: S.optional(S.Struct({ NetworkMode: S.optional(S.String) })), NetworkSettings: S.optional(S.Struct({ Networks: S.optional(S.Record({ key: S.String, value: EndpointSettings })) })), Mounts: S.optional(S.Array(MountPoint)) });
 export type ContainerSummary = S.Schema.Type<typeof ContainerSummary>;
 
-export const Driver = S.Struct({ Name: S.String, Options: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Options": 1 }, key))));
+export const Driver = S.Struct({ Name: S.String, Options: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type Driver = S.Schema.Type<typeof Driver>;
 
-export const SecretSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Data: S.optional(S.String), Driver: S.optional(Driver), Templating: S.optional(Driver) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Labels": 1, "Data": 1, "Driver": 1, "Templating": 1 }, key))));
+export const SecretSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Data: S.optional(S.String), Driver: S.optional(Driver), Templating: S.optional(Driver) });
 export type SecretSpec = S.Schema.Type<typeof SecretSpec>;
 
-export const Secret = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(SecretSpec) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1 }, key))));
+export const Secret = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(SecretSpec) });
 export type Secret = S.Schema.Type<typeof Secret>;
 
-export const ConfigSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Data: S.optional(S.String), Templating: S.optional(Driver) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Labels": 1, "Data": 1, "Templating": 1 }, key))));
+export const ConfigSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Data: S.optional(S.String), Templating: S.optional(Driver) });
 export type ConfigSpec = S.Schema.Type<typeof ConfigSpec>;
 
-export const Config = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ConfigSpec) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1 }, key))));
+export const Config = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ConfigSpec) });
 export type Config = S.Schema.Type<typeof Config>;
 
-export const ContainerState = S.NullOr(S.Struct({ Status: S.optional(S.Union(S.Literal("created"), S.Literal("running"), S.Literal("paused"), S.Literal("restarting"), S.Literal("removing"), S.Literal("exited"), S.Literal("dead"))), Running: S.optional(S.Boolean), Paused: S.optional(S.Boolean), Restarting: S.optional(S.Boolean), OOMKilled: S.optional(S.Boolean), Dead: S.optional(S.Boolean), Pid: S.optional(S.Int), ExitCode: S.optional(S.Int), Error: S.optional(S.String), StartedAt: S.optional(S.String), FinishedAt: S.optional(S.String), Health: S.optional(Health) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Status": 1, "Running": 1, "Paused": 1, "Restarting": 1, "OOMKilled": 1, "Dead": 1, "Pid": 1, "ExitCode": 1, "Error": 1, "StartedAt": 1, "FinishedAt": 1, "Health": 1 }, key)))));
+export const ContainerState = S.NullOr(S.Struct({ Status: S.optional(S.Union(S.Literal("created"), S.Literal("running"), S.Literal("paused"), S.Literal("restarting"), S.Literal("removing"), S.Literal("exited"), S.Literal("dead"))), Running: S.optional(S.Boolean), Paused: S.optional(S.Boolean), Restarting: S.optional(S.Boolean), OOMKilled: S.optional(S.Boolean), Dead: S.optional(S.Boolean), Pid: S.optional(S.Int), ExitCode: S.optional(S.Int), Error: S.optional(S.String), StartedAt: S.optional(S.String), FinishedAt: S.optional(S.String), Health: S.optional(Health) }));
 export type ContainerState = S.Schema.Type<typeof ContainerState>;
 
-export const ContainerCreateResponse = S.Struct({ Id: S.String, Warnings: S.Array(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "Warnings": 1 }, key))));
+export const ContainerCreateResponse = S.Struct({ Id: S.String, Warnings: S.Array(S.String) });
 export type ContainerCreateResponse = S.Schema.Type<typeof ContainerCreateResponse>;
 
-export const ContainerWaitExitError = S.Struct({ Message: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Message": 1 }, key))));
+export const ContainerWaitExitError = S.Struct({ Message: S.optional(S.String) });
 export type ContainerWaitExitError = S.Schema.Type<typeof ContainerWaitExitError>;
 
-export const ContainerWaitResponse = S.Struct({ StatusCode: S.Int, Error: S.optional(ContainerWaitExitError) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "StatusCode": 1, "Error": 1 }, key))));
+export const ContainerWaitResponse = S.Struct({ StatusCode: S.Int, Error: S.optional(ContainerWaitExitError) });
 export type ContainerWaitResponse = S.Schema.Type<typeof ContainerWaitResponse>;
 
-export const SystemVersion = S.Struct({ Platform: S.optional(S.Struct({ Name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1 }, key))))), Components: S.optional(S.Array(S.Struct({ Name: S.String, Version: S.String, Details: S.optional(S.NullOr(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Version": 1, "Details": 1 }, key)))))), Version: S.optional(S.String), ApiVersion: S.optional(S.String), MinAPIVersion: S.optional(S.String), GitCommit: S.optional(S.String), GoVersion: S.optional(S.String), Os: S.optional(S.String), Arch: S.optional(S.String), KernelVersion: S.optional(S.String), Experimental: S.optional(S.Boolean), BuildTime: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Platform": 1, "Components": 1, "Version": 1, "ApiVersion": 1, "MinAPIVersion": 1, "GitCommit": 1, "GoVersion": 1, "Os": 1, "Arch": 1, "KernelVersion": 1, "Experimental": 1, "BuildTime": 1 }, key))));
+export const SystemVersion = S.Struct({ Platform: S.optional(S.Struct({ Name: S.String })), Components: S.optional(S.Array(S.Struct({ Name: S.String, Version: S.String, Details: S.optional(S.NullOr(S.Struct({  }).pipe(S.filter((data) => Object.keys(data).every((key) => false))))) }))), Version: S.optional(S.String), ApiVersion: S.optional(S.String), MinAPIVersion: S.optional(S.String), GitCommit: S.optional(S.String), GoVersion: S.optional(S.String), Os: S.optional(S.String), Arch: S.optional(S.String), KernelVersion: S.optional(S.String), Experimental: S.optional(S.Boolean), BuildTime: S.optional(S.String) });
 export type SystemVersion = S.Schema.Type<typeof SystemVersion>;
 
-export const PluginsInfo = S.Struct({ Volume: S.optional(S.Array(S.String)), Network: S.optional(S.Array(S.String)), Authorization: S.optional(S.Array(S.String)), Log: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Volume": 1, "Network": 1, "Authorization": 1, "Log": 1 }, key))));
+export const PluginsInfo = S.Struct({ Volume: S.optional(S.Array(S.String)), Network: S.optional(S.Array(S.String)), Authorization: S.optional(S.Array(S.String)), Log: S.optional(S.Array(S.String)) });
 export type PluginsInfo = S.Schema.Type<typeof PluginsInfo>;
 
-export const IndexInfo = S.NullOr(S.Struct({ Name: S.optional(S.String), Mirrors: S.optional(S.Array(S.String)), Secure: S.optional(S.Boolean), Official: S.optional(S.Boolean) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "Mirrors": 1, "Secure": 1, "Official": 1 }, key)))));
+export const IndexInfo = S.NullOr(S.Struct({ Name: S.optional(S.String), Mirrors: S.optional(S.Array(S.String)), Secure: S.optional(S.Boolean), Official: S.optional(S.Boolean) }));
 export type IndexInfo = S.Schema.Type<typeof IndexInfo>;
 
-export const RegistryServiceConfig = S.NullOr(S.Struct({ AllowNondistributableArtifactsCIDRs: S.optional(S.Array(S.String)), AllowNondistributableArtifactsHostnames: S.optional(S.Array(S.String)), InsecureRegistryCIDRs: S.optional(S.Array(S.String)), IndexConfigs: S.optional(S.Record({ key: S.String, value: IndexInfo })), Mirrors: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "AllowNondistributableArtifactsCIDRs": 1, "AllowNondistributableArtifactsHostnames": 1, "InsecureRegistryCIDRs": 1, "IndexConfigs": 1, "Mirrors": 1 }, key)))));
+export const RegistryServiceConfig = S.NullOr(S.Struct({ AllowNondistributableArtifactsCIDRs: S.optional(S.Array(S.String)), AllowNondistributableArtifactsHostnames: S.optional(S.Array(S.String)), InsecureRegistryCIDRs: S.optional(S.Array(S.String)), IndexConfigs: S.optional(S.Record({ key: S.String, value: IndexInfo })), Mirrors: S.optional(S.Array(S.String)) }));
 export type RegistryServiceConfig = S.Schema.Type<typeof RegistryServiceConfig>;
 
-export const Runtime = S.Struct({ path: S.optional(S.String), runtimeArgs: S.optional(S.NullOr(S.Array(S.String))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "path": 1, "runtimeArgs": 1 }, key))));
+export const Runtime = S.Struct({ path: S.optional(S.String), runtimeArgs: S.optional(S.NullOr(S.Array(S.String))) });
 export type Runtime = S.Schema.Type<typeof Runtime>;
 
 export const LocalNodeState = Union_default_value;
 export type LocalNodeState = S.Schema.Type<typeof LocalNodeState>;
 
-export const PeerNode = S.Struct({ NodeID: S.optional(S.String), Addr: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NodeID": 1, "Addr": 1 }, key))));
+export const PeerNode = S.Struct({ NodeID: S.optional(S.String), Addr: S.optional(S.String) });
 export type PeerNode = S.Schema.Type<typeof PeerNode>;
 
-export const SwarmInfo = S.Struct({ NodeID: String_default_value_prop, NodeAddr: String_default_value_prop, LocalNodeState: S.optional(LocalNodeState), ControlAvailable: Boolean_default_false_prop, Error: String_default_value_prop, RemoteManagers: S.optional(S.NullOr(S.Array(PeerNode))), Nodes: S.optional(S.NullOr(S.Int)), Managers: S.optional(S.NullOr(S.Int)), Cluster: S.optional(ClusterInfo) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NodeID": 1, "NodeAddr": 1, "LocalNodeState": 1, "ControlAvailable": 1, "Error": 1, "RemoteManagers": 1, "Nodes": 1, "Managers": 1, "Cluster": 1 }, key))));
+export const SwarmInfo = S.Struct({ NodeID: String_default_value_prop, NodeAddr: String_default_value_prop, LocalNodeState: S.optional(LocalNodeState), ControlAvailable: Boolean_default_false_prop, Error: String_default_value_prop, RemoteManagers: S.optional(S.NullOr(S.Array(PeerNode))), Nodes: S.optional(S.NullOr(S.Int)), Managers: S.optional(S.NullOr(S.Int)), Cluster: S.optional(ClusterInfo) });
 export type SwarmInfo = S.Schema.Type<typeof SwarmInfo>;
 
-export const Commit = S.Struct({ ID: S.optional(S.String), Expected: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Expected": 1 }, key))));
+export const Commit = S.Struct({ ID: S.optional(S.String), Expected: S.optional(S.String) });
 export type Commit = S.Schema.Type<typeof Commit>;
 
-export const SystemInfo = S.Struct({ ID: S.optional(S.String), Containers: S.optional(S.Int), ContainersRunning: S.optional(S.Int), ContainersPaused: S.optional(S.Int), ContainersStopped: S.optional(S.Int), Images: S.optional(S.Int), Driver: S.optional(S.String), DriverStatus: S.optional(S.Array(S.Array(S.String))), DockerRootDir: S.optional(S.String), Plugins: S.optional(PluginsInfo), MemoryLimit: S.optional(S.Boolean), SwapLimit: S.optional(S.Boolean), KernelMemoryTCP: S.optional(S.Boolean), CpuCfsPeriod: S.optional(S.Boolean), CpuCfsQuota: S.optional(S.Boolean), CPUShares: S.optional(S.Boolean), CPUSet: S.optional(S.Boolean), PidsLimit: S.optional(S.Boolean), OomKillDisable: S.optional(S.Boolean), IPv4Forwarding: S.optional(S.Boolean), BridgeNfIptables: S.optional(S.Boolean), BridgeNfIp6tables: S.optional(S.Boolean), Debug: S.optional(S.Boolean), NFd: S.optional(S.Int), NGoroutines: S.optional(S.Int), SystemTime: S.optional(S.String), LoggingDriver: S.optional(S.String), CgroupDriver: Union_default_cgroupfs_prop, CgroupVersion: Union_default_1_prop, NEventsListener: S.optional(S.Int), KernelVersion: S.optional(S.String), OperatingSystem: S.optional(S.String), OSVersion: S.optional(S.String), OSType: S.optional(S.String), Architecture: S.optional(S.String), NCPU: S.optional(S.Int), MemTotal: S.optional(S.Int), IndexServerAddress: String_default_https_index_docker_io_v1_prop, RegistryConfig: S.optional(RegistryServiceConfig), GenericResources: S.optional(GenericResources), HttpProxy: S.optional(S.String), HttpsProxy: S.optional(S.String), NoProxy: S.optional(S.String), Name: S.optional(S.String), Labels: S.optional(S.Array(S.String)), ExperimentalBuild: S.optional(S.Boolean), ServerVersion: S.optional(S.String), Runtimes: S.optional(S.Record({ key: S.String, value: Runtime })), DefaultRuntime: String_default_runc_prop, Swarm: S.optional(SwarmInfo), LiveRestoreEnabled: Boolean_default_false_prop, Isolation: Union_default_default_prop, InitBinary: S.optional(S.String), ContainerdCommit: S.optional(Commit), RuncCommit: S.optional(Commit), InitCommit: S.optional(Commit), SecurityOptions: S.optional(S.Array(S.String)), ProductLicense: S.optional(S.String), DefaultAddressPools: S.optional(S.Array(S.Struct({ Base: S.optional(S.String), Size: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Base": 1, "Size": 1 }, key)))))), Warnings: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Containers": 1, "ContainersRunning": 1, "ContainersPaused": 1, "ContainersStopped": 1, "Images": 1, "Driver": 1, "DriverStatus": 1, "DockerRootDir": 1, "Plugins": 1, "MemoryLimit": 1, "SwapLimit": 1, "KernelMemoryTCP": 1, "CpuCfsPeriod": 1, "CpuCfsQuota": 1, "CPUShares": 1, "CPUSet": 1, "PidsLimit": 1, "OomKillDisable": 1, "IPv4Forwarding": 1, "BridgeNfIptables": 1, "BridgeNfIp6tables": 1, "Debug": 1, "NFd": 1, "NGoroutines": 1, "SystemTime": 1, "LoggingDriver": 1, "CgroupDriver": 1, "CgroupVersion": 1, "NEventsListener": 1, "KernelVersion": 1, "OperatingSystem": 1, "OSVersion": 1, "OSType": 1, "Architecture": 1, "NCPU": 1, "MemTotal": 1, "IndexServerAddress": 1, "RegistryConfig": 1, "GenericResources": 1, "HttpProxy": 1, "HttpsProxy": 1, "NoProxy": 1, "Name": 1, "Labels": 1, "ExperimentalBuild": 1, "ServerVersion": 1, "Runtimes": 1, "DefaultRuntime": 1, "Swarm": 1, "LiveRestoreEnabled": 1, "Isolation": 1, "InitBinary": 1, "ContainerdCommit": 1, "RuncCommit": 1, "InitCommit": 1, "SecurityOptions": 1, "ProductLicense": 1, "DefaultAddressPools": 1, "Warnings": 1 }, key))));
+export const SystemInfo = S.Struct({ ID: S.optional(S.String), Containers: S.optional(S.Int), ContainersRunning: S.optional(S.Int), ContainersPaused: S.optional(S.Int), ContainersStopped: S.optional(S.Int), Images: S.optional(S.Int), Driver: S.optional(S.String), DriverStatus: S.optional(S.Array(S.Array(S.String))), DockerRootDir: S.optional(S.String), Plugins: S.optional(PluginsInfo), MemoryLimit: S.optional(S.Boolean), SwapLimit: S.optional(S.Boolean), KernelMemoryTCP: S.optional(S.Boolean), CpuCfsPeriod: S.optional(S.Boolean), CpuCfsQuota: S.optional(S.Boolean), CPUShares: S.optional(S.Boolean), CPUSet: S.optional(S.Boolean), PidsLimit: S.optional(S.Boolean), OomKillDisable: S.optional(S.Boolean), IPv4Forwarding: S.optional(S.Boolean), BridgeNfIptables: S.optional(S.Boolean), BridgeNfIp6tables: S.optional(S.Boolean), Debug: S.optional(S.Boolean), NFd: S.optional(S.Int), NGoroutines: S.optional(S.Int), SystemTime: S.optional(S.String), LoggingDriver: S.optional(S.String), CgroupDriver: Union_default_cgroupfs_prop, CgroupVersion: Union_default_1_prop, NEventsListener: S.optional(S.Int), KernelVersion: S.optional(S.String), OperatingSystem: S.optional(S.String), OSVersion: S.optional(S.String), OSType: S.optional(S.String), Architecture: S.optional(S.String), NCPU: S.optional(S.Int), MemTotal: S.optional(S.Int), IndexServerAddress: String_default_https_index_docker_io_v1_prop, RegistryConfig: S.optional(RegistryServiceConfig), GenericResources: S.optional(GenericResources), HttpProxy: S.optional(S.String), HttpsProxy: S.optional(S.String), NoProxy: S.optional(S.String), Name: S.optional(S.String), Labels: S.optional(S.Array(S.String)), ExperimentalBuild: S.optional(S.Boolean), ServerVersion: S.optional(S.String), Runtimes: S.optional(S.Record({ key: S.String, value: Runtime })), DefaultRuntime: String_default_runc_prop, Swarm: S.optional(SwarmInfo), LiveRestoreEnabled: Boolean_default_false_prop, Isolation: Union_default_default_prop, InitBinary: S.optional(S.String), ContainerdCommit: S.optional(Commit), RuncCommit: S.optional(Commit), InitCommit: S.optional(Commit), SecurityOptions: S.optional(S.Array(S.String)), ProductLicense: S.optional(S.String), DefaultAddressPools: S.optional(S.Array(S.Struct({ Base: S.optional(S.String), Size: S.optional(S.Int) }))), Warnings: S.optional(S.Array(S.String)) });
 export type SystemInfo = S.Schema.Type<typeof SystemInfo>;
 
-export const EventActor = S.Struct({ ID: S.optional(S.String), Attributes: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Attributes": 1 }, key))));
+export const EventActor = S.Struct({ ID: S.optional(S.String), Attributes: S.optional(S.Record({ key: S.String, value: S.String })) });
 export type EventActor = S.Schema.Type<typeof EventActor>;
 
-export const EventMessage = S.Struct({ Type: S.optional(S.Union(S.Literal("builder"), S.Literal("config"), S.Literal("container"), S.Literal("daemon"), S.Literal("image"), S.Literal("network"), S.Literal("node"), S.Literal("plugin"), S.Literal("secret"), S.Literal("service"), S.Literal("volume"))), Action: S.optional(S.String), Actor: S.optional(EventActor), scope: S.optional(S.Union(S.Literal("local"), S.Literal("swarm"))), time: S.optional(S.Int), timeNano: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Type": 1, "Action": 1, "Actor": 1, "scope": 1, "time": 1, "timeNano": 1 }, key))));
+export const EventMessage = S.Struct({ Type: S.optional(S.Union(S.Literal("builder"), S.Literal("config"), S.Literal("container"), S.Literal("daemon"), S.Literal("image"), S.Literal("network"), S.Literal("node"), S.Literal("plugin"), S.Literal("secret"), S.Literal("service"), S.Literal("volume"))), Action: S.optional(S.String), Actor: S.optional(EventActor), scope: S.optional(S.Union(S.Literal("local"), S.Literal("swarm"))), time: S.optional(S.Int), timeNano: S.optional(S.Int) });
 export type EventMessage = S.Schema.Type<typeof EventMessage>;
 
-export const OCIDescriptor = S.Struct({ mediaType: S.optional(S.String), digest: S.optional(S.String), size: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "mediaType": 1, "digest": 1, "size": 1 }, key))));
+export const OCIDescriptor = S.Struct({ mediaType: S.optional(S.String), digest: S.optional(S.String), size: S.optional(S.Int) });
 export type OCIDescriptor = S.Schema.Type<typeof OCIDescriptor>;
 
-export const OCIPlatform = S.Struct({ architecture: S.optional(S.String), os: S.optional(S.String), "os.version": S.optional(S.String), "os.features": S.optional(S.Array(S.String)), variant: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "architecture": 1, "os": 1, "os.version": 1, "os.features": 1, "variant": 1 }, key))));
+export const OCIPlatform = S.Struct({ architecture: S.optional(S.String), os: S.optional(S.String), "os.version": S.optional(S.String), "os.features": S.optional(S.Array(S.String)), variant: S.optional(S.String) });
 export type OCIPlatform = S.Schema.Type<typeof OCIPlatform>;
 
-export const DistributionInspect = S.Struct({ Descriptor: OCIDescriptor, Platforms: S.Array(OCIPlatform) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Descriptor": 1, "Platforms": 1 }, key))));
+export const DistributionInspect = S.Struct({ Descriptor: OCIDescriptor, Platforms: S.Array(OCIPlatform) });
 export type DistributionInspect = S.Schema.Type<typeof DistributionInspect>;
 
 // </Schemas>
@@ -365,7 +365,7 @@ export const get_ContainerList = {
   path: S.Literal("/containers/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ all: Union_default_false_prop, limit: S.optional(S.NumberFromString.pipe(S.int())), size: Union_default_false_prop, filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "all": 1, "limit": 1, "size": 1, "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ all: Union_default_false_prop, limit: S.optional(S.NumberFromString.pipe(S.int())), size: Union_default_false_prop, filters: S.optional(S.String) })) },
   responses: { 200: S.Array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -375,7 +375,7 @@ export const post_ContainerCreate = {
   path: S.Literal("/containers/create"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ name: S.optional(S.String.pipe(S.pattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")))), platform: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1, "platform": 1 }, key))))), body: S.extend(ContainerConfig, S.Struct({ HostConfig: S.optional(HostConfig), NetworkingConfig: S.optional(NetworkingConfig) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "HostConfig": 1, "NetworkingConfig": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ name: S.optional(S.String.pipe(S.pattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")))), platform: S.optional(S.String) })), body: S.extend(ContainerConfig, S.Struct({ HostConfig: S.optional(HostConfig), NetworkingConfig: S.optional(NetworkingConfig) })) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -385,8 +385,8 @@ export const get_ContainerInspect = {
   path: S.Literal("/containers/{id}/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ size: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "size": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
-  responses: { 200: S.Struct({ Id: S.optional(S.String), Created: S.optional(S.String), Path: S.optional(S.String), Args: S.optional(S.Array(S.String)), State: S.optional(ContainerState), Image: S.optional(S.String), ResolvConfPath: S.optional(S.String), HostnamePath: S.optional(S.String), HostsPath: S.optional(S.String), LogPath: S.optional(S.String), Name: S.optional(S.String), RestartCount: S.optional(S.Int), Driver: S.optional(S.String), Platform: S.optional(S.String), MountLabel: S.optional(S.String), ProcessLabel: S.optional(S.String), AppArmorProfile: S.optional(S.String), ExecIDs: S.optional(S.NullOr(S.Array(S.String))), HostConfig: S.optional(HostConfig), GraphDriver: S.optional(GraphDriverData), SizeRw: S.optional(S.Int), SizeRootFs: S.optional(S.Int), Mounts: S.optional(S.Array(MountPoint)), Config: S.optional(ContainerConfig), NetworkSettings: S.optional(NetworkSettings) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "Created": 1, "Path": 1, "Args": 1, "State": 1, "Image": 1, "ResolvConfPath": 1, "HostnamePath": 1, "HostsPath": 1, "LogPath": 1, "Name": 1, "RestartCount": 1, "Driver": 1, "Platform": 1, "MountLabel": 1, "ProcessLabel": 1, "AppArmorProfile": 1, "ExecIDs": 1, "HostConfig": 1, "GraphDriver": 1, "SizeRw": 1, "SizeRootFs": 1, "Mounts": 1, "Config": 1, "NetworkSettings": 1 }, key)))), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { query: S.optional(S.Struct({ size: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
+  responses: { 200: S.Struct({ Id: S.optional(S.String), Created: S.optional(S.String), Path: S.optional(S.String), Args: S.optional(S.Array(S.String)), State: S.optional(ContainerState), Image: S.optional(S.String), ResolvConfPath: S.optional(S.String), HostnamePath: S.optional(S.String), HostsPath: S.optional(S.String), LogPath: S.optional(S.String), Name: S.optional(S.String), RestartCount: S.optional(S.Int), Driver: S.optional(S.String), Platform: S.optional(S.String), MountLabel: S.optional(S.String), ProcessLabel: S.optional(S.String), AppArmorProfile: S.optional(S.String), ExecIDs: S.optional(S.NullOr(S.Array(S.String))), HostConfig: S.optional(HostConfig), GraphDriver: S.optional(GraphDriverData), SizeRw: S.optional(S.Int), SizeRootFs: S.optional(S.Int), Mounts: S.optional(S.Array(MountPoint)), Config: S.optional(ContainerConfig), NetworkSettings: S.optional(NetworkSettings) }), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -395,8 +395,8 @@ export const get_ContainerTop = {
   path: S.Literal("/containers/{id}/top"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ ps_args: String_default_neg_ef_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ps_args": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
-  responses: { 200: S.Union(S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Titles": 1, "Processes": 1 }, key)))), S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Titles": 1, "Processes": 1 }, key))))), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
+  parameters: { query: S.optional(S.Struct({ ps_args: String_default_neg_ef_prop })), path: S.Struct({ id: S.String }) },
+  responses: { 200: S.Union(S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) }), S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) })), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -405,7 +405,7 @@ export const get_ContainerLogs = {
   path: S.Literal("/containers/{id}/logs"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, until: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "follow": 1, "stdout": 1, "stderr": 1, "since": 1, "until": 1, "timestamps": 1, "tail": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, until: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Unknown, 500: S.Unknown },
 };
 
@@ -415,7 +415,7 @@ export const get_ContainerChanges = {
   path: S.Literal("/containers/{id}/changes"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: S.Array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -425,7 +425,7 @@ export const get_ContainerExport = {
   path: S.Literal("/containers/{id}/export"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, S.Unknown), 500: ErrorResponse },
 };
 
@@ -435,7 +435,7 @@ export const get_ContainerStats = {
   path: S.Literal("/containers/{id}/stats"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ stream: Union_default_true_prop, "one-shot": Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "stream": 1, "one-shot": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ stream: Union_default_true_prop, "one-shot": Union_default_false_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Record({ key: S.String, value: S.Unknown }), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -445,7 +445,7 @@ export const post_ContainerResize = {
   path: S.Literal("/containers/{id}/resize"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ h: S.optional(S.NumberFromString.pipe(S.int())), w: S.optional(S.NumberFromString.pipe(S.int())) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "h": 1, "w": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ h: S.optional(S.NumberFromString.pipe(S.int())), w: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, S.Unknown), 500: ErrorResponse },
 };
 
@@ -455,7 +455,7 @@ export const post_ContainerStart = {
   path: S.Literal("/containers/{id}/start"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "detachKeys": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String) })), path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 304: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -465,7 +465,7 @@ export const post_ContainerStop = {
   path: S.Literal("/containers/{id}/stop"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ signal: S.optional(S.String), t: S.optional(S.NumberFromString.pipe(S.int())) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "signal": 1, "t": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ signal: S.optional(S.String), t: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 304: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -475,7 +475,7 @@ export const post_ContainerRestart = {
   path: S.Literal("/containers/{id}/restart"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ signal: S.optional(S.String), t: S.optional(S.NumberFromString.pipe(S.int())) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "signal": 1, "t": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ signal: S.optional(S.String), t: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -485,7 +485,7 @@ export const post_ContainerKill = {
   path: S.Literal("/containers/{id}/kill"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ signal: String_default_SIGKILL_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "signal": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ signal: String_default_SIGKILL_prop })), path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -495,8 +495,8 @@ export const post_ContainerUpdate = {
   path: S.Literal("/containers/{id}/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: S.extend(Resources, S.Struct({ RestartPolicy: S.optional(RestartPolicy) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "RestartPolicy": 1 }, key))))) },
-  responses: { 200: S.Struct({ Warnings: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Warnings": 1 }, key)))), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: S.Struct({ id: S.String }), body: S.extend(Resources, S.Struct({ RestartPolicy: S.optional(RestartPolicy) })) },
+  responses: { 200: S.Struct({ Warnings: S.optional(S.Array(S.String)) }), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -505,7 +505,7 @@ export const post_ContainerRename = {
   path: S.Literal("/containers/{id}/rename"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.Struct({ name: S.String }), path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -515,7 +515,7 @@ export const post_ContainerPause = {
   path: S.Literal("/containers/{id}/pause"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -525,7 +525,7 @@ export const post_ContainerUnpause = {
   path: S.Literal("/containers/{id}/unpause"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -535,7 +535,7 @@ export const post_ContainerAttach = {
   path: S.Literal("/containers/{id}/attach"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "detachKeys": 1, "logs": 1, "stream": 1, "stdin": 1, "stdout": 1, "stderr": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
   responses: { 101: S.Unknown, 200: S.Unknown, 400: S.Unknown, 404: S.Unknown, 500: S.Unknown },
 };
 
@@ -545,7 +545,7 @@ export const get_ContainerAttachWebsocket = {
   path: S.Literal("/containers/{id}/attach/ws"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "detachKeys": 1, "logs": 1, "stream": 1, "stdin": 1, "stdout": 1, "stderr": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
   responses: { 101: S.Unknown, 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -555,7 +555,7 @@ export const post_ContainerWait = {
   path: S.Literal("/containers/{id}/wait"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ condition: Union_default_notneg_running_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "condition": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ condition: Union_default_notneg_running_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -565,7 +565,7 @@ export const delete_ContainerDelete = {
   path: S.Literal("/containers/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ v: Union_default_false_prop, force: Union_default_false_prop, link: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "v": 1, "force": 1, "link": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ v: Union_default_false_prop, force: Union_default_false_prop, link: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -575,7 +575,7 @@ export const get_ContainerArchive = {
   path: S.Literal("/containers/{id}/archive"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ path: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "path": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.Struct({ path: S.String }), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 400: S.Unknown, 404: S.Unknown, 500: S.Unknown },
 };
 
@@ -585,7 +585,7 @@ export const put_PutContainerArchive = {
   path: S.Literal("/containers/{id}/archive"),
   requestFormat: S.Literal("binary"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ path: S.String, noOverwriteDirNonDir: S.optional(S.String), copyUIDGID: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "path": 1, "noOverwriteDirNonDir": 1, "copyUIDGID": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
+  parameters: { query: S.Struct({ path: S.String, noOverwriteDirNonDir: S.optional(S.String), copyUIDGID: S.optional(S.String) }), path: S.Struct({ id: S.String }), body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -595,9 +595,9 @@ export const head_ContainerArchiveInfo = {
   path: S.Literal("/containers/{id}/archive"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ path: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "path": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.Struct({ path: S.String }), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
-  responseHeaders: { 200: S.Struct({ "X-Docker-Container-Path-Stat": S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Docker-Container-Path-Stat": 1 }, key)))) },
+  responseHeaders: { 200: S.Struct({ "X-Docker-Container-Path-Stat": S.String }) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -606,8 +606,8 @@ export const post_ContainerPrune = {
   path: S.Literal("/containers/prune"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
-  responses: { 200: S.Struct({ ContainersDeleted: S.optional(S.Array(S.String)), SpaceReclaimed: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ContainersDeleted": 1, "SpaceReclaimed": 1 }, key)))), 500: ErrorResponse },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
+  responses: { 200: S.Struct({ ContainersDeleted: S.optional(S.Array(S.String)), SpaceReclaimed: S.optional(S.Int) }), 500: ErrorResponse },
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -616,7 +616,7 @@ export const get_ImageList = {
   path: S.Literal("/images/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ all: Union_default_false_prop, filters: S.optional(S.String), "shared-size": Union_default_false_prop, digests: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "all": 1, "filters": 1, "shared-size": 1, "digests": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ all: Union_default_false_prop, filters: S.optional(S.String), "shared-size": Union_default_false_prop, digests: Union_default_false_prop })) },
   responses: { 200: S.Array(ImageSummary), 500: ErrorResponse },
 };
 
@@ -626,7 +626,7 @@ export const post_ImageBuild = {
   path: S.Literal("/build"),
   requestFormat: S.Literal("binary"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ dockerfile: String_default_Dockerfile_prop, t: S.optional(S.String), extrahosts: S.optional(S.String), remote: S.optional(S.String), q: Union_default_false_prop, nocache: Union_default_false_prop, cachefrom: S.optional(S.String), pull: S.optional(S.String), rm: Union_default_true_prop, forcerm: Union_default_false_prop, memory: S.optional(S.NumberFromString.pipe(S.int())), memswap: S.optional(S.NumberFromString.pipe(S.int())), cpushares: S.optional(S.NumberFromString.pipe(S.int())), cpusetcpus: S.optional(S.String), cpuperiod: S.optional(S.NumberFromString.pipe(S.int())), cpuquota: S.optional(S.NumberFromString.pipe(S.int())), buildargs: S.optional(S.String), shmsize: S.optional(S.NumberFromString.pipe(S.int())), squash: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })), labels: S.optional(S.String), networkmode: S.optional(S.String), platform: S.optional(S.String), target: S.optional(S.String), outputs: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "dockerfile": 1, "t": 1, "extrahosts": 1, "remote": 1, "q": 1, "nocache": 1, "cachefrom": 1, "pull": 1, "rm": 1, "forcerm": 1, "memory": 1, "memswap": 1, "cpushares": 1, "cpusetcpus": 1, "cpuperiod": 1, "cpuquota": 1, "buildargs": 1, "shmsize": 1, "squash": 1, "labels": 1, "networkmode": 1, "platform": 1, "target": 1, "outputs": 1 }, key))))), header: S.optional(S.Struct({ "Content-type": S.optional(S.Literal("application/x-tar")), "X-Registry-Config": S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Content-type": 1, "X-Registry-Config": 1 }, key))))), body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
+  parameters: { query: S.optional(S.Struct({ dockerfile: String_default_Dockerfile_prop, t: S.optional(S.String), extrahosts: S.optional(S.String), remote: S.optional(S.String), q: Union_default_false_prop, nocache: Union_default_false_prop, cachefrom: S.optional(S.String), pull: S.optional(S.String), rm: Union_default_true_prop, forcerm: Union_default_false_prop, memory: S.optional(S.NumberFromString.pipe(S.int())), memswap: S.optional(S.NumberFromString.pipe(S.int())), cpushares: S.optional(S.NumberFromString.pipe(S.int())), cpusetcpus: S.optional(S.String), cpuperiod: S.optional(S.NumberFromString.pipe(S.int())), cpuquota: S.optional(S.NumberFromString.pipe(S.int())), buildargs: S.optional(S.String), shmsize: S.optional(S.NumberFromString.pipe(S.int())), squash: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })), labels: S.optional(S.String), networkmode: S.optional(S.String), platform: S.optional(S.String), target: S.optional(S.String), outputs: S.optional(S.String) })), header: S.optional(S.Struct({ "Content-type": S.optional(S.Literal("application/x-tar")), "X-Registry-Config": S.optional(S.String) })), body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
   responses: { 200: S.Unknown, 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -636,8 +636,8 @@ export const post_BuildPrune = {
   path: S.Literal("/build/prune"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ "keep-storage": S.optional(S.NumberFromString.pipe(S.int())), all: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })), filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "keep-storage": 1, "all": 1, "filters": 1 }, key))))) },
-  responses: { 200: S.Struct({ CachesDeleted: S.optional(S.Array(S.String)), SpaceReclaimed: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CachesDeleted": 1, "SpaceReclaimed": 1 }, key)))), 500: ErrorResponse },
+  parameters: { query: S.optional(S.Struct({ "keep-storage": S.optional(S.NumberFromString.pipe(S.int())), all: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })), filters: S.optional(S.String) })) },
+  responses: { 200: S.Struct({ CachesDeleted: S.optional(S.Array(S.String)), SpaceReclaimed: S.optional(S.Int) }), 500: ErrorResponse },
 };
 
 export type post_ImageCreate = typeof post_ImageCreate;
@@ -646,7 +646,7 @@ export const post_ImageCreate = {
   path: S.Literal("/images/create"),
   requestFormat: S.Literal("text"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ fromImage: S.optional(S.String), fromSrc: S.optional(S.String), repo: S.optional(S.String), tag: S.optional(S.String), message: S.optional(S.String), changes: S.optional(S.Array(S.String)), platform: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "fromImage": 1, "fromSrc": 1, "repo": 1, "tag": 1, "message": 1, "changes": 1, "platform": 1 }, key))))), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))))), body: S.String },
+  parameters: { query: S.optional(S.Struct({ fromImage: S.optional(S.String), fromSrc: S.optional(S.String), repo: S.optional(S.String), tag: S.optional(S.String), message: S.optional(S.String), changes: S.optional(S.Array(S.String)), platform: S.optional(S.String) })), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: S.String },
   responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -656,7 +656,7 @@ export const get_ImageInspect = {
   path: S.Literal("/images/{name}/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { path: S.Struct({ name: S.String }) },
   responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -666,8 +666,8 @@ export const get_ImageHistory = {
   path: S.Literal("/images/{name}/history"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
-  responses: { 200: S.Array(S.Struct({ Id: S.String, Created: S.Int, CreatedBy: S.String, Tags: S.Array(S.String), Size: S.Int, Comment: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "Created": 1, "CreatedBy": 1, "Tags": 1, "Size": 1, "Comment": 1 }, key))))), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: S.Struct({ name: S.String }) },
+  responses: { 200: S.Array(S.Struct({ Id: S.String, Created: S.Int, CreatedBy: S.String, Tags: S.Array(S.String), Size: S.Int, Comment: S.String })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -676,7 +676,7 @@ export const post_ImagePush = {
   path: S.Literal("/images/{name}/push"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ tag: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "tag": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))), header: S.Struct({ "X-Registry-Auth": S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ tag: S.optional(S.String) })), path: S.Struct({ name: S.String }), header: S.Struct({ "X-Registry-Auth": S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -686,7 +686,7 @@ export const post_ImageTag = {
   path: S.Literal("/images/{name}/tag"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ repo: S.optional(S.String), tag: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "repo": 1, "tag": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ repo: S.optional(S.String), tag: S.optional(S.String) })), path: S.Struct({ name: S.String }) },
   responses: { 201: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -696,7 +696,7 @@ export const delete_ImageDelete = {
   path: S.Literal("/images/{name}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop, noprune: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1, "noprune": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop, noprune: Union_default_false_prop })), path: S.Struct({ name: S.String }) },
   responses: { 200: S.Array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -706,8 +706,8 @@ export const get_ImageSearch = {
   path: S.Literal("/images/search"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ term: S.String, limit: S.optional(S.NumberFromString.pipe(S.int())), filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "term": 1, "limit": 1, "filters": 1 }, key)))) },
-  responses: { 200: S.Array(S.Struct({ description: S.optional(S.String), is_official: S.optional(S.Boolean), is_automated: S.optional(S.Boolean), name: S.optional(S.String), star_count: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "description": 1, "is_official": 1, "is_automated": 1, "name": 1, "star_count": 1 }, key))))), 500: ErrorResponse },
+  parameters: { query: S.Struct({ term: S.String, limit: S.optional(S.NumberFromString.pipe(S.int())), filters: S.optional(S.String) }) },
+  responses: { 200: S.Array(S.Struct({ description: S.optional(S.String), is_official: S.optional(S.Boolean), is_automated: S.optional(S.Boolean), name: S.optional(S.String), star_count: S.optional(S.Int) })), 500: ErrorResponse },
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -716,8 +716,8 @@ export const post_ImagePrune = {
   path: S.Literal("/images/prune"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
-  responses: { 200: S.Struct({ ImagesDeleted: S.optional(S.Array(ImageDeleteResponseItem)), SpaceReclaimed: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ImagesDeleted": 1, "SpaceReclaimed": 1 }, key)))), 500: ErrorResponse },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
+  responses: { 200: S.Struct({ ImagesDeleted: S.optional(S.Array(ImageDeleteResponseItem)), SpaceReclaimed: S.optional(S.Int) }), 500: ErrorResponse },
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -727,7 +727,7 @@ export const post_SystemAuth = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { body: AuthConfig },
-  responses: { 200: S.Struct({ Status: S.String, IdentityToken: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Status": 1, "IdentityToken": 1 }, key)))), 204: S.Unknown, 401: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Struct({ Status: S.String, IdentityToken: S.optional(S.String) }), 204: S.Unknown, 401: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -758,7 +758,7 @@ export const get_SystemPing = {
   responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 200: S.String, 500: ErrorResponse },
-  responseHeaders: { 200: S.Struct({ Swarm: Union_default_inactive_prop, "Docker-Experimental": S.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": S.String, "Builder-Version": String_default_2_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Swarm": 1, "Docker-Experimental": 1, "Cache-Control": 1, "Pragma": 1, "API-Version": 1, "Builder-Version": 1 }, key)))), 500: S.Struct({ "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Cache-Control": 1, "Pragma": 1 }, key)))) },
+  responseHeaders: { 200: S.Struct({ Swarm: Union_default_inactive_prop, "Docker-Experimental": S.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": S.String, "Builder-Version": String_default_2_prop }), 500: S.Struct({ "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop }) },
 };
 
 export type head_SystemPingHead = typeof head_SystemPingHead;
@@ -769,7 +769,7 @@ export const head_SystemPingHead = {
   responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 200: S.String, 500: ErrorResponse },
-  responseHeaders: { 200: S.Struct({ Swarm: Union_default_inactive_prop, "Docker-Experimental": S.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": S.String, "Builder-Version": S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Swarm": 1, "Docker-Experimental": 1, "Cache-Control": 1, "Pragma": 1, "API-Version": 1, "Builder-Version": 1 }, key)))) },
+  responseHeaders: { 200: S.Struct({ Swarm: Union_default_inactive_prop, "Docker-Experimental": S.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": S.String, "Builder-Version": S.String }) },
 };
 
 export type post_ImageCommit = typeof post_ImageCommit;
@@ -778,7 +778,7 @@ export const post_ImageCommit = {
   path: S.Literal("/commit"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ container: S.optional(S.String), repo: S.optional(S.String), tag: S.optional(S.String), comment: S.optional(S.String), author: S.optional(S.String), pause: Union_default_true_prop, changes: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "container": 1, "repo": 1, "tag": 1, "comment": 1, "author": 1, "pause": 1, "changes": 1 }, key))))), body: ContainerConfig },
+  parameters: { query: S.optional(S.Struct({ container: S.optional(S.String), repo: S.optional(S.String), tag: S.optional(S.String), comment: S.optional(S.String), author: S.optional(S.String), pause: Union_default_true_prop, changes: S.optional(S.String) })), body: ContainerConfig },
   responses: { 201: IdResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -788,7 +788,7 @@ export const get_SystemEvents = {
   path: S.Literal("/events"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ since: S.optional(S.String), until: S.optional(S.String), filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "since": 1, "until": 1, "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ since: S.optional(S.String), until: S.optional(S.String), filters: S.optional(S.String) })) },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -798,8 +798,8 @@ export const get_SystemDataUsage = {
   path: S.Literal("/system/df"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ type: S.optional(S.Array(S.Union(S.Literal("container"), S.Literal("image"), S.Literal("volume"), S.Literal("build-cache")))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "type": 1 }, key))))) },
-  responses: { 200: S.Union(S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "LayersSize": 1, "Images": 1, "Containers": 1, "Volumes": 1, "BuildCache": 1 }, key)))), S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "LayersSize": 1, "Images": 1, "Containers": 1, "Volumes": 1, "BuildCache": 1 }, key))))), 500: S.Union(ErrorResponse, ErrorResponse) },
+  parameters: { query: S.optional(S.Struct({ type: S.optional(S.Array(S.Union(S.Literal("container"), S.Literal("image"), S.Literal("volume"), S.Literal("build-cache")))) })) },
+  responses: { 200: S.Union(S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) }), S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) })), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -808,7 +808,7 @@ export const get_ImageGet = {
   path: S.Literal("/images/{name}/get"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { path: S.Struct({ name: S.String }) },
   responses: { 200: S.Unknown, 500: S.Unknown },
 };
 
@@ -818,7 +818,7 @@ export const get_ImageGetAll = {
   path: S.Literal("/images/get"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ names: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "names": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ names: S.optional(S.Array(S.String)) })) },
   responses: { 200: S.Unknown, 500: S.Unknown },
 };
 
@@ -828,7 +828,7 @@ export const post_ImageLoad = {
   path: S.Literal("/images/load"),
   requestFormat: S.Literal("text"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ quiet: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "quiet": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ quiet: Union_default_false_prop })) },
   responses: { 200: S.Unknown, 500: ErrorResponse },
 };
 
@@ -838,7 +838,7 @@ export const post_ContainerExec = {
   path: S.Literal("/containers/{id}/exec"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: S.optional(S.Struct({ AttachStdin: S.optional(S.Boolean), AttachStdout: S.optional(S.Boolean), AttachStderr: S.optional(S.Boolean), ConsoleSize: S.optional(S.NullOr(S.Array(S.Int.pipe(S.greaterThanOrEqualTo(0))).pipe(S.minItems(2), S.maxItems(2)))), DetachKeys: S.optional(S.String), Tty: S.optional(S.Boolean), Env: S.optional(S.Array(S.String)), Cmd: S.optional(S.Array(S.String)), Privileged: Boolean_default_false_prop, User: S.optional(S.String), WorkingDir: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "AttachStdin": 1, "AttachStdout": 1, "AttachStderr": 1, "ConsoleSize": 1, "DetachKeys": 1, "Tty": 1, "Env": 1, "Cmd": 1, "Privileged": 1, "User": 1, "WorkingDir": 1 }, key))))) },
+  parameters: { path: S.Struct({ id: S.String }), body: S.optional(S.Struct({ AttachStdin: S.optional(S.Boolean), AttachStdout: S.optional(S.Boolean), AttachStderr: S.optional(S.Boolean), ConsoleSize: S.optional(S.NullOr(S.Array(S.Int.pipe(S.greaterThanOrEqualTo(0))).pipe(S.minItems(2), S.maxItems(2)))), DetachKeys: S.optional(S.String), Tty: S.optional(S.Boolean), Env: S.optional(S.Array(S.String)), Cmd: S.optional(S.Array(S.String)), Privileged: Boolean_default_false_prop, User: S.optional(S.String), WorkingDir: S.optional(S.String) })) },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -848,7 +848,7 @@ export const post_ExecStart = {
   path: S.Literal("/exec/{id}/start"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: S.optional(S.Struct({ Detach: S.optional(S.Boolean), Tty: S.optional(S.Boolean), ConsoleSize: S.optional(S.NullOr(S.Array(S.Int.pipe(S.greaterThanOrEqualTo(0))).pipe(S.minItems(2), S.maxItems(2)))) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Detach": 1, "Tty": 1, "ConsoleSize": 1 }, key))))) },
+  parameters: { path: S.Struct({ id: S.String }), body: S.optional(S.Struct({ Detach: S.optional(S.Boolean), Tty: S.optional(S.Boolean), ConsoleSize: S.optional(S.NullOr(S.Array(S.Int.pipe(S.greaterThanOrEqualTo(0))).pipe(S.minItems(2), S.maxItems(2)))) })) },
   responses: { 200: S.Unknown, 404: S.Unknown, 409: S.Unknown },
 };
 
@@ -858,7 +858,7 @@ export const post_ExecResize = {
   path: S.Literal("/exec/{id}/resize"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ h: S.optional(S.NumberFromString.pipe(S.int())), w: S.optional(S.NumberFromString.pipe(S.int())) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "h": 1, "w": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ h: S.optional(S.NumberFromString.pipe(S.int())), w: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -868,8 +868,8 @@ export const get_ExecInspect = {
   path: S.Literal("/exec/{id}/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
-  responses: { 200: S.Struct({ CanRemove: S.optional(S.Boolean), DetachKeys: S.optional(S.String), ID: S.optional(S.String), Running: S.optional(S.Boolean), ExitCode: S.optional(S.Int), ProcessConfig: S.optional(ProcessConfig), OpenStdin: S.optional(S.Boolean), OpenStderr: S.optional(S.Boolean), OpenStdout: S.optional(S.Boolean), ContainerID: S.optional(S.String), Pid: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "CanRemove": 1, "DetachKeys": 1, "ID": 1, "Running": 1, "ExitCode": 1, "ProcessConfig": 1, "OpenStdin": 1, "OpenStderr": 1, "OpenStdout": 1, "ContainerID": 1, "Pid": 1 }, key)))), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: S.Struct({ id: S.String }) },
+  responses: { 200: S.Struct({ CanRemove: S.optional(S.Boolean), DetachKeys: S.optional(S.String), ID: S.optional(S.String), Running: S.optional(S.Boolean), ExitCode: S.optional(S.Int), ProcessConfig: S.optional(ProcessConfig), OpenStdin: S.optional(S.Boolean), OpenStderr: S.optional(S.Boolean), OpenStdout: S.optional(S.Boolean), ContainerID: S.optional(S.String), Pid: S.optional(S.Int) }), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -878,7 +878,7 @@ export const get_VolumeList = {
   path: S.Literal("/volumes"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
 
@@ -898,7 +898,7 @@ export const get_VolumeInspect = {
   path: S.Literal("/volumes/{name}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { path: S.Struct({ name: S.String }) },
   responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -908,7 +908,7 @@ export const put_VolumeUpdate = {
   path: S.Literal("/volumes/{name}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key)))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))), body: S.optional(S.Struct({ Spec: S.optional(ClusterVolumeSpec) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Spec": 1 }, key))))) },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ name: S.String }), body: S.optional(S.Struct({ Spec: S.optional(ClusterVolumeSpec) })) },
   responses: { 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -918,7 +918,7 @@ export const delete_VolumeDelete = {
   path: S.Literal("/volumes/{name}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })), path: S.Struct({ name: S.String }) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -928,8 +928,8 @@ export const post_VolumePrune = {
   path: S.Literal("/volumes/prune"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
-  responses: { 200: S.Struct({ VolumesDeleted: S.optional(S.Array(S.String)), SpaceReclaimed: S.optional(S.Int) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "VolumesDeleted": 1, "SpaceReclaimed": 1 }, key)))), 500: ErrorResponse },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
+  responses: { 200: S.Struct({ VolumesDeleted: S.optional(S.Array(S.String)), SpaceReclaimed: S.optional(S.Int) }), 500: ErrorResponse },
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -938,7 +938,7 @@ export const get_NetworkList = {
   path: S.Literal("/networks"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: S.Array(Network), 500: ErrorResponse },
 };
 
@@ -948,7 +948,7 @@ export const get_NetworkInspect = {
   path: S.Literal("/networks/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ verbose: Union_default_false_prop, scope: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "verbose": 1, "scope": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ verbose: Union_default_false_prop, scope: S.optional(S.String) })), path: S.Struct({ id: S.String }) },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -958,7 +958,7 @@ export const delete_NetworkDelete = {
   path: S.Literal("/networks/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -968,8 +968,8 @@ export const post_NetworkCreate = {
   path: S.Literal("/networks/create"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.Struct({ Name: S.String, CheckDuplicate: S.optional(S.Boolean), Driver: String_default_bridge_prop, Internal: S.optional(S.Boolean), Attachable: S.optional(S.Boolean), Ingress: S.optional(S.Boolean), IPAM: S.optional(IPAM), EnableIPv6: S.optional(S.Boolean), Options: S.optional(S.Record({ key: S.String, value: S.String })), Labels: S.optional(S.Record({ key: S.String, value: S.String })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Name": 1, "CheckDuplicate": 1, "Driver": 1, "Internal": 1, "Attachable": 1, "Ingress": 1, "IPAM": 1, "EnableIPv6": 1, "Options": 1, "Labels": 1 }, key)))) },
-  responses: { 201: S.Struct({ Id: S.optional(S.String), Warning: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Id": 1, "Warning": 1 }, key)))), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { body: S.Struct({ Name: S.String, CheckDuplicate: S.optional(S.Boolean), Driver: String_default_bridge_prop, Internal: S.optional(S.Boolean), Attachable: S.optional(S.Boolean), Ingress: S.optional(S.Boolean), IPAM: S.optional(IPAM), EnableIPv6: S.optional(S.Boolean), Options: S.optional(S.Record({ key: S.String, value: S.String })), Labels: S.optional(S.Record({ key: S.String, value: S.String })) }) },
+  responses: { 201: S.Struct({ Id: S.optional(S.String), Warning: S.optional(S.String) }), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -978,7 +978,7 @@ export const post_NetworkConnect = {
   path: S.Literal("/networks/{id}/connect"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: S.optional(S.Struct({ Container: S.optional(S.String), EndpointConfig: S.optional(EndpointSettings) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Container": 1, "EndpointConfig": 1 }, key))))) },
+  parameters: { path: S.Struct({ id: S.String }), body: S.optional(S.Struct({ Container: S.optional(S.String), EndpointConfig: S.optional(EndpointSettings) })) },
   responses: { 200: S.Unknown, 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -988,7 +988,7 @@ export const post_NetworkDisconnect = {
   path: S.Literal("/networks/{id}/disconnect"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: S.optional(S.Struct({ Container: S.optional(S.String), Force: S.optional(S.Boolean) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "Container": 1, "Force": 1 }, key))))) },
+  parameters: { path: S.Struct({ id: S.String }), body: S.optional(S.Struct({ Container: S.optional(S.String), Force: S.optional(S.Boolean) })) },
   responses: { 200: S.Unknown, 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -998,8 +998,8 @@ export const post_NetworkPrune = {
   path: S.Literal("/networks/prune"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
-  responses: { 200: S.Struct({ NetworksDeleted: S.optional(S.Array(S.String)) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "NetworksDeleted": 1 }, key)))), 500: ErrorResponse },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
+  responses: { 200: S.Struct({ NetworksDeleted: S.optional(S.Array(S.String)) }), 500: ErrorResponse },
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -1008,7 +1008,7 @@ export const get_PluginList = {
   path: S.Literal("/plugins"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: S.Array(Plugin), 500: ErrorResponse },
 };
 
@@ -1018,7 +1018,7 @@ export const get_GetPluginPrivileges = {
   path: S.Literal("/plugins/privileges"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ remote: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "remote": 1 }, key)))) },
+  parameters: { query: S.Struct({ remote: S.String }) },
   responses: { 200: S.Union(S.Array(PluginPrivilege), S.Array(PluginPrivilege)), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1028,7 +1028,7 @@ export const post_PluginPull = {
   path: S.Literal("/plugins/pull"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ remote: S.String, name: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "remote": 1, "name": 1 }, key)))), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))))), body: S.Array(PluginPrivilege) },
+  parameters: { query: S.Struct({ remote: S.String, name: S.optional(S.String) }), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: S.Array(PluginPrivilege) },
   responses: { 204: S.Unknown, 500: ErrorResponse },
 };
 
@@ -1038,7 +1038,7 @@ export const get_PluginInspect = {
   path: S.Literal("/plugins/{name}/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { path: S.Struct({ name: S.String }) },
   responses: { 200: S.Union(Plugin, Plugin), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1048,7 +1048,7 @@ export const delete_PluginDelete = {
   path: S.Literal("/plugins/{name}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })), path: S.Struct({ name: S.String }) },
   responses: { 200: S.Union(Plugin, Plugin), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1058,7 +1058,7 @@ export const post_PluginEnable = {
   path: S.Literal("/plugins/{name}/enable"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ timeout: Schema_default_0_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "timeout": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ timeout: Schema_default_0_prop })), path: S.Struct({ name: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1068,7 +1068,7 @@ export const post_PluginDisable = {
   path: S.Literal("/plugins/{name}/disable"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ force: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ force: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })) })), path: S.Struct({ name: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1078,7 +1078,7 @@ export const post_PluginUpgrade = {
   path: S.Literal("/plugins/{name}/upgrade"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ remote: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "remote": 1 }, key)))), path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))))), body: S.Array(PluginPrivilege) },
+  parameters: { query: S.Struct({ remote: S.String }), path: S.Struct({ name: S.String }), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: S.Array(PluginPrivilege) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1088,7 +1088,7 @@ export const post_PluginCreate = {
   path: S.Literal("/plugins/create"),
   requestFormat: S.Literal("text"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { query: S.Struct({ name: S.String }) },
   responses: { 204: S.Unknown, 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1098,7 +1098,7 @@ export const post_PluginPush = {
   path: S.Literal("/plugins/{name}/push"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { path: S.Struct({ name: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1108,7 +1108,7 @@ export const post_PluginSet = {
   path: S.Literal("/plugins/{name}/set"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))), body: S.Array(S.String) },
+  parameters: { path: S.Struct({ name: S.String }), body: S.Array(S.String) },
   responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1118,7 +1118,7 @@ export const get_NodeList = {
   path: S.Literal("/nodes"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: S.Union(S.Array(Node), S.Array(Node)), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1128,7 +1128,7 @@ export const get_NodeInspect = {
   path: S.Literal("/nodes/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: S.Union(Node, Node), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1138,7 +1138,7 @@ export const delete_NodeDelete = {
   path: S.Literal("/nodes/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1148,7 +1148,7 @@ export const post_NodeUpdate = {
   path: S.Literal("/nodes/{id}/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: NodeSpec },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ id: S.String }), body: NodeSpec },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1168,7 +1168,7 @@ export const post_SwarmInit = {
   path: S.Literal("/swarm/init"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.optional(S.Struct({ ListenAddr: S.optional(S.String), AdvertiseAddr: S.optional(S.String), DataPathAddr: S.optional(S.String), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), ForceNewCluster: S.optional(S.Boolean), SubnetSize: S.optional(S.Int), Spec: S.optional(SwarmSpec) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ListenAddr": 1, "AdvertiseAddr": 1, "DataPathAddr": 1, "DataPathPort": 1, "DefaultAddrPool": 1, "ForceNewCluster": 1, "SubnetSize": 1, "Spec": 1 }, key))))) },
+  parameters: { body: S.optional(S.Struct({ ListenAddr: S.optional(S.String), AdvertiseAddr: S.optional(S.String), DataPathAddr: S.optional(S.String), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), ForceNewCluster: S.optional(S.Boolean), SubnetSize: S.optional(S.Int), Spec: S.optional(SwarmSpec) })) },
   responses: { 200: S.Union(S.String, S.String), 400: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1178,7 +1178,7 @@ export const post_SwarmJoin = {
   path: S.Literal("/swarm/join"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.optional(S.Struct({ ListenAddr: S.optional(S.String), AdvertiseAddr: S.optional(S.String), DataPathAddr: S.optional(S.String), RemoteAddrs: S.optional(S.Array(S.String)), JoinToken: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ListenAddr": 1, "AdvertiseAddr": 1, "DataPathAddr": 1, "RemoteAddrs": 1, "JoinToken": 1 }, key))))) },
+  parameters: { body: S.optional(S.Struct({ ListenAddr: S.optional(S.String), AdvertiseAddr: S.optional(S.String), DataPathAddr: S.optional(S.String), RemoteAddrs: S.optional(S.Array(S.String)), JoinToken: S.optional(S.String) })) },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1188,7 +1188,7 @@ export const post_SwarmLeave = {
   path: S.Literal("/swarm/leave"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })) },
   responses: { 200: S.Unknown, 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1198,7 +1198,7 @@ export const post_SwarmUpdate = {
   path: S.Literal("/swarm/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), rotateWorkerToken: Union_default_false_prop, rotateManagerToken: Union_default_false_prop, rotateManagerUnlockKey: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1, "rotateWorkerToken": 1, "rotateManagerToken": 1, "rotateManagerUnlockKey": 1 }, key)))), body: SwarmSpec },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), rotateWorkerToken: Union_default_false_prop, rotateManagerToken: Union_default_false_prop, rotateManagerUnlockKey: Union_default_false_prop }), body: SwarmSpec },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1209,7 +1209,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: S.Never,
-  responses: { 200: S.Union(S.Struct({ UnlockKey: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "UnlockKey": 1 }, key)))), S.Struct({ UnlockKey: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "UnlockKey": 1 }, key))))), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
+  responses: { 200: S.Union(S.Struct({ UnlockKey: S.optional(S.String) }), S.Struct({ UnlockKey: S.optional(S.String) })), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1218,7 +1218,7 @@ export const post_SwarmUnlock = {
   path: S.Literal("/swarm/unlock"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.optional(S.Struct({ UnlockKey: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "UnlockKey": 1 }, key))))) },
+  parameters: { body: S.optional(S.Struct({ UnlockKey: S.optional(S.String) })) },
   responses: { 200: S.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1228,7 +1228,7 @@ export const get_ServiceList = {
   path: S.Literal("/services"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String), status: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1, "status": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String), status: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })) })) },
   responses: { 200: S.Union(S.Array(Service), S.Array(Service)), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1238,8 +1238,8 @@ export const post_ServiceCreate = {
   path: S.Literal("/services/create"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))))), body: ServiceSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
-  responses: { 201: S.Struct({ ID: S.optional(S.String), Warning: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Warning": 1 }, key)))), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  parameters: { header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: ServiceSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
+  responses: { 201: S.Struct({ ID: S.optional(S.String), Warning: S.optional(S.String) }), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;
@@ -1248,7 +1248,7 @@ export const get_ServiceInspect = {
   path: S.Literal("/services/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ insertDefaults: Union_default_false_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "insertDefaults": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ insertDefaults: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Union(Service, Service), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1258,7 +1258,7 @@ export const delete_ServiceDelete = {
   path: S.Literal("/services/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1268,7 +1268,7 @@ export const post_ServiceUpdate = {
   path: S.Literal("/services/{id}/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), registryAuthFrom: Union_default_spec_prop, rollback: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1, "registryAuthFrom": 1, "rollback": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))))), body: ServiceSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), registryAuthFrom: Union_default_spec_prop, rollback: S.optional(S.String) }), path: S.Struct({ id: S.String }), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: ServiceSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
   responses: { 200: ServiceUpdateResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1278,7 +1278,7 @@ export const get_ServiceLogs = {
   path: S.Literal("/services/{id}/logs"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "details": 1, "follow": 1, "stdout": 1, "stderr": 1, "since": 1, "timestamps": 1, "tail": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Unknown, 500: S.Unknown, 503: S.Unknown },
 };
 
@@ -1288,7 +1288,7 @@ export const get_TaskList = {
   path: S.Literal("/tasks"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: S.Array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1298,7 +1298,7 @@ export const get_TaskInspect = {
   path: S.Literal("/tasks/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1308,7 +1308,7 @@ export const get_TaskLogs = {
   path: S.Literal("/tasks/{id}/logs"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "details": 1, "follow": 1, "stdout": 1, "stderr": 1, "since": 1, "timestamps": 1, "tail": 1 }, key))))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { query: S.optional(S.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop })), path: S.Struct({ id: S.String }) },
   responses: { 200: S.Unknown, 404: S.Unknown, 500: S.Unknown, 503: S.Unknown },
 };
 
@@ -1318,7 +1318,7 @@ export const get_SecretList = {
   path: S.Literal("/secrets"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: S.Array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1338,7 +1338,7 @@ export const get_SecretInspect = {
   path: S.Literal("/secrets/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1348,7 +1348,7 @@ export const delete_SecretDelete = {
   path: S.Literal("/secrets/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1358,7 +1358,7 @@ export const post_SecretUpdate = {
   path: S.Literal("/secrets/{id}/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: SecretSpec },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ id: S.String }), body: SecretSpec },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1368,7 +1368,7 @@ export const get_ConfigList = {
   path: S.Literal("/configs"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))))) },
+  parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
   responses: { 200: S.Array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1388,7 +1388,7 @@ export const get_ConfigInspect = {
   path: S.Literal("/configs/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1398,7 +1398,7 @@ export const delete_ConfigDelete = {
   path: S.Literal("/configs/{id}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))) },
+  parameters: { path: S.Struct({ id: S.String }) },
   responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1408,7 +1408,7 @@ export const post_ConfigUpdate = {
   path: S.Literal("/configs/{id}/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key)))), path: S.Struct({ id: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key)))), body: ConfigSpec },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ id: S.String }), body: ConfigSpec },
   responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
@@ -1418,7 +1418,7 @@ export const get_DistributionInspect = {
   path: S.Literal("/distribution/{name}/json"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { path: S.Struct({ name: S.String }).pipe(S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key)))) },
+  parameters: { path: S.Struct({ name: S.String }) },
   responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
 };
 

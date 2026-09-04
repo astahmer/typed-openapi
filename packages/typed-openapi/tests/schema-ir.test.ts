@@ -50,4 +50,18 @@ describe("schema IR TypeScript rendering", () => {
   test("does not render deprecation metadata when JSDoc is disabled", () => {
     expect(irToTs(objectNode({ oldField: stringNode({ deprecated: true }) }))).toBe("{ oldField: string }");
   });
+
+  test("renders partial open objects with Record", () => {
+    expect(
+      irToTs({
+        kind: "object",
+        properties: { id: { kind: "number", integer: false, constraints: {}, meta: {} } },
+        required: [],
+        additionalProperties: true,
+        constraints: {},
+        meta: {},
+        partial: true,
+      }),
+    ).toBe("(Partial<{ id: number }> & Record<string, unknown>)");
+  });
 });

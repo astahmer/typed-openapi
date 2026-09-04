@@ -51,7 +51,7 @@ export type PortMap = z.infer<typeof PortMap>;
 export const PortMap = z.record(z.string(), z.array(PortBinding).nullable());
 
 export type HostConfig = z.infer<typeof HostConfig>;
-export const HostConfig = Resources.and(z.object({ Binds: z.array(z.string()), ContainerIDFile: z.string(), LogConfig: z.object({ Type: z.enum(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: z.record(z.string(), z.string()) }).partial().strict(), NetworkMode: z.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: z.boolean(), VolumeDriver: z.string(), VolumesFrom: z.array(z.string()), Mounts: z.array(Mount), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(), Annotations: z.record(z.string(), z.string()), CapAdd: z.array(z.string()), CapDrop: z.array(z.string()), CgroupnsMode: z.enum(["private", "host"]), Dns: z.array(z.string()), DnsOptions: z.array(z.string()), DnsSearch: z.array(z.string()), ExtraHosts: z.array(z.string()), GroupAdd: z.array(z.string()), IpcMode: z.string(), Cgroup: z.string(), Links: z.array(z.string()), OomScoreAdj: z.number().int(), PidMode: z.string(), Privileged: z.boolean(), PublishAllPorts: z.boolean(), ReadonlyRootfs: z.boolean(), SecurityOpt: z.array(z.string()), StorageOpt: z.record(z.string(), z.string()), Tmpfs: z.record(z.string(), z.string()), UTSMode: z.string(), UsernsMode: z.string(), ShmSize: z.number().int().min(0), Sysctls: z.record(z.string(), z.string()), Runtime: z.string(), Isolation: z.enum(["default", "process", "hyperv"]), MaskedPaths: z.array(z.string()), ReadonlyPaths: z.array(z.string()) }).partial().strict());
+export const HostConfig = Resources.passthrough().and(z.object({ Binds: z.array(z.string()), ContainerIDFile: z.string(), LogConfig: z.object({ Type: z.enum(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: z.record(z.string(), z.string()) }).partial().strict(), NetworkMode: z.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: z.boolean(), VolumeDriver: z.string(), VolumesFrom: z.array(z.string()), Mounts: z.array(Mount), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(), Annotations: z.record(z.string(), z.string()), CapAdd: z.array(z.string()), CapDrop: z.array(z.string()), CgroupnsMode: z.enum(["private", "host"]), Dns: z.array(z.string()), DnsOptions: z.array(z.string()), DnsSearch: z.array(z.string()), ExtraHosts: z.array(z.string()), GroupAdd: z.array(z.string()), IpcMode: z.string(), Cgroup: z.string(), Links: z.array(z.string()), OomScoreAdj: z.number().int(), PidMode: z.string(), Privileged: z.boolean(), PublishAllPorts: z.boolean(), ReadonlyRootfs: z.boolean(), SecurityOpt: z.array(z.string()), StorageOpt: z.record(z.string(), z.string()), Tmpfs: z.record(z.string(), z.string()), UTSMode: z.string(), UsernsMode: z.string(), ShmSize: z.number().int().min(0), Sysctls: z.record(z.string(), z.string()), Runtime: z.string(), Isolation: z.enum(["default", "process", "hyperv"]), MaskedPaths: z.array(z.string()), ReadonlyPaths: z.array(z.string()) }).partial().strict().passthrough()).refine((obj) => obj == null || Object.keys(obj).every((key) => Object.prototype.hasOwnProperty.call({ "CpuShares": 1, "Memory": 1, "CgroupParent": 1, "BlkioWeight": 1, "BlkioWeightDevice": 1, "BlkioDeviceReadBps": 1, "BlkioDeviceWriteBps": 1, "BlkioDeviceReadIOps": 1, "BlkioDeviceWriteIOps": 1, "CpuPeriod": 1, "CpuQuota": 1, "CpuRealtimePeriod": 1, "CpuRealtimeRuntime": 1, "CpusetCpus": 1, "CpusetMems": 1, "Devices": 1, "DeviceCgroupRules": 1, "DeviceRequests": 1, "KernelMemoryTCP": 1, "MemoryReservation": 1, "MemorySwap": 1, "MemorySwappiness": 1, "NanoCpus": 1, "OomKillDisable": 1, "Init": 1, "PidsLimit": 1, "Ulimits": 1, "CpuCount": 1, "CpuPercent": 1, "IOMaximumIOps": 1, "IOMaximumBandwidth": 1, "Binds": 1, "ContainerIDFile": 1, "LogConfig": 1, "NetworkMode": 1, "PortBindings": 1, "RestartPolicy": 1, "AutoRemove": 1, "VolumeDriver": 1, "VolumesFrom": 1, "Mounts": 1, "ConsoleSize": 1, "Annotations": 1, "CapAdd": 1, "CapDrop": 1, "CgroupnsMode": 1, "Dns": 1, "DnsOptions": 1, "DnsSearch": 1, "ExtraHosts": 1, "GroupAdd": 1, "IpcMode": 1, "Cgroup": 1, "Links": 1, "OomScoreAdj": 1, "PidMode": 1, "Privileged": 1, "PublishAllPorts": 1, "ReadonlyRootfs": 1, "SecurityOpt": 1, "StorageOpt": 1, "Tmpfs": 1, "UTSMode": 1, "UsernsMode": 1, "ShmSize": 1, "Sysctls": 1, "Runtime": 1, "Isolation": 1, "MaskedPaths": 1, "ReadonlyPaths": 1 }, key)));
 
 export type ContainerConfig = z.infer<typeof ContainerConfig>;
 export const ContainerConfig = z.object({ Hostname: z.string(), Domainname: z.string(), User: z.string(), AttachStdin: z.boolean().default(false), AttachStdout: z.boolean().default(true), AttachStderr: z.boolean().default(true), ExposedPorts: z.record(z.string(), z.object({  }).partial().strict()).nullable(), Tty: z.boolean().default(false), OpenStdin: z.boolean().default(false), StdinOnce: z.boolean().default(false), Env: z.array(z.string()), Cmd: z.array(z.string()), Healthcheck: HealthConfig, ArgsEscaped: z.boolean().nullable().default(false), Image: z.string(), Volumes: z.record(z.string(), z.object({  }).partial().strict()), WorkingDir: z.string(), Entrypoint: z.array(z.string()), NetworkDisabled: z.boolean().nullable(), MacAddress: z.string().nullable(), OnBuild: z.array(z.string()).nullable(), Labels: z.record(z.string(), z.string()), StopSignal: z.string().nullable(), StopTimeout: z.number().int().nullable(), Shell: z.array(z.string()).nullable() }).partial().strict();
@@ -210,7 +210,7 @@ export type JoinTokens = z.infer<typeof JoinTokens>;
 export const JoinTokens = z.object({ Worker: z.string(), Manager: z.string() }).partial().strict();
 
 export type Swarm = z.infer<typeof Swarm>;
-export const Swarm = ClusterInfo.and(z.object({ JoinTokens: JoinTokens }).partial().strict());
+export const Swarm = ClusterInfo.unwrap().passthrough().nullable().and(z.object({ JoinTokens: JoinTokens }).partial().strict().passthrough()).refine((obj) => obj == null || Object.keys(obj).every((key) => Object.prototype.hasOwnProperty.call({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "TLSInfo": 1, "RootRotationInProgress": 1, "DataPathPort": 1, "DefaultAddrPool": 1, "SubnetSize": 1, "JoinTokens": 1 }, key)));
 
 export type NetworkAttachmentConfig = z.infer<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = z.object({ Target: z.string(), Aliases: z.array(z.string()), DriverOpts: z.record(z.string(), z.string()) }).partial().strict();
@@ -336,7 +336,7 @@ export const post_ContainerCreate = {
   path: z.literal("/containers/create"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ name: z.string().regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")), platform: z.string() }).partial().strict().optional(), body: ContainerConfig.and(z.object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }).partial().strict()) },
+  parameters: { query: z.object({ name: z.string().regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")), platform: z.string() }).partial().strict().optional(), body: ContainerConfig.passthrough().and(z.object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }).partial().strict().passthrough()).refine((obj) => obj == null || Object.keys(obj).every((key) => Object.prototype.hasOwnProperty.call({ "Hostname": 1, "Domainname": 1, "User": 1, "AttachStdin": 1, "AttachStdout": 1, "AttachStderr": 1, "ExposedPorts": 1, "Tty": 1, "OpenStdin": 1, "StdinOnce": 1, "Env": 1, "Cmd": 1, "Healthcheck": 1, "ArgsEscaped": 1, "Image": 1, "Volumes": 1, "WorkingDir": 1, "Entrypoint": 1, "NetworkDisabled": 1, "MacAddress": 1, "OnBuild": 1, "Labels": 1, "StopSignal": 1, "StopTimeout": 1, "Shell": 1, "HostConfig": 1, "NetworkingConfig": 1 }, key))) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -456,7 +456,7 @@ export const post_ContainerUpdate = {
   path: z.literal("/containers/{id}/update"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ id: z.string() }).strict(), body: Resources.and(z.object({ RestartPolicy: RestartPolicy }).partial().strict()) },
+  parameters: { path: z.object({ id: z.string() }).strict(), body: Resources.passthrough().and(z.object({ RestartPolicy: RestartPolicy }).partial().strict().passthrough()).refine((obj) => obj == null || Object.keys(obj).every((key) => Object.prototype.hasOwnProperty.call({ "CpuShares": 1, "Memory": 1, "CgroupParent": 1, "BlkioWeight": 1, "BlkioWeightDevice": 1, "BlkioDeviceReadBps": 1, "BlkioDeviceWriteBps": 1, "BlkioDeviceReadIOps": 1, "BlkioDeviceWriteIOps": 1, "CpuPeriod": 1, "CpuQuota": 1, "CpuRealtimePeriod": 1, "CpuRealtimeRuntime": 1, "CpusetCpus": 1, "CpusetMems": 1, "Devices": 1, "DeviceCgroupRules": 1, "DeviceRequests": 1, "KernelMemoryTCP": 1, "MemoryReservation": 1, "MemorySwap": 1, "MemorySwappiness": 1, "NanoCpus": 1, "OomKillDisable": 1, "Init": 1, "PidsLimit": 1, "Ulimits": 1, "CpuCount": 1, "CpuPercent": 1, "IOMaximumIOps": 1, "IOMaximumBandwidth": 1, "RestartPolicy": 1 }, key))) },
   responses: { 200: z.object({ Warnings: z.array(z.string()) }).partial().strict(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1199,7 +1199,7 @@ export const post_ServiceCreate = {
   path: z.literal("/services/create"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { header: z.object({ "X-Registry-Auth": z.string() }).partial().strict().optional(), body: ServiceSpec.and(z.record(z.string(), z.unknown())) },
+  parameters: { header: z.object({ "X-Registry-Auth": z.string() }).partial().strict().optional(), body: ServiceSpec.passthrough().and(z.record(z.string(), z.unknown())) },
   responses: { 201: z.object({ ID: z.string(), Warning: z.string() }).partial().strict(), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1229,7 +1229,7 @@ export const post_ServiceUpdate = {
   path: z.literal("/services/{id}/update"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ version: z.coerce.number().int(), registryAuthFrom: z.enum(["spec", "previous-spec"]).default("spec"), rollback: z.string().optional() }).strict(), path: z.object({ id: z.string() }).strict(), header: z.object({ "X-Registry-Auth": z.string() }).partial().strict().optional(), body: ServiceSpec.and(z.record(z.string(), z.unknown())) },
+  parameters: { query: z.object({ version: z.coerce.number().int(), registryAuthFrom: z.enum(["spec", "previous-spec"]).default("spec"), rollback: z.string().optional() }).strict(), path: z.object({ id: z.string() }).strict(), header: z.object({ "X-Registry-Auth": z.string() }).partial().strict().optional(), body: ServiceSpec.passthrough().and(z.record(z.string(), z.unknown())) },
   responses: { 200: ServiceUpdateResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1289,7 +1289,7 @@ export const post_SecretCreate = {
   path: z.literal("/secrets/create"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: SecretSpec.and(z.record(z.string(), z.unknown())) },
+  parameters: { body: SecretSpec.passthrough().and(z.record(z.string(), z.unknown())) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1339,7 +1339,7 @@ export const post_ConfigCreate = {
   path: z.literal("/configs/create"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: ConfigSpec.and(z.record(z.string(), z.unknown())) },
+  parameters: { body: ConfigSpec.passthrough().and(z.record(z.string(), z.unknown())) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

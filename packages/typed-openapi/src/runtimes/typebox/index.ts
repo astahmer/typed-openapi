@@ -13,6 +13,8 @@ import {
   objectKey,
   objectProps,
   quote,
+  isClosedObjectLike,
+  resolveSchemaNode,
 } from "../shared.ts";
 import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
@@ -100,8 +102,25 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       return node.exclusive
         ? `__typedOpenapiOneOf([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`
         : `Type.Union([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
-    case "intersection":
+    case "intersection": {
+      // Per-member additionalProperties:false makes A&B unsatisfiable. Composite merges keys.
+      if (
+        node.members.length >= 2 &&
+        node.members.every((member) => {
+          const resolved = resolveSchemaNode(member, ctx);
+          const inner = isNullOr(resolved) ?? resolved;
+          return (
+            inner.kind === "object" &&
+            typeof inner.additionalProperties === "boolean" &&
+            Object.keys(inner.patternProperties ?? {}).length === 0
+          );
+        })
+      ) {
+        const closed = node.members.every((member) => isClosedObjectLike(member, ctx));
+        return `Type.Composite([${node.members.map((member) => emitNode(member, ctx)).join(", ")}], { additionalProperties: ${closed ? "false" : "true"} })`;
+      }
       return `Type.Intersect([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
+    }
     case "not":
       return `Type.Not(${emitNode(node.schema, ctx)})`;
     case "ref": {

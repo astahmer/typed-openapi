@@ -16,13 +16,7 @@ export const Order = S.Struct({
   shipDate: S.optional(S.String),
   status: S.optional(S.Union(S.Literal("placed"), S.Literal("approved"), S.Literal("delivered"))),
   complete: S.optional(S.Boolean),
-}).pipe(
-  S.filter((data) =>
-    Object.keys(data).every((key) =>
-      Object.prototype.hasOwnProperty.call({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
-    ),
-  ),
-);
+});
 export type Order = S.Schema.Type<typeof Order>;
 
 export const Address = S.Struct({
@@ -30,29 +24,17 @@ export const Address = S.Struct({
   city: S.optional(S.String),
   state: S.optional(S.String),
   zip: S.optional(S.String),
-}).pipe(
-  S.filter((data) =>
-    Object.keys(data).every((key) =>
-      Object.prototype.hasOwnProperty.call({ street: 1, city: 1, state: 1, zip: 1 }, key),
-    ),
-  ),
-);
+});
 export type Address = S.Schema.Type<typeof Address>;
 
 export const Customer = S.Struct({
   id: S.optional(S.Int),
   username: S.optional(S.String),
   address: S.optional(S.Array(Address)),
-}).pipe(
-  S.filter((data) =>
-    Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, username: 1, address: 1 }, key)),
-  ),
-);
+});
 export type Customer = S.Schema.Type<typeof Customer>;
 
-export const Category = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) }).pipe(
-  S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, name: 1 }, key))),
-);
+export const Category = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) });
 export type Category = S.Schema.Type<typeof Category>;
 
 export const User = S.Struct({
@@ -64,21 +46,10 @@ export const User = S.Struct({
   password: S.optional(S.String),
   phone: S.optional(S.String),
   userStatus: S.optional(S.Int),
-}).pipe(
-  S.filter((data) =>
-    Object.keys(data).every((key) =>
-      Object.prototype.hasOwnProperty.call(
-        { id: 1, username: 1, firstName: 1, lastName: 1, email: 1, password: 1, phone: 1, userStatus: 1 },
-        key,
-      ),
-    ),
-  ),
-);
+});
 export type User = S.Schema.Type<typeof User>;
 
-export const Tag = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) }).pipe(
-  S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, name: 1 }, key))),
-);
+export const Tag = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) });
 export type Tag = S.Schema.Type<typeof Tag>;
 
 export const Pet = S.Struct({
@@ -88,24 +59,14 @@ export const Pet = S.Struct({
   photoUrls: S.Array(S.String),
   tags: S.optional(S.Array(Tag)),
   status: S.optional(S.Union(S.Literal("available"), S.Literal("pending"), S.Literal("sold"))),
-}).pipe(
-  S.filter((data) =>
-    Object.keys(data).every((key) =>
-      Object.prototype.hasOwnProperty.call({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
-    ),
-  ),
-);
+});
 export type Pet = S.Schema.Type<typeof Pet>;
 
 export const ApiResponse = S.Struct({
   code: S.optional(S.Int),
   type: S.optional(S.String),
   message: S.optional(S.String),
-}).pipe(
-  S.filter((data) =>
-    Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, type: 1, message: 1 }, key)),
-  ),
-);
+});
 export type ApiResponse = S.Schema.Type<typeof ApiResponse>;
 
 // </Schemas>
@@ -137,22 +98,8 @@ export const get_FindPetsByStatus = {
   path: S.Literal("/pet/findByStatus"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    query: S.optional(
-      S.Struct({ status: Union_default_available_prop }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ status: 1 }, key))),
-      ),
-    ),
-  },
-  responses: {
-    200: S.Array(Pet),
-    304: S.Unknown,
-    400: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) =>
-        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
-      ),
-    ),
-  },
+  parameters: { query: S.optional(S.Struct({ status: Union_default_available_prop })) },
+  responses: { 200: S.Array(Pet), 304: S.Unknown, 400: S.Struct({ code: S.Int, message: S.String }) },
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
@@ -161,13 +108,7 @@ export const get_FindPetsByTags = {
   path: S.Literal("/pet/findByTags"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    query: S.optional(
-      S.Struct({ tags: S.optional(S.Array(S.String)) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ tags: 1 }, key))),
-      ),
-    ),
-  },
+  parameters: { query: S.optional(S.Struct({ tags: S.optional(S.Array(S.String)) })) },
   responses: { 200: S.Union(S.Array(Pet), S.Array(User), S.Array(Tag)), 400: S.Unknown },
 };
 
@@ -177,23 +118,11 @@ export const get_GetPetById = {
   path: S.Literal("/pet/{petId}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
-    ),
-  },
+  parameters: { path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }) },
   responses: {
     200: Pet,
-    400: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) =>
-        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
-      ),
-    ),
-    404: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) =>
-        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
-      ),
-    ),
+    400: S.Struct({ code: S.Int, message: S.String }),
+    404: S.Struct({ code: S.Int, message: S.String }),
   },
 };
 
@@ -204,16 +133,8 @@ export const post_UpdatePetWithForm = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: {
-    query: S.optional(
-      S.Struct({ name: S.optional(S.String), status: S.optional(S.String) }).pipe(
-        S.filter((data) =>
-          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ name: 1, status: 1 }, key)),
-        ),
-      ),
-    ),
-    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
-    ),
+    query: S.optional(S.Struct({ name: S.optional(S.String), status: S.optional(S.String) })),
+    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
   },
   responses: { 405: S.Unknown },
 };
@@ -225,14 +146,8 @@ export const delete_DeletePet = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: {
-    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
-    ),
-    header: S.optional(
-      S.Struct({ api_key: S.optional(S.String) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ api_key: 1 }, key))),
-      ),
-    ),
+    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
+    header: S.optional(S.Struct({ api_key: S.optional(S.String) })),
   },
   responses: { 400: S.Unknown },
 };
@@ -244,16 +159,8 @@ export const post_UploadFile = {
   requestFormat: S.Literal("binary"),
   responseFormat: S.Literal("json"),
   parameters: {
-    query: S.optional(
-      S.Struct({ additionalMetadata: S.optional(S.String) }).pipe(
-        S.filter((data) =>
-          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ additionalMetadata: 1 }, key)),
-        ),
-      ),
-    ),
-    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
-    ),
+    query: S.optional(S.Struct({ additionalMetadata: S.optional(S.String) })),
+    path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
     body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
@@ -285,11 +192,7 @@ export const get_GetOrderById = {
   path: S.Literal("/store/order/{orderId}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ orderId: 1 }, key))),
-    ),
-  },
+  parameters: { path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }) },
   responses: { 200: Order, 400: S.Unknown, 404: S.Unknown },
 };
 
@@ -299,11 +202,7 @@ export const delete_DeleteOrder = {
   path: S.Literal("/store/order/{orderId}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ orderId: 1 }, key))),
-    ),
-  },
+  parameters: { path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }) },
   responses: { 400: S.Unknown, 404: S.Unknown },
 };
 
@@ -333,27 +232,11 @@ export const get_LoginUser = {
   path: S.Literal("/user/login"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    query: S.optional(
-      S.Struct({ username: S.optional(S.String), password: S.optional(S.String) }).pipe(
-        S.filter((data) =>
-          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1, password: 1 }, key)),
-        ),
-      ),
-    ),
-  },
+  parameters: { query: S.optional(S.Struct({ username: S.optional(S.String), password: S.optional(S.String) })) },
   responses: { 200: S.String, 400: S.Unknown },
   responseHeaders: {
-    200: S.Struct({ "X-Rate-Limit": S.Int, "X-Expires-After": S.String }).pipe(
-      S.filter((data) =>
-        Object.keys(data).every((key) =>
-          Object.prototype.hasOwnProperty.call({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key),
-        ),
-      ),
-    ),
-    400: S.Struct({ "X-Error": S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Error": 1 }, key))),
-    ),
+    200: S.Struct({ "X-Rate-Limit": S.Int, "X-Expires-After": S.String }),
+    400: S.Struct({ "X-Error": S.String }),
   },
 };
 
@@ -373,23 +256,11 @@ export const get_GetUserByName = {
   path: S.Literal("/user/{username}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    path: S.Struct({ username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key))),
-    ),
-  },
+  parameters: { path: S.Struct({ username: S.String }) },
   responses: {
     200: User,
-    201: S.Struct({ id: S.Int, username: S.String }).pipe(
-      S.filter((data) =>
-        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, username: 1 }, key)),
-      ),
-    ),
-    400: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) =>
-        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
-      ),
-    ),
+    201: S.Struct({ id: S.Int, username: S.String }),
+    400: S.Struct({ code: S.Int, message: S.String }),
     404: S.Unknown,
   },
 };
@@ -400,12 +271,7 @@ export const put_UpdateUser = {
   path: S.Literal("/user/{username}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    path: S.Struct({ username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key))),
-    ),
-    body: User,
-  },
+  parameters: { path: S.Struct({ username: S.String }), body: User },
   responses: { default: S.Unknown },
 };
 
@@ -415,11 +281,7 @@ export const delete_DeleteUser = {
   path: S.Literal("/user/{username}"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: {
-    path: S.Struct({ username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key))),
-    ),
-  },
+  parameters: { path: S.Struct({ username: S.String }) },
   responses: { 400: S.Unknown, 404: S.Unknown },
 };
 
