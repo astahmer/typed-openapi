@@ -117,7 +117,15 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         })
       ) {
         const closed = node.members.every((member) => isClosedObjectLike(member, ctx));
-        return `Type.Composite([${node.members.map((member) => emitNode(member, ctx)).join(", ")}], { additionalProperties: ${closed ? "false" : "true"} })`;
+        return `Type.Composite([${node.members
+          .map((member) => {
+            const resolved = resolveSchemaNode(member, ctx);
+            const inner = isNullOr(resolved);
+            if (!inner) return emitNode(member, ctx);
+            if (member.kind === "ref") return `Type.Exclude(${emitNode(member, ctx)}, Type.Null())`;
+            return emitNode(inner, ctx);
+          })
+          .join(", ")}], { additionalProperties: ${closed ? "false" : "true"} })`;
       }
       return `Type.Intersect([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
     }

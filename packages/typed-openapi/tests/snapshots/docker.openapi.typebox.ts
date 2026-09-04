@@ -211,7 +211,7 @@ export type JoinTokens = Static<typeof JoinTokens>;
 export const JoinTokens = Type.Partial(Type.Object({ Worker: Type.String(), Manager: Type.String() }, { additionalProperties: false }));
 
 export type Swarm = Static<typeof Swarm>;
-export const Swarm = Type.Composite([ClusterInfo, Type.Partial(Type.Object({ JoinTokens: JoinTokens }, { additionalProperties: false }))], { additionalProperties: false });
+export const Swarm = Type.Composite([Type.Exclude(ClusterInfo, Type.Null()), Type.Partial(Type.Object({ JoinTokens: JoinTokens }, { additionalProperties: false }))], { additionalProperties: false });
 
 export type NetworkAttachmentConfig = Static<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = Type.Partial(Type.Object({ Target: Type.String(), Aliases: Type.Array(Type.String()), DriverOpts: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
