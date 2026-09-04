@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { irToTs } from "../src/schema-ir/ir-to-ts.ts";
+import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import type { SchemaNode } from "../src/schema-ir/types.ts";
 
 const stringNode = (meta: SchemaNode["meta"] = {}): SchemaNode => ({
@@ -53,15 +54,18 @@ describe("schema IR TypeScript rendering", () => {
 
   test("renders partial open objects with Record", () => {
     expect(
-      irToTs({
-        kind: "object",
-        properties: { id: { kind: "number", integer: false, constraints: {}, meta: {} } },
-        required: [],
-        additionalProperties: true,
-        constraints: {},
-        meta: {},
-        partial: true,
-      }),
+      irToTs(
+        openApiToIr(
+          { type: "object", properties: { id: { type: "number" } }, additionalProperties: true },
+          { getRefName: (ref) => ref },
+        ),
+      ),
     ).toBe("(Partial<{ id: number }> & Record<string, unknown>)");
+  });
+
+  test("does not add Record on closed partial objects", () => {
+    expect(
+      irToTs(openApiToIr({ type: "object", properties: { id: { type: "number" } } }, { getRefName: (ref) => ref })),
+    ).toBe("Partial<{ id: number }>");
   });
 });
