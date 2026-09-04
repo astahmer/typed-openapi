@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import { z } from "zod";
 import { z as z3 } from "zod/v3";
 import { Schema, Struct } from "effect";
@@ -135,16 +135,15 @@ const decodeUnknown = (runtime: string, schema: unknown, value: unknown): unknow
   }
 };
 
-const compileTypiaIs = async (
-  schemaName: string,
+const compileTypiaGuards = async (
   schemas: Record<string, unknown>,
-): Promise<(input: unknown) => boolean> => {
-  const directory = join(__dirname, "tmp/typia-runtime", schemaName.toLowerCase());
+): Promise<Record<string, (input: unknown) => boolean>> => {
+  const directory = join(__dirname, "tmp/typia-runtime");
   mkdirSync(join(directory, "dist"), { recursive: true });
   const source = generateFile({
     ...mapOpenApiEndpoints({
       openapi: "3.1.0",
-      info: { title: schemaName, version: "1" },
+      info: { title: "typia-runtime", version: "1" },
       paths: {},
       components: { schemas },
     } as OpenAPIObject),
@@ -174,22 +173,45 @@ const compileTypiaIs = async (
       [ttscBin, "--project", join(directory, "tsconfig.json"), "--emit", "--cwd", directory],
       {
         encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 330_000,
+        stdio: ["ignore", "pipe", "inherit"],
       },
     );
   } catch (error) {
     const err = error as { stdout?: string; stderr?: string; message: string };
-    throw new Error(`ttsc failed for ${schemaName}:\n${err.stdout ?? ""}${err.stderr ?? ""}${err.message}`);
+    throw new Error(`ttsc failed:\n${err.stdout ?? ""}${err.stderr ?? ""}${err.message}`);
   }
-  const compiled = (await import(
-    pathToFileURL(join(directory, "dist/schemas.js")).href + `?t=${Date.now()}`
-  )) as Record<string, (input: unknown) => boolean>;
-  const is = compiled[`is${schemaName}`];
-  if (!is) throw new Error(`compiled typia output is missing is${schemaName}`);
-  return is;
+  return (await import(pathToFileURL(join(directory, "dist/schemas.js")).href + `?t=${Date.now()}`)) as Record<
+    string,
+    (input: unknown) => boolean
+  >;
 };
 
 describe("typed additionalProperties with named properties", () => {
+  let isHostConfig: (input: unknown) => boolean;
+  let isImplicitObject: (input: unknown) => boolean;
+
+  beforeAll(async () => {
+    const compiled = await compileTypiaGuards({
+      Resources: { type: "object", properties: { Memory: { type: "integer" } } },
+      HostConfig: {
+        allOf: [
+          { $ref: "#/components/schemas/Resources" },
+          { type: "object", properties: { Binds: { type: "array", items: { type: "string" } } } },
+        ],
+      },
+      ImplicitObject: implicitAdditionalPropertiesSchema,
+    });
+    isHostConfig = compiled.isHostConfig;
+    isImplicitObject = compiled.isImplicitObject;
+    if (!isHostConfig || !isImplicitObject) {
+      throw new Error(
+        `compiled typia output is missing guards: ${Object.keys(compiled)
+          .filter((key) => key.startsWith("is"))
+          .join(", ")}`,
+      );
+    }
+  }, 360_000);
   test.each([
     ["zod", zodAdapter],
     ["zod3", zod3Adapter],
@@ -358,19 +380,10 @@ describe("typed additionalProperties with named properties", () => {
     expect(accepts("arktype", schema, { Memory: 1, Binds: [], extra: true })).toBe(false);
   });
 
-  test("typia allOf of closed objects accepts combined keys and rejects extras", { timeout: 180_000 }, async () => {
-    const is = await compileTypiaIs("HostConfig", {
-      Resources: { type: "object", properties: { Memory: { type: "integer" } } },
-      HostConfig: {
-        allOf: [
-          { $ref: "#/components/schemas/Resources" },
-          { type: "object", properties: { Binds: { type: "array", items: { type: "string" } } } },
-        ],
-      },
-    });
-    expect(is({ Memory: 1, Binds: [] })).toBe(true);
-    expect(is({ Memory: 1, extra: true })).toBe(false);
-    expect(is({ Memory: 1, Binds: 123 })).toBe(false);
+  test("typia allOf of closed objects accepts combined keys and rejects extras", () => {
+    expect(isHostConfig({ Memory: 1, Binds: [] })).toBe(true);
+    expect(isHostConfig({ Memory: 1, extra: true })).toBe(false);
+    expect(isHostConfig({ Memory: 1, Binds: 123 })).toBe(false);
   });
 
   test("arktype type.module closed objects reject extra keys", () => {
@@ -470,13 +483,10 @@ describe("typed additionalProperties with named properties", () => {
     expect(accepts(runtime, schema, { name: 123 })).toBe(false);
   });
 
-  test("typia rejects extra properties when additionalProperties is omitted", { timeout: 180_000 }, async () => {
-    const is = await compileTypiaIs("ImplicitObject", {
-      ImplicitObject: implicitAdditionalPropertiesSchema,
-    });
-    expect(is({ name: "typed-openapi" })).toBe(true);
-    expect(is({ name: "typed-openapi", extra: true })).toBe(false);
-    expect(is({ name: 123 })).toBe(false);
+  test("typia rejects extra properties when additionalProperties is omitted", () => {
+    expect(isImplicitObject({ name: "typed-openapi" })).toBe(true);
+    expect(isImplicitObject({ name: "typed-openapi", extra: true })).toBe(false);
+    expect(isImplicitObject({ name: 123 })).toBe(false);
   });
 
   test.each([
