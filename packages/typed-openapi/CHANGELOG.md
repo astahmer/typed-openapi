@@ -1,5 +1,18 @@
 # typed-openapi
 
+## 4.1.0
+
+### Minor Changes
+
+- 2c95489: Treat omitted `additionalProperties` as `false` so generated objects stay closed. Opt into OpenAPI's open-object default
+  with `openapi.additionalPropertiesDefault` / `--openapi-additional-properties-default`.
+
+  `allOf` of two closed objects now composes (Docker `HostConfig`) instead of rejecting sibling keys.
+
+### Patch Changes
+
+- 8e23dd3: Fix Zod 4 strict-object output, class-instance parameter serialization, and duplicate response unions.
+
 ## 4.0.1
 
 ### Patch Changes
