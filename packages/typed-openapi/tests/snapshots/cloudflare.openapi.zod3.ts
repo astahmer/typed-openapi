@@ -22973,7 +22973,7 @@ export const get_Artifacts_repos_raw_get = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.object({ account_id: z.string(), namespace: z.string().regex(new RegExp("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")), name: z.string().regex(new RegExp("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")), ref: z.string().min(1), path: z.string().min(1) }).strict() },
-  responses: { 200: z.union([z.unknown(), z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob), z.string(), z.string()]), 400: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 401: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 403: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 404: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 413: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 500: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict() },
+  responses: { 200: z.union([z.unknown(), z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob), z.string()]), 400: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 401: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 403: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 404: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 413: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict(), 500: z.object({ errors: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()).min(1), messages: z.array(z.object({ code: z.number().int().min(-9007199254740991).max(9007199254740991), documentation_url: z.string().url().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().strict().optional() }).strict()), result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) }).strict() },
   responseHeaders: { 200: z.object({ "content-length": z.number().int(), "content-security-policy": z.string() }).strict() },
 };
 
@@ -54555,6 +54555,12 @@ const runValidate = async (ctx: {
 
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -54602,7 +54608,7 @@ export class ApiClient {
       const explode = parameterStyle?.explode ?? false;
       if (style === "label") {
         if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
         }
@@ -54610,14 +54616,14 @@ export class ApiClient {
       }
       if (style === "matrix") {
         if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
         }
         return ";" + key + "=" + encode(value);
       }
       if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
@@ -54667,7 +54673,7 @@ export class ApiClient {
           else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
           else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
           else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
           if (style === "deepObject") {
             for (const [nestedKey, nestedValue] of entries) {

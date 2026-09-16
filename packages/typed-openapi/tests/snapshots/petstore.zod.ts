@@ -3,7 +3,7 @@ import { z } from "zod";
 // <Schemas>
 export type Order = z.infer<typeof Order>;
 export const Order = z
-  .object({
+  .strictObject({
     id: z.number().int(),
     petId: z.number().int(),
     quantity: z.number().int(),
@@ -11,27 +11,24 @@ export const Order = z
     status: z.enum(["placed", "approved", "delivered"]),
     complete: z.boolean(),
   })
-  .partial()
-  .strict();
+  .partial();
 
 export type Address = z.infer<typeof Address>;
 export const Address = z
-  .object({ street: z.string(), city: z.string(), state: z.string(), zip: z.string() })
-  .partial()
-  .strict();
+  .strictObject({ street: z.string(), city: z.string(), state: z.string(), zip: z.string() })
+  .partial();
 
 export type Customer = z.infer<typeof Customer>;
 export const Customer = z
-  .object({ id: z.number().int(), username: z.string(), address: z.array(Address) })
-  .partial()
-  .strict();
+  .strictObject({ id: z.number().int(), username: z.string(), address: z.array(Address) })
+  .partial();
 
 export type Category = z.infer<typeof Category>;
-export const Category = z.object({ id: z.number().int(), name: z.string() }).partial().strict();
+export const Category = z.strictObject({ id: z.number().int(), name: z.string() }).partial();
 
 export type User = z.infer<typeof User>;
 export const User = z
-  .object({
+  .strictObject({
     id: z.number().int(),
     username: z.string(),
     firstName: z.string(),
@@ -41,29 +38,23 @@ export const User = z
     phone: z.string(),
     userStatus: z.number().int(),
   })
-  .partial()
-  .strict();
+  .partial();
 
 export type Tag = z.infer<typeof Tag>;
-export const Tag = z.object({ id: z.number().int(), name: z.string() }).partial().strict();
+export const Tag = z.strictObject({ id: z.number().int(), name: z.string() }).partial();
 
 export type Pet = z.infer<typeof Pet>;
-export const Pet = z
-  .object({
-    id: z.number().int().optional(),
-    name: z.string(),
-    category: Category.optional(),
-    photoUrls: z.array(z.string()),
-    tags: z.array(Tag).optional(),
-    status: z.enum(["available", "pending", "sold"]).optional(),
-  })
-  .strict();
+export const Pet = z.strictObject({
+  id: z.number().int().optional(),
+  name: z.string(),
+  category: Category.optional(),
+  photoUrls: z.array(z.string()),
+  tags: z.array(Tag).optional(),
+  status: z.enum(["available", "pending", "sold"]).optional(),
+});
 
 export type ApiResponse = z.infer<typeof ApiResponse>;
-export const ApiResponse = z
-  .object({ code: z.number().int(), type: z.string(), message: z.string() })
-  .partial()
-  .strict();
+export const ApiResponse = z.strictObject({ code: z.number().int(), type: z.string(), message: z.string() }).partial();
 
 // </Schemas>
 
@@ -96,15 +87,14 @@ export const get_FindPetsByStatus = {
   responseFormat: z.literal("json"),
   parameters: {
     query: z
-      .object({ status: z.enum(["available", "pending", "sold"]).default("available") })
+      .strictObject({ status: z.enum(["available", "pending", "sold"]).default("available") })
       .partial()
-      .strict()
       .optional(),
   },
   responses: {
     200: z.array(Pet),
     304: z.unknown(),
-    400: z.object({ code: z.number().int(), message: z.string() }).strict(),
+    400: z.strictObject({ code: z.number().int(), message: z.string() }),
   },
 };
 
@@ -116,9 +106,8 @@ export const get_FindPetsByTags = {
   responseFormat: z.literal("json"),
   parameters: {
     query: z
-      .object({ tags: z.array(z.string()) })
+      .strictObject({ tags: z.array(z.string()) })
       .partial()
-      .strict()
       .optional(),
   },
   responses: { 200: z.union([z.array(Pet), z.array(User), z.array(Tag)]), 400: z.unknown() },
@@ -130,11 +119,11 @@ export const get_GetPetById = {
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ petId: z.coerce.number().int() }).strict() },
+  parameters: { path: z.strictObject({ petId: z.coerce.number().int() }) },
   responses: {
     200: Pet,
-    400: z.object({ code: z.number().int(), message: z.string() }).strict(),
-    404: z.object({ code: z.number().int(), message: z.string() }).strict(),
+    400: z.strictObject({ code: z.number().int(), message: z.string() }),
+    404: z.strictObject({ code: z.number().int(), message: z.string() }),
   },
 };
 
@@ -145,8 +134,8 @@ export const post_UpdatePetWithForm = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: {
-    query: z.object({ name: z.string(), status: z.string() }).partial().strict().optional(),
-    path: z.object({ petId: z.coerce.number().int() }).strict(),
+    query: z.strictObject({ name: z.string(), status: z.string() }).partial().optional(),
+    path: z.strictObject({ petId: z.coerce.number().int() }),
   },
   responses: { 405: z.unknown() },
 };
@@ -158,8 +147,8 @@ export const delete_DeletePet = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: {
-    path: z.object({ petId: z.coerce.number().int() }).strict(),
-    header: z.object({ api_key: z.string() }).partial().strict().optional(),
+    path: z.strictObject({ petId: z.coerce.number().int() }),
+    header: z.strictObject({ api_key: z.string() }).partial().optional(),
   },
   responses: { 400: z.unknown() },
 };
@@ -171,8 +160,8 @@ export const post_UploadFile = {
   requestFormat: z.literal("binary"),
   responseFormat: z.literal("json"),
   parameters: {
-    query: z.object({ additionalMetadata: z.string() }).partial().strict().optional(),
-    path: z.object({ petId: z.coerce.number().int() }).strict(),
+    query: z.strictObject({ additionalMetadata: z.string() }).partial().optional(),
+    path: z.strictObject({ petId: z.coerce.number().int() }),
     body: z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
@@ -204,7 +193,7 @@ export const get_GetOrderById = {
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ orderId: z.coerce.number().int() }).strict() },
+  parameters: { path: z.strictObject({ orderId: z.coerce.number().int() }) },
   responses: { 200: Order, 400: z.unknown(), 404: z.unknown() },
 };
 
@@ -214,7 +203,7 @@ export const delete_DeleteOrder = {
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ orderId: z.coerce.number().int() }).strict() },
+  parameters: { path: z.strictObject({ orderId: z.coerce.number().int() }) },
   responses: { 400: z.unknown(), 404: z.unknown() },
 };
 
@@ -244,11 +233,11 @@ export const get_LoginUser = {
   path: z.literal("/user/login"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ username: z.string(), password: z.string() }).partial().strict().optional() },
+  parameters: { query: z.strictObject({ username: z.string(), password: z.string() }).partial().optional() },
   responses: { 200: z.string(), 400: z.unknown() },
   responseHeaders: {
-    200: z.object({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.iso.datetime() }).strict(),
-    400: z.object({ "X-Error": z.string() }).strict(),
+    200: z.strictObject({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.iso.datetime() }),
+    400: z.strictObject({ "X-Error": z.string() }),
   },
 };
 
@@ -268,11 +257,11 @@ export const get_GetUserByName = {
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ username: z.string() }).strict() },
+  parameters: { path: z.strictObject({ username: z.string() }) },
   responses: {
     200: User,
-    201: z.object({ id: z.number().int(), username: z.string() }).strict(),
-    400: z.object({ code: z.number().int(), message: z.string() }).strict(),
+    201: z.strictObject({ id: z.number().int(), username: z.string() }),
+    400: z.strictObject({ code: z.number().int(), message: z.string() }),
     404: z.unknown(),
   },
 };
@@ -283,7 +272,7 @@ export const put_UpdateUser = {
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ username: z.string() }).strict(), body: User },
+  parameters: { path: z.strictObject({ username: z.string() }), body: User },
   responses: { default: z.unknown() },
 };
 
@@ -293,7 +282,7 @@ export const delete_DeleteUser = {
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ username: z.string() }).strict() },
+  parameters: { path: z.strictObject({ username: z.string() }) },
   responses: { 400: z.unknown(), 404: z.unknown() },
 };
 
@@ -750,6 +739,12 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -804,7 +799,7 @@ export class ApiClient {
               .map(encode)
               .join(explode ? "." : ",")
           );
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return (
             "." +
@@ -829,7 +824,7 @@ export class ApiClient {
                   .filter((item) => item != null)
                   .map(encode)
                   .join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode
             ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("")
@@ -842,7 +837,7 @@ export class ApiClient {
           .filter((item) => item != null)
           .map(encode)
           .join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => (explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]))
@@ -925,7 +920,7 @@ export class ApiClient {
                 .join(","),
               allowReserved,
             );
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(
             ([, nestedValue]) => nestedValue != null,
           );

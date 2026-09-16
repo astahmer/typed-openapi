@@ -13,12 +13,35 @@ import { sanitizeName } from "./sanitize-name.ts";
 
 const emptyMeta = () => ({});
 
+const schemaNodeKey = (node: SchemaNode): string => {
+  const normalize = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(normalize);
+    if (value !== null && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value)
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([key, item]) => [key, normalize(item)]),
+      );
+    }
+    return value;
+  };
+  return JSON.stringify(normalize(node)) ?? "";
+};
+
 /** Merge a new response schema into the existing union (or create one). */
 const mergeUnion = (existing: SchemaNode | undefined, next: SchemaNode): SchemaNode => {
   if (!existing) return next;
   const members = existing.kind === "union" ? existing.members.slice() : [existing];
   members.push(next);
-  return { kind: "union", members, meta: emptyMeta() };
+  const seen = new Set<string>();
+  const uniqueMembers = members.filter((member) => {
+    const key = schemaNodeKey(member);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  if (uniqueMembers.length === 1) return uniqueMembers[0]!;
+  return { kind: "union", members: uniqueMembers, meta: emptyMeta() };
 };
 
 /** Prefer `schema`; fall back to first `content[*].schema` (common for cookie params). */

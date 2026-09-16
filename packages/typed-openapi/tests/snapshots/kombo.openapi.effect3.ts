@@ -3311,6 +3311,12 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export type EffectFetcher = {
   decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
   encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined;
@@ -3450,7 +3456,7 @@ export class EffectApiClient {
             const explode = parameterStyle?.explode ?? false;
             if (style === "label") {
               if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-              if (value && typeof value === "object") {
+              if (isPlainObject(value)) {
                 const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
                 return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
               }
@@ -3458,14 +3464,14 @@ export class EffectApiClient {
             }
             if (style === "matrix") {
               if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-              if (value && typeof value === "object") {
+              if (isPlainObject(value)) {
                 const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
                 return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
               }
               return ";" + key + "=" + encode(value);
             }
             if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-            if (value && typeof value === "object") return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]).flat().join(",");
+            if (isPlainObject(value)) return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]).flat().join(",");
             return encode(value);
           };
           return url
@@ -3507,7 +3513,7 @@ export class EffectApiClient {
                 else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
                 else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
                 else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-              } else if (typeof value === "object") {
+              } else if (isPlainObject(value)) {
                 const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
                 if (style === "deepObject") {
                   for (const [nestedKey, nestedValue] of entries) {

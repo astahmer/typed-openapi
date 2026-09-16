@@ -1,5 +1,6 @@
-import { describe, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
+import { generateFile } from "../../src/generator.ts";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 
 const openApiDoc: OpenAPIObject = {
@@ -75,5 +76,41 @@ describe("issue with multiple valid response media types", () => {
         },
       ],
     });
+  });
+
+  test("deduplicates equivalent response media type schemas", () => {
+    const schema = {
+      type: "array",
+      items: { $ref: "#/components/schemas/Response" },
+    };
+    const doc: OpenAPIObject = {
+      ...openApiDoc,
+      paths: {
+        "/test": {
+          get: {
+            operationId: "getTest",
+            responses: {
+              "200": {
+                content: {
+                  "application/json": { schema },
+                  "text/json": { schema },
+                  "application/vnd.github.v3+json": { schema },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const response = mapOpenApiEndpoints(doc).endpointList[0]?.responses?.["200"];
+    expect(response).toMatchObject({
+      kind: "array",
+      items: { kind: "ref", name: "Response" },
+    });
+
+    const generated = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "zod", includeClient: false });
+    expect(generated).toContain("200: z.array(Response)");
+    expect(generated).not.toContain("z.union([z.array(Response)");
   });
 });

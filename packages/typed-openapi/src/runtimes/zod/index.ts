@@ -171,9 +171,10 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           return `${objectKey(key)}: ${optional && !hasDefault ? `${expr}.optional()` : expr}`;
         })
         .join(", ");
-      let expr = `z.object({ ${body} })`;
-      if (node.partial) expr += ".partial()";
       const patterns = Object.entries(node.patternProperties ?? {});
+      const isClosedObject = node.additionalProperties === false;
+      let expr = `${isClosedObject ? "z.strictObject" : "z.object"}({ ${body} })`;
+      if (node.partial) expr += ".partial()";
       if (patterns.length > 0) {
         const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
@@ -193,7 +194,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       } else if (node.additionalProperties === true) expr += ".catchall(z.unknown())";
       else if (typeof node.additionalProperties === "object") {
         expr += `.catchall(${emitNode(node.additionalProperties, ctx)})`;
-      } else expr += ".strict()";
+      } else if (!isClosedObject) expr += ".strict()";
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       if (oc.minProperties !== undefined) {
         expr += `.refine((obj) => Object.keys(obj).length >= ${oc.minProperties}, { message: "minProperties" })`;
