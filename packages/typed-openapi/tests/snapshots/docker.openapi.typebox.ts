@@ -357,7 +357,7 @@ export const get_ContainerTop = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ ps_args: Type.String() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: false })), Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: false }))]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: false })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -417,7 +417,7 @@ export const post_ContainerStart = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ detachKeys: Type.String() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 304: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 304: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -427,7 +427,7 @@ export const post_ContainerStop = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ signal: Type.String(), t: Type.Integer() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 304: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 304: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -437,7 +437,7 @@ export const post_ContainerRestart = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ signal: Type.String(), t: Type.Integer() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -447,7 +447,7 @@ export const post_ContainerKill = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ signal: Type.String() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 409: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -467,7 +467,7 @@ export const post_ContainerRename = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ name: Type.String() }, { additionalProperties: false }), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 409: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -477,7 +477,7 @@ export const post_ContainerPause = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -487,7 +487,7 @@ export const post_ContainerUnpause = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -507,7 +507,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ detachKeys: Type.String(), logs: Type.Boolean(), stream: Type.Boolean(), stdin: Type.Boolean(), stdout: Type.Boolean(), stderr: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 101: Type.Unknown(), 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 101: Type.Unknown(), 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -527,7 +527,7 @@ export const delete_ContainerDelete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ v: Type.Boolean(), force: Type.Boolean(), link: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 409: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -547,7 +547,7 @@ export const put_PutContainerArchive = {
   requestFormat: Type.Literal("binary"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ path: Type.String(), noOverwriteDirNonDir: Type.Optional(Type.String()), copyUIDGID: Type.Optional(Type.String()) }, { additionalProperties: false }), path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Unsafe<Blob>({ type: "string", format: "binary" }) },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 403: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -557,7 +557,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ path: Type.String() }, { additionalProperties: false }), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
   responseHeaders: { 200: Type.Object({ "X-Docker-Container-Path-Stat": Type.String() }, { additionalProperties: false }) },
 };
 
@@ -638,7 +638,7 @@ export const post_ImagePush = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ tag: Type.String() }, { additionalProperties: false }))), path: Type.Object({ name: Type.String() }, { additionalProperties: false }), header: Type.Object({ "X-Registry-Auth": Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -648,7 +648,7 @@ export const post_ImageTag = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ repo: Type.String(), tag: Type.String() }, { additionalProperties: false }))), path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 201: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 409: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 201: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -760,7 +760,7 @@ export const get_SystemDataUsage = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ type: Type.Array(Type.Union([Type.Literal("container"), Type.Literal("image"), Type.Literal("volume"), Type.Literal("build-cache")])) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Union([Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: false })), Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: false }))]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: false })), 500: ErrorResponse },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -820,7 +820,7 @@ export const post_ExecResize = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ h: Type.Integer(), w: Type.Integer() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -880,7 +880,7 @@ export const delete_VolumeDelete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 409: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -920,7 +920,7 @@ export const delete_NetworkDelete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 403: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -940,7 +940,7 @@ export const post_NetworkConnect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Container: Type.String(), EndpointConfig: EndpointSettings }, { additionalProperties: false }))) },
-  responses: { 200: Type.Unknown(), 403: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -950,7 +950,7 @@ export const post_NetworkDisconnect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Container: Type.String(), Force: Type.Boolean() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Unknown(), 403: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -980,7 +980,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ remote: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Type.Array(PluginPrivilege), Type.Array(PluginPrivilege)]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Array(PluginPrivilege), 500: ErrorResponse },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1000,7 +1000,7 @@ export const get_PluginInspect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Plugin, Plugin]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1010,7 +1010,7 @@ export const delete_PluginDelete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Plugin, Plugin]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1020,7 +1020,7 @@ export const post_PluginEnable = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ timeout: Type.Integer() }, { additionalProperties: false }))), path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1030,7 +1030,7 @@ export const post_PluginDisable = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1040,7 +1040,7 @@ export const post_PluginUpgrade = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ remote: Type.String() }, { additionalProperties: false }), path: Type.Object({ name: Type.String() }, { additionalProperties: false }), header: Type.Optional(Type.Partial(Type.Object({ "X-Registry-Auth": Type.String() }, { additionalProperties: false }))), body: Type.Array(PluginPrivilege) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1050,7 +1050,7 @@ export const post_PluginCreate = {
   requestFormat: Type.Literal("text"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 204: Type.Unknown(), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 500: ErrorResponse },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1060,7 +1060,7 @@ export const post_PluginPush = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1070,7 +1070,7 @@ export const post_PluginSet = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ name: Type.String() }, { additionalProperties: false }), body: Type.Array(Type.String()) },
-  responses: { 204: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1080,7 +1080,7 @@ export const get_NodeList = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ filters: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Union([Type.Array(Node), Type.Array(Node)]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1090,7 +1090,7 @@ export const get_NodeInspect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Node, Node]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1100,7 +1100,7 @@ export const delete_NodeDelete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1110,7 +1110,7 @@ export const post_NodeUpdate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ version: Type.Integer() }, { additionalProperties: false }), path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: NodeSpec },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1120,7 +1120,7 @@ export const get_SwarmInspect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: Type.Never(),
-  responses: { 200: Type.Union([Swarm, Swarm]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1130,7 +1130,7 @@ export const post_SwarmInit = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { body: Type.Optional(Type.Partial(Type.Object({ ListenAddr: Type.String(), AdvertiseAddr: Type.String(), DataPathAddr: Type.String(), DataPathPort: Type.Integer(), DefaultAddrPool: Type.Array(Type.String()), ForceNewCluster: Type.Boolean(), SubnetSize: Type.Integer(), Spec: SwarmSpec }, { additionalProperties: false }))) },
-  responses: { 200: Type.Union([Type.String(), Type.String()]), 400: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.String(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1140,7 +1140,7 @@ export const post_SwarmJoin = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { body: Type.Optional(Type.Partial(Type.Object({ ListenAddr: Type.String(), AdvertiseAddr: Type.String(), DataPathAddr: Type.String(), RemoteAddrs: Type.Array(Type.String()), JoinToken: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1150,7 +1150,7 @@ export const post_SwarmLeave = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Unknown(), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1160,7 +1160,7 @@ export const post_SwarmUpdate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ version: Type.Integer(), rotateWorkerToken: Type.Optional(Type.Boolean()), rotateManagerToken: Type.Optional(Type.Boolean()), rotateManagerUnlockKey: Type.Optional(Type.Boolean()) }, { additionalProperties: false }), body: SwarmSpec },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1170,7 +1170,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: Type.Never(),
-  responses: { 200: Type.Union([Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: false })), Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: false }))]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: false })), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1190,7 +1190,7 @@ export const get_ServiceList = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ filters: Type.String(), status: Type.Boolean() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Union([Type.Array(Service), Type.Array(Service)]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1210,7 +1210,7 @@ export const get_ServiceInspect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ insertDefaults: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Service, Service]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1220,7 +1220,7 @@ export const delete_ServiceDelete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Unknown(), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1320,7 +1320,7 @@ export const post_SecretUpdate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ version: Type.Integer() }, { additionalProperties: false }), path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: SecretSpec },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1370,7 +1370,7 @@ export const post_ConfigUpdate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ version: Type.Integer() }, { additionalProperties: false }), path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: ConfigSpec },
-  responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1821,6 +1821,12 @@ const runValidate = async (ctx: {
 
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -1868,7 +1874,7 @@ export class ApiClient {
       const explode = parameterStyle?.explode ?? false;
       if (style === "label") {
         if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
         }
@@ -1876,14 +1882,14 @@ export class ApiClient {
       }
       if (style === "matrix") {
         if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
         }
         return ";" + key + "=" + encode(value);
       }
       if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
@@ -1933,7 +1939,7 @@ export class ApiClient {
           else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
           else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
           else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
           if (style === "deepObject") {
             for (const [nestedKey, nestedValue] of entries) {

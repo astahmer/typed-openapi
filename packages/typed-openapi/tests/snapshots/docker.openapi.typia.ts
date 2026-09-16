@@ -567,7 +567,7 @@ export const get_ContainerTop = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ ps_args: string }> => typia.createIs<Partial<{ ps_args: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "ps_args": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<(Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> | Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: ((input: unknown): input is Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> => typia.createIs<Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "Titles": 1, "Processes": 1 }, key))), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -627,7 +627,7 @@ export const post_ContainerStart = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string }> => typia.createIs<Partial<{ detachKeys: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "detachKeys": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -637,7 +637,7 @@ export const post_ContainerStop = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "signal": 1, "t": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -647,7 +647,7 @@ export const post_ContainerRestart = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "signal": 1, "t": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -657,7 +657,7 @@ export const post_ContainerKill = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ signal: string }> => typia.createIs<Partial<{ signal: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "signal": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -677,7 +677,7 @@ export const post_ContainerRename = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -687,7 +687,7 @@ export const post_ContainerPause = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -697,7 +697,7 @@ export const post_ContainerUnpause = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -717,7 +717,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "detachKeys": 1, "logs": 1, "stream": 1, "stdin": 1, "stdout": 1, "stderr": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -737,7 +737,7 @@ export const delete_ContainerDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ v: boolean, force: boolean, link: boolean }> => typia.createIs<Partial<{ v: boolean, force: boolean, link: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "v": 1, "force": 1, "link": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -757,7 +757,7 @@ export const put_PutContainerArchive = {
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string } => typia.createIs<{ path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "path": 1, "noOverwriteDirNonDir": 1, "copyUIDGID": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))), body: typia.createIs<Blob>() },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -767,7 +767,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "path": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
   responseHeaders: { 200: ((input: unknown): input is { "X-Docker-Container-Path-Stat": string } => typia.createIs<{ "X-Docker-Container-Path-Stat": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "X-Docker-Container-Path-Stat": 1 }, key))) },
 };
 
@@ -848,7 +848,7 @@ export const post_ImagePush = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ tag: string }> => typia.createIs<Partial<{ tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "tag": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))), header: ((input: unknown): input is { "X-Registry-Auth": string } => typia.createIs<{ "X-Registry-Auth": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -858,7 +858,7 @@ export const post_ImageTag = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ repo: string, tag: string }> => typia.createIs<Partial<{ repo: string, tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "repo": 1, "tag": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 201: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 201: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -970,7 +970,7 @@ export const get_SystemDataUsage = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }> => typia.createIs<Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "type": 1 }, key))) },
-  responses: { 200: typia.createIs<(Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }> | Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: ((input: unknown): input is Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }> => typia.createIs<Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "LayersSize": 1, "Images": 1, "Containers": 1, "Volumes": 1, "BuildCache": 1 }, key))), 500: isErrorResponse },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -1030,7 +1030,7 @@ export const post_ExecResize = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "h": 1, "w": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -1090,7 +1090,7 @@ export const delete_VolumeDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -1130,7 +1130,7 @@ export const delete_NetworkDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -1150,7 +1150,7 @@ export const post_NetworkConnect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))), body: ((input: unknown): input is Partial<{ Container: string, EndpointConfig: EndpointSettings }> => typia.createIs<Partial<{ Container: string, EndpointConfig: EndpointSettings }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "Container": 1, "EndpointConfig": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -1160,7 +1160,7 @@ export const post_NetworkDisconnect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))), body: ((input: unknown): input is Partial<{ Container: string, Force: boolean }> => typia.createIs<Partial<{ Container: string, Force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "Container": 1, "Force": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -1190,7 +1190,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "remote": 1 }, key))) },
-  responses: { 200: typia.createIs<(Array<PluginPrivilege> | Array<PluginPrivilege>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<Array<PluginPrivilege>>(), 500: isErrorResponse },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1210,7 +1210,7 @@ export const get_PluginInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: isPlugin, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1220,7 +1220,7 @@ export const delete_PluginDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: isPlugin, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1230,7 +1230,7 @@ export const post_PluginEnable = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ timeout: number }> => typia.createIs<Partial<{ timeout: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "timeout": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1240,7 +1240,7 @@ export const post_PluginDisable = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1250,7 +1250,7 @@ export const post_PluginUpgrade = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "remote": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "X-Registry-Auth": 1 }, key))), body: typia.createIs<Array<PluginPrivilege>>() },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1260,7 +1260,7 @@ export const post_PluginCreate = {
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 204: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 500: isErrorResponse },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1270,7 +1270,7 @@ export const post_PluginPush = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1280,7 +1280,7 @@ export const post_PluginSet = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))), body: typia.createIs<Array<string>>() },
-  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1290,7 +1290,7 @@ export const get_NodeList = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1 }, key))) },
-  responses: { 200: typia.createIs<(Array<Node> | Array<Node>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<Array<Node>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1300,7 +1300,7 @@ export const get_NodeInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<(Node | Node)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: isNode, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1310,7 +1310,7 @@ export const delete_NodeDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1320,7 +1320,7 @@ export const post_NodeUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))), body: isNodeSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1330,7 +1330,7 @@ export const get_SwarmInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<(Swarm | Swarm)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: isSwarm, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1340,7 +1340,7 @@ export const post_SwarmInit = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: ((input: unknown): input is Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }> => typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "ListenAddr": 1, "AdvertiseAddr": 1, "DataPathAddr": 1, "DataPathPort": 1, "DefaultAddrPool": 1, "ForceNewCluster": 1, "SubnetSize": 1, "Spec": 1 }, key))) },
-  responses: { 200: typia.createIs<(string | string)>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<string>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1350,7 +1350,7 @@ export const post_SwarmJoin = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: ((input: unknown): input is Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }> => typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "ListenAddr": 1, "AdvertiseAddr": 1, "DataPathAddr": 1, "RemoteAddrs": 1, "JoinToken": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1360,7 +1360,7 @@ export const post_SwarmLeave = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "force": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1370,7 +1370,7 @@ export const post_SwarmUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean } => typia.createIs<{ version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1, "rotateWorkerToken": 1, "rotateManagerToken": 1, "rotateManagerUnlockKey": 1 }, key))), body: isSwarmSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1380,7 +1380,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<(Partial<{ UnlockKey: string }> | Partial<{ UnlockKey: string }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: ((input: unknown): input is Partial<{ UnlockKey: string }> => typia.createIs<Partial<{ UnlockKey: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "UnlockKey": 1 }, key))), 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1400,7 +1400,7 @@ export const get_ServiceList = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ filters: string, status: boolean }> => typia.createIs<Partial<{ filters: string, status: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "filters": 1, "status": 1 }, key))) },
-  responses: { 200: typia.createIs<(Array<Service> | Array<Service>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<Array<Service>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1420,7 +1420,7 @@ export const get_ServiceInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is Partial<{ insertDefaults: boolean }> => typia.createIs<Partial<{ insertDefaults: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "insertDefaults": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<(Service | Service)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: isService, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1430,7 +1430,7 @@ export const delete_ServiceDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))) },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1530,7 +1530,7 @@ export const post_SecretUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))), body: isSecretSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1580,7 +1580,7 @@ export const post_ConfigUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "version": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "id": 1 }, key))), body: isConfigSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -2031,6 +2031,12 @@ const runValidate = async (ctx: {
 
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -2078,7 +2084,7 @@ export class ApiClient {
       const explode = parameterStyle?.explode ?? false;
       if (style === "label") {
         if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
         }
@@ -2086,14 +2092,14 @@ export class ApiClient {
       }
       if (style === "matrix") {
         if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
         }
         return ";" + key + "=" + encode(value);
       }
       if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
@@ -2143,7 +2149,7 @@ export class ApiClient {
           else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
           else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
           else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
           if (style === "deepObject") {
             for (const [nestedKey, nestedValue] of entries) {

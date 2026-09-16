@@ -650,6 +650,12 @@ export class TypedStatusError<TData = unknown> extends Error {
 // </TypedStatusError>
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -704,7 +710,7 @@ export class ApiClient {
               .map(encode)
               .join(explode ? "." : ",")
           );
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return (
             "." +
@@ -729,7 +735,7 @@ export class ApiClient {
                   .filter((item) => item != null)
                   .map(encode)
                   .join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode
             ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("")
@@ -742,7 +748,7 @@ export class ApiClient {
           .filter((item) => item != null)
           .map(encode)
           .join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => (explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]))
@@ -825,7 +831,7 @@ export class ApiClient {
                 .join(","),
               allowReserved,
             );
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(
             ([, nestedValue]) => nestedValue != null,
           );

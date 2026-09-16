@@ -396,7 +396,7 @@ export const get_ContainerTop = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ ps_args: String_default_neg_ef_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Union([Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) }), Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) })]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) }), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -456,7 +456,7 @@ export const post_ContainerStart = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String) })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -466,7 +466,7 @@ export const post_ContainerStop = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ signal: Schema.optional(Schema.String), t: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -476,7 +476,7 @@ export const post_ContainerRestart = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ signal: Schema.optional(Schema.String), t: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -486,7 +486,7 @@ export const post_ContainerKill = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ signal: String_default_SIGKILL_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -506,7 +506,7 @@ export const post_ContainerRename = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ name: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -516,7 +516,7 @@ export const post_ContainerPause = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -526,7 +526,7 @@ export const post_ContainerUnpause = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -546,7 +546,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 101: Schema.Unknown, 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 101: Schema.Unknown, 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -566,7 +566,7 @@ export const delete_ContainerDelete = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ v: Union_default_false_prop, force: Union_default_false_prop, link: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -586,7 +586,7 @@ export const put_PutContainerArchive = {
   requestFormat: Schema.Literal("binary"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ path: Schema.String, noOverwriteDirNonDir: Schema.optional(Schema.String), copyUIDGID: Schema.optional(Schema.String) }), path: Schema.Struct({ id: Schema.String }), body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -596,7 +596,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
   responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.String }) },
 };
 
@@ -677,7 +677,7 @@ export const post_ImagePush = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ tag: Schema.optional(Schema.String) })), path: Schema.Struct({ name: Schema.String }), header: Schema.Struct({ "X-Registry-Auth": Schema.String }) },
-  responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -687,7 +687,7 @@ export const post_ImageTag = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String) })), path: Schema.Struct({ name: Schema.String }) },
-  responses: { 201: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 201: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -799,7 +799,7 @@ export const get_SystemDataUsage = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ type: Schema.optional(Schema.Array(Schema.Literals(["container", "image", "volume", "build-cache"]))) })) },
-  responses: { 200: Schema.Union([Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) }), Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) })]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) }), 500: ErrorResponse },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -859,7 +859,7 @@ export const post_ExecResize = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ h: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), w: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -919,7 +919,7 @@ export const delete_VolumeDelete = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })), path: Schema.Struct({ name: Schema.String }) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -959,7 +959,7 @@ export const delete_NetworkDelete = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
-  responses: { 204: Schema.Unknown, 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -979,7 +979,7 @@ export const post_NetworkConnect = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }), body: Schema.optional(Schema.Struct({ Container: Schema.optional(Schema.String), EndpointConfig: Schema.optional(EndpointSettings) })) },
-  responses: { 200: Schema.Unknown, 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -989,7 +989,7 @@ export const post_NetworkDisconnect = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }), body: Schema.optional(Schema.Struct({ Container: Schema.optional(Schema.String), Force: Schema.optional(Schema.Boolean) })) },
-  responses: { 200: Schema.Unknown, 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -1019,7 +1019,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ remote: Schema.String }) },
-  responses: { 200: Schema.Union([Schema.Array(PluginPrivilege), Schema.Array(PluginPrivilege)]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Array(PluginPrivilege), 500: ErrorResponse },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1039,7 +1039,7 @@ export const get_PluginInspect = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
-  responses: { 200: Schema.Union([Plugin, Plugin]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1049,7 +1049,7 @@ export const delete_PluginDelete = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })), path: Schema.Struct({ name: Schema.String }) },
-  responses: { 200: Schema.Union([Plugin, Plugin]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1059,7 +1059,7 @@ export const post_PluginEnable = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ timeout: Schema_default_0_prop })), path: Schema.Struct({ name: Schema.String }) },
-  responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1069,7 +1069,7 @@ export const post_PluginDisable = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ force: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))) })), path: Schema.Struct({ name: Schema.String }) },
-  responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1079,7 +1079,7 @@ export const post_PluginUpgrade = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ remote: Schema.String }), path: Schema.Struct({ name: Schema.String }), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) })), body: Schema.Array(PluginPrivilege) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1089,7 +1089,7 @@ export const post_PluginCreate = {
   requestFormat: Schema.Literal("text"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ name: Schema.String }) },
-  responses: { 204: Schema.Unknown, 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 500: ErrorResponse },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1099,7 +1099,7 @@ export const post_PluginPush = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
-  responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1109,7 +1109,7 @@ export const post_PluginSet = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }), body: Schema.Array(Schema.String) },
-  responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1119,7 +1119,7 @@ export const get_NodeList = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Union([Schema.Array(Node), Schema.Array(Node)]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1129,7 +1129,7 @@ export const get_NodeInspect = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Union([Node, Node]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1139,7 +1139,7 @@ export const delete_NodeDelete = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1149,7 +1149,7 @@ export const post_NodeUpdate = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ id: Schema.String }), body: NodeSpec },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1159,7 +1159,7 @@ export const get_SwarmInspect = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
-  responses: { 200: Schema.Union([Swarm, Swarm]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1169,7 +1169,7 @@ export const post_SwarmInit = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { body: Schema.optional(Schema.Struct({ ListenAddr: Schema.optional(Schema.String), AdvertiseAddr: Schema.optional(Schema.String), DataPathAddr: Schema.optional(Schema.String), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), ForceNewCluster: Schema.optional(Schema.Boolean), SubnetSize: Schema.optional(Schema.Int), Spec: Schema.optional(SwarmSpec) })) },
-  responses: { 200: Schema.Union([Schema.String, Schema.String]), 400: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.String, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1179,7 +1179,7 @@ export const post_SwarmJoin = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { body: Schema.optional(Schema.Struct({ ListenAddr: Schema.optional(Schema.String), AdvertiseAddr: Schema.optional(Schema.String), DataPathAddr: Schema.optional(Schema.String), RemoteAddrs: Schema.optional(Schema.Array(Schema.String)), JoinToken: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1189,7 +1189,7 @@ export const post_SwarmLeave = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })) },
-  responses: { 200: Schema.Unknown, 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1199,7 +1199,7 @@ export const post_SwarmUpdate = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()), rotateWorkerToken: Union_default_false_prop, rotateManagerToken: Union_default_false_prop, rotateManagerUnlockKey: Union_default_false_prop }), body: SwarmSpec },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1209,7 +1209,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
-  responses: { 200: Schema.Union([Schema.Struct({ UnlockKey: Schema.optional(Schema.String) }), Schema.Struct({ UnlockKey: Schema.optional(Schema.String) })]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Struct({ UnlockKey: Schema.optional(Schema.String) }), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1229,7 +1229,7 @@ export const get_ServiceList = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String), status: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))) })) },
-  responses: { 200: Schema.Union([Schema.Array(Service), Schema.Array(Service)]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1249,7 +1249,7 @@ export const get_ServiceInspect = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ insertDefaults: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Union([Service, Service]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1259,7 +1259,7 @@ export const delete_ServiceDelete = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1359,7 +1359,7 @@ export const post_SecretUpdate = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ id: Schema.String }), body: SecretSpec },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1409,7 +1409,7 @@ export const post_ConfigUpdate = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ id: Schema.String }), body: ConfigSpec },
-  responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1875,6 +1875,12 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export type EffectFetcher = {
   decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
   encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined;
@@ -2013,7 +2019,7 @@ export class EffectApiClient {
             const explode = parameterStyle?.explode ?? false;
             if (style === "label") {
               if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-              if (value && typeof value === "object") {
+              if (isPlainObject(value)) {
                 const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
                 return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
               }
@@ -2021,14 +2027,14 @@ export class EffectApiClient {
             }
             if (style === "matrix") {
               if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-              if (value && typeof value === "object") {
+              if (isPlainObject(value)) {
                 const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
                 return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
               }
               return ";" + key + "=" + encode(value);
             }
             if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-            if (value && typeof value === "object") return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]).flat().join(",");
+            if (isPlainObject(value)) return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]).flat().join(",");
             return encode(value);
           };
           return url
@@ -2070,7 +2076,7 @@ export class EffectApiClient {
                 else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
                 else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
                 else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-              } else if (typeof value === "object") {
+              } else if (isPlainObject(value)) {
                 const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
                 if (style === "deepObject") {
                   for (const [nestedKey, nestedValue] of entries) {

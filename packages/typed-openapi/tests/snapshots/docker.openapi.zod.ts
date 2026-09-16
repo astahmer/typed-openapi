@@ -357,7 +357,7 @@ export const get_ContainerTop = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ ps_args: z.string().default("-ef") }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.union([z.strictObject({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial(), z.strictObject({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial()]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.strictObject({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -417,7 +417,7 @@ export const post_ContainerStart = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ detachKeys: z.string() }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 304: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 304: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -427,7 +427,7 @@ export const post_ContainerStop = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ signal: z.string(), t: z.coerce.number().int() }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 304: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 304: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -437,7 +437,7 @@ export const post_ContainerRestart = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ signal: z.string(), t: z.coerce.number().int() }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -447,7 +447,7 @@ export const post_ContainerKill = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ signal: z.string().default("SIGKILL") }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 409: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -467,7 +467,7 @@ export const post_ContainerRename = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ name: z.string() }), path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 409: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -477,7 +477,7 @@ export const post_ContainerPause = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -487,7 +487,7 @@ export const post_ContainerUnpause = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -507,7 +507,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ detachKeys: z.string(), logs: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), stream: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), stdin: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), stdout: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), stderr: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 101: z.unknown(), 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 101: z.unknown(), 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -527,7 +527,7 @@ export const delete_ContainerDelete = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ v: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), force: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), link: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 409: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -547,7 +547,7 @@ export const put_PutContainerArchive = {
   requestFormat: z.literal("binary"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ path: z.string(), noOverwriteDirNonDir: z.string().optional(), copyUIDGID: z.string().optional() }), path: z.strictObject({ id: z.string() }), body: z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob) },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 403: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -557,7 +557,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ path: z.string() }), path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
   responseHeaders: { 200: z.strictObject({ "X-Docker-Container-Path-Stat": z.string() }) },
 };
 
@@ -638,7 +638,7 @@ export const post_ImagePush = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ tag: z.string() }).partial().optional(), path: z.strictObject({ name: z.string() }), header: z.strictObject({ "X-Registry-Auth": z.string() }) },
-  responses: { 200: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -648,7 +648,7 @@ export const post_ImageTag = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ repo: z.string(), tag: z.string() }).partial().optional(), path: z.strictObject({ name: z.string() }) },
-  responses: { 201: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 409: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 201: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -760,7 +760,7 @@ export const get_SystemDataUsage = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ type: z.array(z.enum(["container", "image", "volume", "build-cache"])) }).partial().optional() },
-  responses: { 200: z.union([z.strictObject({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial(), z.strictObject({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial()]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.strictObject({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial(), 500: ErrorResponse },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -820,7 +820,7 @@ export const post_ExecResize = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ h: z.coerce.number().int(), w: z.coerce.number().int() }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -880,7 +880,7 @@ export const delete_VolumeDelete = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ force: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional(), path: z.strictObject({ name: z.string() }) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 409: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -920,7 +920,7 @@ export const delete_NetworkDelete = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }) },
-  responses: { 204: z.unknown(), 403: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -940,7 +940,7 @@ export const post_NetworkConnect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }), body: z.strictObject({ Container: z.string(), EndpointConfig: EndpointSettings }).partial().optional() },
-  responses: { 200: z.unknown(), 403: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -950,7 +950,7 @@ export const post_NetworkDisconnect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }), body: z.strictObject({ Container: z.string(), Force: z.boolean() }).partial().optional() },
-  responses: { 200: z.unknown(), 403: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -980,7 +980,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ remote: z.string() }) },
-  responses: { 200: z.union([z.array(PluginPrivilege), z.array(PluginPrivilege)]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.array(PluginPrivilege), 500: ErrorResponse },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1000,7 +1000,7 @@ export const get_PluginInspect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ name: z.string() }) },
-  responses: { 200: z.union([Plugin, Plugin]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1010,7 +1010,7 @@ export const delete_PluginDelete = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ force: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional(), path: z.strictObject({ name: z.string() }) },
-  responses: { 200: z.union([Plugin, Plugin]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1020,7 +1020,7 @@ export const post_PluginEnable = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ timeout: z.coerce.number().int().default(0) }).partial().optional(), path: z.strictObject({ name: z.string() }) },
-  responses: { 200: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1030,7 +1030,7 @@ export const post_PluginDisable = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ force: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: z.strictObject({ name: z.string() }) },
-  responses: { 200: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1040,7 +1040,7 @@ export const post_PluginUpgrade = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ remote: z.string() }), path: z.strictObject({ name: z.string() }), header: z.strictObject({ "X-Registry-Auth": z.string() }).partial().optional(), body: z.array(PluginPrivilege) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1050,7 +1050,7 @@ export const post_PluginCreate = {
   requestFormat: z.literal("text"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ name: z.string() }) },
-  responses: { 204: z.unknown(), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 500: ErrorResponse },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1060,7 +1060,7 @@ export const post_PluginPush = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ name: z.string() }) },
-  responses: { 200: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1070,7 +1070,7 @@ export const post_PluginSet = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ name: z.string() }), body: z.array(z.string()) },
-  responses: { 204: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1080,7 +1080,7 @@ export const get_NodeList = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ filters: z.string() }).partial().optional() },
-  responses: { 200: z.union([z.array(Node), z.array(Node)]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1090,7 +1090,7 @@ export const get_NodeInspect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.union([Node, Node]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1100,7 +1100,7 @@ export const delete_NodeDelete = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ force: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1110,7 +1110,7 @@ export const post_NodeUpdate = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ version: z.coerce.number().int() }), path: z.strictObject({ id: z.string() }), body: NodeSpec },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1120,7 +1120,7 @@ export const get_SwarmInspect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: { 200: z.union([Swarm, Swarm]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1130,7 +1130,7 @@ export const post_SwarmInit = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { body: z.strictObject({ ListenAddr: z.string(), AdvertiseAddr: z.string(), DataPathAddr: z.string(), DataPathPort: z.number().int(), DefaultAddrPool: z.array(z.string()), ForceNewCluster: z.boolean(), SubnetSize: z.number().int(), Spec: SwarmSpec }).partial().optional() },
-  responses: { 200: z.union([z.string(), z.string()]), 400: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.string(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1140,7 +1140,7 @@ export const post_SwarmJoin = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { body: z.strictObject({ ListenAddr: z.string(), AdvertiseAddr: z.string(), DataPathAddr: z.string(), RemoteAddrs: z.array(z.string()), JoinToken: z.string() }).partial().optional() },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1150,7 +1150,7 @@ export const post_SwarmLeave = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ force: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional() },
-  responses: { 200: z.unknown(), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1160,7 +1160,7 @@ export const post_SwarmUpdate = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ version: z.coerce.number().int(), rotateWorkerToken: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), rotateManagerToken: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false), rotateManagerUnlockKey: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }), body: SwarmSpec },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1170,7 +1170,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: { 200: z.union([z.strictObject({ UnlockKey: z.string() }).partial(), z.strictObject({ UnlockKey: z.string() }).partial()]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.strictObject({ UnlockKey: z.string() }).partial(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1190,7 +1190,7 @@ export const get_ServiceList = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ filters: z.string(), status: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
-  responses: { 200: z.union([z.array(Service), z.array(Service)]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1210,7 +1210,7 @@ export const get_ServiceInspect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ insertDefaults: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().optional(), path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.union([Service, Service]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1220,7 +1220,7 @@ export const delete_ServiceDelete = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.strictObject({ id: z.string() }) },
-  responses: { 200: z.unknown(), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1320,7 +1320,7 @@ export const post_SecretUpdate = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ version: z.coerce.number().int() }), path: z.strictObject({ id: z.string() }), body: SecretSpec },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1370,7 +1370,7 @@ export const post_ConfigUpdate = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.strictObject({ version: z.coerce.number().int() }), path: z.strictObject({ id: z.string() }), body: ConfigSpec },
-  responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1821,6 +1821,12 @@ const runValidate = async (ctx: {
 
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -1868,7 +1874,7 @@ export class ApiClient {
       const explode = parameterStyle?.explode ?? false;
       if (style === "label") {
         if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
         }
@@ -1876,14 +1882,14 @@ export class ApiClient {
       }
       if (style === "matrix") {
         if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
         }
         return ";" + key + "=" + encode(value);
       }
       if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
@@ -1933,7 +1939,7 @@ export class ApiClient {
           else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
           else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
           else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
           if (style === "deepObject") {
             for (const [nestedKey, nestedValue] of entries) {

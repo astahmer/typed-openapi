@@ -12574,7 +12574,7 @@ export type get_Artifacts_repos_raw_get = {
         
         
           }
-      responses: {200: (unknown | Blob | string | string),
+      responses: {200: (unknown | Blob | string),
 400: { errors: Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>, messages: Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>, result: (Record<string, unknown> | null), success: false },
 401: { errors: Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>, messages: Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>, result: (Record<string, unknown> | null), success: false },
 403: { errors: Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>, messages: Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>, result: (Record<string, unknown> | null), success: false },
@@ -63186,6 +63186,12 @@ export class TypedStatusError<TData = unknown> extends Error {
 
 
 // <ApiClient>
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
+
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
@@ -63233,7 +63239,7 @@ export class ApiClient {
       const explode = parameterStyle?.explode ?? false;
       if (style === "label") {
         if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
         }
@@ -63241,14 +63247,14 @@ export class ApiClient {
       }
       if (style === "matrix") {
         if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
-        if (value && typeof value === "object") {
+        if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
           return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
         }
         return ";" + key + "=" + encode(value);
       }
       if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-      if (value && typeof value === "object") {
+      if (isPlainObject(value)) {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
           .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
@@ -63298,7 +63304,7 @@ export class ApiClient {
           else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
           else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
           else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
-        } else if (typeof value === "object") {
+        } else if (isPlainObject(value)) {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
           if (style === "deepObject") {
             for (const [nestedKey, nestedValue] of entries) {
