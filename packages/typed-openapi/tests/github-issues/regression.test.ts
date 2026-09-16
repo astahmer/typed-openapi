@@ -48,6 +48,25 @@ describe("GitHub issue regressions", () => {
     expect(schema.parse({ a: "b" })).toEqual({ a: "b" });
   });
 
+  test("#159 Support Zod V4 strictObject for closed objects", () => {
+    const node = openApiToIr(
+      {
+        type: "object",
+        additionalProperties: false,
+        required: ["name"],
+        properties: { name: { type: "string" } },
+      },
+      irCtx,
+    );
+    const src = zodAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    expect(src).toBe("z.strictObject({ name: z.string() })");
+    expect(src).not.toContain(".strict()");
+
+    const schema = new Function("z", `return ${src}`)(z) as z.ZodType;
+    expect(schema.parse({ name: "Ada" })).toEqual({ name: "Ada" });
+    expect(() => schema.parse({ name: "Ada", extra: true })).toThrow();
+  });
+
   test("#29 runtime client validates/parses responses when validate-side includes output", () => {
     const doc = minimalDoc({
       "/pets": {
@@ -83,7 +102,7 @@ describe("GitHub issue regressions", () => {
     expect(() => generateFile({ ...ctx, runtime: "zod", includeClient: true })).not.toThrow();
     const file = generateFile({ ...ctx, runtime: "zod", includeClient: true });
     expect(file).toMatch(/Pet|listPets|list_pets|get_ListPets/i);
-    expect(file).toContain("z.object");
+    expect(file).toContain("z.strictObject");
   });
 
   test("#61 @ in property key is quoted", () => {
@@ -150,7 +169,7 @@ describe("GitHub issue regressions", () => {
     expect(none).toMatch(/query\?:\s*Partial</);
 
     const zod = generateFile({ ...ctx, runtime: "zod", includeClient: true });
-    expect(zod).toContain(".partial().strict().optional()");
+    expect(zod).toContain(".partial().optional()");
   });
 
   test("#27 nested swagger definitions do not crash", async () => {
