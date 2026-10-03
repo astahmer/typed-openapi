@@ -10,7 +10,6 @@ import {
   hasObjectRestTyping,
   isNullOr,
   literalValue,
-  findMappedUnionMember,
   objectKey,
   objectProps,
   partitionNullUnionMembers,
@@ -20,6 +19,7 @@ import {
   withZodDescription,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
+import { canDiscriminate } from "./discriminator.ts";
 
 const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
   const c = applyStringConstraints(node.constraints, ctx.validation);
@@ -118,18 +118,10 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "union": {
       if (node.discriminator?.propertyName) {
         const prop = node.discriminator.propertyName;
-        const mapping = node.discriminator.mapping;
         const { concrete, nullable } = partitionNullUnionMembers(node.members);
-        const members =
-          mapping && Object.keys(mapping).length > 0
-            ? Object.entries(mapping).flatMap(([value, target]) => {
-                const member = findMappedUnionMember(concrete, target);
-                if (!member) return [];
-                const base = emitNode(member, ctx);
-                return [`${base}.extend({ ${objectKey(prop)}: z.literal(${quote(value)}) })`];
-              })
-            : concrete.map((m) => emitNode(m, ctx));
-        if (members.length > 0) {
+        const members = concrete.map((m) => emitNode(m, ctx));
+        // Mappings cannot overwrite constraints or turn a non-object schema into a ZodObject.
+        if (members.length > 0 && canDiscriminate(concrete, prop, ctx)) {
           const disc = `z.discriminatedUnion(${quote(prop)}, [${members.join(", ")}])`;
           return nullable ? `z.union([${disc}, z.null()])` : disc;
         }

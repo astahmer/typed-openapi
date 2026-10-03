@@ -98,7 +98,7 @@ describe("advanced OpenAPI keywords", () => {
     expect(schema.safeParse({ kind: "bird" }).success).toBe(false);
   });
 
-  test("discriminator.mapping remaps wire values via .extend", () => {
+  test("discriminator.mapping preserves the member schemas", () => {
     const irCtxNamed = {
       getRefName: (ref: string) => ref.replace("#/components/schemas/", ""),
     };
@@ -120,11 +120,11 @@ describe("advanced OpenAPI keywords", () => {
       expect(node.discriminator?.mapping?.["canine"]).toBe("#/components/schemas/Dog");
     }
 
-    const Dog = z.object({ petType: z.literal("Dog"), bark: z.boolean() });
-    const Cat = z.object({ petType: z.literal("Cat"), meow: z.boolean() });
+    const Dog = z.object({ petType: z.literal("canine"), bark: z.boolean() });
+    const Cat = z.object({ petType: z.literal("feline"), meow: z.boolean() });
     const src = zodAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("loose")));
-    expect(src).toContain('.extend({ petType: z.literal("canine") })');
-    expect(src).toContain('.extend({ petType: z.literal("feline") })');
+    expect(src).toContain("z.union([Dog, Cat])");
+    expect(src).not.toContain(".extend(");
 
     const schema = new Function("z", "Dog", "Cat", `return ${src}`)(z, Dog, Cat) as z.ZodType;
     expect(schema.safeParse({ petType: "canine", bark: true }).success).toBe(true);
