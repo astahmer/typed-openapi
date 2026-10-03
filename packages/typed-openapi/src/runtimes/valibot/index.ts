@@ -92,12 +92,12 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "never":
       return "v.never()";
     case "literal":
-      return `v.literal(${literalValue(node.value)})`;
+      return node.value === null ? "v.null()" : `v.literal(${literalValue(node.value)})`;
     case "enum": {
       if (node.values.every((v) => typeof v === "string") && node.values.length > 0) {
         return `v.picklist([${node.values.map((v) => quote(String(v))).join(", ")}])`;
       }
-      return `v.union([${node.values.map((v) => `v.literal(${literalValue(v)})`).join(", ")}])`;
+      return `v.union([${node.values.map((v) => (v === null ? "v.null()" : `v.literal(${literalValue(v)})`)).join(", ")}])`;
     }
     case "array": {
       const c = applyArrayConstraints(node.constraints, ctx.validation);
