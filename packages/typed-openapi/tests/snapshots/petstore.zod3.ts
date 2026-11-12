@@ -7,7 +7,7 @@ export const Order = z
     id: z.number().int(),
     petId: z.number().int(),
     quantity: z.number().int(),
-    shipDate: z.string().datetime(),
+    shipDate: z.string().datetime({ offset: true }),
     status: z.enum(["placed", "approved", "delivered"]),
     complete: z.boolean(),
   })
@@ -247,7 +247,9 @@ export const get_LoginUser = {
   parameters: { query: z.object({ username: z.string(), password: z.string() }).partial().strict().optional() },
   responses: { 200: z.string(), 400: z.unknown() },
   responseHeaders: {
-    200: z.object({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.string().datetime() }).strict(),
+    200: z
+      .object({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.string().datetime({ offset: true }) })
+      .strict(),
     400: z.object({ "X-Error": z.string() }).strict(),
   },
 };

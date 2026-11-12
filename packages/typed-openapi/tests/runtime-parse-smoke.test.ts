@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
+import { z as z3 } from "zod/v3";
 import * as v from "valibot";
 import { Schema, Exit } from "effect";
 import { type } from "arktype";
@@ -7,6 +8,7 @@ import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import { createEmitCtx } from "../src/runtimes/types.ts";
 import { resolveValidationPolicy, type ValidationPreset } from "../src/runtimes/validation.ts";
 import { zodAdapter } from "../src/runtimes/zod/index.ts";
+import { zod3Adapter } from "../src/runtimes/zod3/index.ts";
 import { valibotAdapter } from "../src/runtimes/valibot/index.ts";
 import { effectAdapter } from "../src/runtimes/effect/index.ts";
 import { arktypeAdapter } from "../src/runtimes/arktype/index.ts";
@@ -85,6 +87,22 @@ describe("runtime parse smoke", () => {
     expect(schema(good) instanceof type.errors ? schema(good) : null).toBe(null);
     const result = schema(badEmail);
     expect(result instanceof type.errors || (result as any)?.arkKind === "errors").toBe(true);
+  });
+
+  // OpenAPI `date-time` is an RFC 3339 date-time, whose offset is `"Z" / time-numoffset`.
+  test.each([
+    ["zod", zodAdapter, z],
+    ["zod3", zod3Adapter, z3],
+  ] as const)("%s: date-time accepts Z and numeric offsets, rejects a missing offset", (_name, adapter, zod) => {
+    const node = openApiToIr({ type: "string", format: "date-time" }, irCtx);
+    const src = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = new Function("z", `return ${src}`)(zod) as z.ZodType;
+
+    expect(schema.safeParse("2025-04-17T07:09:58Z").success).toBe(true);
+    expect(schema.safeParse("2025-04-17T07:09:58.123+00:00").success).toBe(true);
+    expect(schema.safeParse("2025-04-17T07:09:58-05:30").success).toBe(true);
+    expect(schema.safeParse("2025-04-17T07:09:58").success).toBe(false);
+    expect(schema.safeParse("2025-04-17").success).toBe(false);
   });
 
   test.each([["loose"], ["formats"], ["strict"]] as const)(
