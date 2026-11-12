@@ -39,7 +39,7 @@ export type HealthConfig = z.infer<typeof HealthConfig>;
 export const HealthConfig = z.strictObject({ Test: z.array(z.string()), Interval: z.number().int(), Timeout: z.number().int(), Retries: z.number().int(), StartPeriod: z.number().int() }).partial();
 
 export type HealthcheckResult = z.infer<typeof HealthcheckResult>;
-export const HealthcheckResult = z.strictObject({ Start: z.iso.datetime(), End: z.string(), ExitCode: z.number().int(), Output: z.string() }).partial().nullable();
+export const HealthcheckResult = z.strictObject({ Start: z.iso.datetime({ offset: true }), End: z.string(), ExitCode: z.number().int(), Output: z.string() }).partial().nullable();
 
 export type Health = z.infer<typeof Health>;
 export const Health = z.strictObject({ Status: z.enum(["none", "starting", "healthy", "unhealthy"]), FailingStreak: z.number().int(), Log: z.array(HealthcheckResult) }).partial().nullable();
