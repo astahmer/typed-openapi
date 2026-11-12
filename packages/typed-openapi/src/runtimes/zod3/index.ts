@@ -30,7 +30,7 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.format === "email") expr += ".email()";
   else if (c.format === "uuid") expr += ".uuid()";
   else if (c.format === "uri" || c.format === "url") expr += ".url()";
-  else if (c.format === "date-time") expr += ".datetime()";
+  else if (c.format === "date-time") expr += ".datetime({ offset: true })";
   else if (c.format === "date") expr += ".date()";
   else if (c.format === "ipv4") expr += '.ip({ version: "v4" })';
   else if (c.format === "ipv6") expr += '.ip({ version: "v6" })';

@@ -27,7 +27,7 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.format === "email") expr = "z.email()";
   else if (c.format === "uuid") expr = "z.uuid()";
   else if (c.format === "uri" || c.format === "url") expr = "z.url()";
-  else if (c.format === "date-time") expr = "z.iso.datetime()";
+  else if (c.format === "date-time") expr = "z.iso.datetime({ offset: true })";
   else if (c.format === "date") expr = "z.iso.date()";
   else if (c.format === "time") expr = "z.iso.time()";
   else if (c.format === "ipv4") expr = "z.ipv4()";
