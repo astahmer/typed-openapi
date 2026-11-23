@@ -140,6 +140,28 @@ const enumToIr = (values: unknown[], meta: SchemaMeta): SchemaNode => {
   return { kind: "union", members: values.map(literalFromEnumValue), meta };
 };
 
+/** Keywords that describe a schema without constraining the values it accepts. */
+const annotationKeywords = new Set([
+  "title",
+  "description",
+  "$comment",
+  "default",
+  "example",
+  "examples",
+  "deprecated",
+  "readOnly",
+  "writeOnly",
+  "externalDocs",
+]);
+
+/** `true`, `{}`, or a schema with only annotations: every value is valid against it. */
+const acceptsEveryValue = (schema: unknown): boolean =>
+  schema === true ||
+  (typeof schema === "object" &&
+    schema !== null &&
+    !Array.isArray(schema) &&
+    Object.keys(schema).every((key) => annotationKeywords.has(key) || key.startsWith("x-")));
+
 export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): SchemaNode => {
   return openApiToIrInternal(input, ctx, ctx.path ?? []);
 };
@@ -208,6 +230,10 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schema.not) {
+    // `not` of a schema that accepts every value accepts none, like the `false` schema
+    if (acceptsEveryValue(schema.not)) {
+      return withNullable({ kind: "never", meta }, schema);
+    }
     return withNullable({ kind: "not", schema: openApiToIrInternal(schema.not, ctx, [...path, "not"]), meta }, schema);
   }
 
