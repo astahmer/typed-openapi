@@ -24,6 +24,32 @@ describe("advanced OpenAPI keywords", () => {
     expect(schema.safeParse("forbidden").success).toBe(false);
   });
 
+  test("not of a schema that accepts every value → never", () => {
+    for (const not of [{}, true, { description: "anything" }]) {
+      const node = openApiToIr({ not }, irCtx);
+      expect(node.kind).toBe("never");
+      expect(irToTs(node)).toBe("never");
+    }
+
+    const nullable = openApiToIr({ not: {}, nullable: true }, irCtx);
+    expect(irToTs(nullable)).toBe("(never | null)");
+
+    const constrained = openApiToIr({ not: { minLength: 3 } }, irCtx);
+    expect(constrained.kind).toBe("not");
+  });
+
+  test("an optional property that must not be sent is typed `?: never`", () => {
+    const node = openApiToIr(
+      {
+        type: "object",
+        properties: { kept: { type: "string" }, dropped: { not: {} } },
+        required: ["kept"],
+      },
+      irCtx,
+    );
+    expect(irToTs(node)).toContain("dropped?: never");
+  });
+
   test("discriminator → z.discriminatedUnion", () => {
     const node = openApiToIr(
       {
